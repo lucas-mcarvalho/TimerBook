@@ -24,3 +24,9 @@
 O projeto TimerBook tem como objetivo ser um software para gerenciamento de suas leituras. Inclui Fetures que inclui cadastro de livros que o usuário esteja lendo, 
 acesso a banco de dados de livros já cadastrados e sistemas de métricas e lembrentes para auxiliar o usuário na leitura de seus diversos 
 livros e comensurar seu desempenho.
+
+# PLANEJAMENTO
+
+Para a realização deste projeto já foram definidas as sprints que podem ser vistas em: https://drive.google.com/file/d/1HaVDZAgRSPGeEkHNOYYhkLJbO9HE6J2f/view?usp=drive_link
+
+Também foram realizadas as User Stories juntamente com as prototipações das telas, disponível em: https://www.figma.com/proto/IihsrG5vSCSRwtLC64WnLd/User-Stories?node-id=0-1&t=epDzeNh9tx9MlHN4-1
