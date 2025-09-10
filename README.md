@@ -20,3 +20,5 @@
 
 
 # DESCRIÇÃO DO PROJETO
+
+O projeto TimerBook tem como objetivo ser um software para gerenciamento de suas leituras.
