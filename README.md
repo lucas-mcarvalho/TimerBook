@@ -6,7 +6,7 @@
 
 **Professor: Dr. Edeílson Milhomem**
 
-**GRUPO 3:**
+**GRUPO 1:**
 
 | Nome                           | Perfil GitHub                                 |
 |--------------------------------|----------------------------------------------|
