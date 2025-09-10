@@ -15,7 +15,7 @@
 | Lucas Monteiro de Carvalho     | [lucas-mcarvalho](https://github.com/lucas-mcarvalho)|
 | Matheus Silva Pontes           | [matheuspontes01](https://github.com/matheuspontes01)|
 | Bruno Henrique Frota Sobral    | [Bruno-uft](https://github.com/Bruno-uft)  |
-| Kayk Zago Pinheiro             | [kayke002](https://github.com/kayke002)]
+| Kayk Zago Pinheiro             | [kayke002](https://github.com/kayke002)    |
 
 
 
