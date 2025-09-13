@@ -1,12 +1,12 @@
-# GRUPU 3 - TimerBook
+# TimerBook
 
 # ENGENHARIA DE SOFTWARE 2025/02 | UNIVERSIDADE FEDERAL DO TOCANTINS
 
 **Curso: Ciência da Computação**
 
 **Professor: Dr. Edeílson Milhomem**
-a
-**Equipe:**
+
+**GRUPO 1:**
 
 | Nome                           | Perfil GitHub                                 |
 |--------------------------------|----------------------------------------------|
@@ -15,14 +15,18 @@ a
 | Lucas Monteiro de Carvalho     | [lucas-mcarvalho](https://github.com/lucas-mcarvalho)|
 | Matheus Silva Pontes           | [matheuspontes01](https://github.com/matheuspontes01)|
 | Bruno Henrique Frota Sobral    | [Bruno-uft](https://github.com/Bruno-uft)  |
-
-# VÍDEO DO PROJETO
-(Clique na miniatura do vídeo abaixo)
-[![Assista ao vídeo](https://img.youtube.com/vi/CXWk26p7s_Q/maxresdefault.jpg)](https://www.youtube.com/watch?v=CXWk26p7s_Q)
+| Kayk Zago Pinheiro             | [kayke002](https://github.com/kayke002)    |
 
 
-# PROJETO 1 - DESCRIÇÃO
 
-Para a realização desse projeto, escolheu-se a implementação de um CRUD para o gerenciamento de cadastro de usuários de uma provedora de internet
-fictícia: "SkyNet". A aplicação realizará operações que envolvem: criação de usuários, leitura dos dados dos usuários, deleção de usuários e atualização
-de suas informações.
+# DESCRIÇÃO DO PROJETO
+
+O projeto TimerBook tem como objetivo ser um software para gerenciamento de suas leituras. Inclui Fetures que inclui cadastro de livros que o usuário esteja lendo, 
+acesso a banco de dados de livros já cadastrados e sistemas de métricas e lembrentes para auxiliar o usuário na leitura de seus diversos 
+livros e comensurar seu desempenho.
+
+# PLANEJAMENTO
+
+Para a realização deste projeto já foram definidas as sprints que podem ser vistas em: https://drive.google.com/file/d/1HaVDZAgRSPGeEkHNOYYhkLJbO9HE6J2f/view?usp=drive_link
+
+Também foram realizadas as User Stories juntamente com as prototipações das telas, disponível em: https://www.figma.com/proto/IihsrG5vSCSRwtLC64WnLd/User-Stories?node-id=0-1&t=epDzeNh9tx9MlHN4-1
