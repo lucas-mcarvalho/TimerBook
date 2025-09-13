@@ -1,9 +1,9 @@
 <?php
 // Configuração do banco de dados MySQL
-define('DB_HOST', 'localhost'); // IP ou hostname
-define('DB_USER', 'root');     // Usuário do MySQL
+define('DB_HOST', '15.228.179.50'); // IP ou hostname
+define('DB_USER', 'Database');     // Usuário do MySQL
 define('DB_NAME', 'Users');         // Nome do banco de dados
-define('DB_PASS', '');  // Senha do MySQL
+define('DB_PASS', 'database123');  // Senha do MySQL
 
 
 class Database {
