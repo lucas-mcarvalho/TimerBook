@@ -2,38 +2,45 @@
 require_once '../App/core/database_config.php';
 
 class User {
-    public static function create($email, $password, $nome = null) {
+    public static function create($email, $password, $nome = null, $username = null) {
         try {
             $pdo = Database::connect();
 
-            // Verifica se já existe
+            // Verifica se email já existe
             $stmt = $pdo->prepare("SELECT id FROM User WHERE email = ?");
             $stmt->execute([$email]);
             if ($stmt->fetch()) {
-                return ["error" => "Usuário já existe"];
+                return ["error" => "E-mail já cadastrado"];
+            }
+
+            // Verifica se username já existe
+            $stmt = $pdo->prepare("SELECT id FROM User WHERE username = ?");
+            $stmt->execute([$username]);
+            if ($stmt->fetch()) {
+                return ["error" => "Username já está em uso"];
             }
 
             $hash = password_hash($password, PASSWORD_DEFAULT);
 
-            $stmt = $pdo->prepare("INSERT INTO User (nome, email, senha) VALUES (?, ?, ?)");
-            $stmt->execute([$nome ?? '', $email, $hash]);
+            $stmt = $pdo->prepare(
+                "INSERT INTO User (nome, username, email, senha) VALUES (?, ?, ?, ?)"
+            );
+            $stmt->execute([$nome ?? '', $username, $email, $hash]);
 
-            return ["message"=>"Usuário cadastrado com sucesso", "user_id"=>$pdo->lastInsertId()];
+            return [
+                "message" => "Usuário cadastrado com sucesso",
+                "user_id" => $pdo->lastInsertId()
+            ];
 
         } catch (PDOException $e) {
             return ["error" => "Erro no banco: " . $e->getMessage()];
         }
     }
 
-      public static function getAll() {
-            $pdo = Database::connect();
-             $stmt = $pdo->query("SELECT id, nome, email, profile_photo FROM User");
-            $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return $users;
+    public static function getAll() {
+        $pdo = Database::connect();
+        $stmt = $pdo->query("SELECT id, nome, username, email, profile_photo FROM User");
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $users;
     }
-
 }
-
-
-
-

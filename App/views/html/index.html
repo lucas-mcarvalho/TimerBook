@@ -60,8 +60,11 @@
   <form id="registerForm" enctype="multipart/form-data">
     <h2>Cadastro</h2>
     
-    <label for="nome">Nome:</label>
+    <label for="nome">Nome completo:</label>
     <input type="text" id="nome" name="nome">
+
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required placeholder="ex: lucasm">
 
     <label for="email">E-mail:</label>
     <input type="email" id="email" name="email" required>
@@ -78,39 +81,31 @@
   </form>
 
   <script>
-    const form = document.getElementById("registerForm");
-    const msg = document.getElementById("msg");
+  const form = document.getElementById("registerForm");
+  const msg = document.getElementById("msg");
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      // Criar FormData para multipart/form-data
-      const formData = new FormData();
-      formData.append("nome", document.getElementById("nome").value);
-      formData.append("email", document.getElementById("email").value);
-      formData.append("password", document.getElementById("password").value);
+    const formData = new FormData(form); // pega tudo automaticamente
 
-      const photoInput = document.getElementById("photo");
-      if (photoInput.files.length > 0) {
-        formData.append("photo", photoInput.files[0]);
-      }
+    try {
+      const res = await fetch("http://localhost/PHP/TimerBook/public/register", {
+        method: "POST",
+        body: formData
+      });
 
-      try {
-        const res = await fetch("http://localhost/PHP/TimerBook/public/register", {
-          method: "POST",
-          body: formData
-        });
+      const result = await res.json();
+      msg.innerText = result.message || result.error;
+      msg.style.color = result.message ? "green" : "red";
 
-        const result = await res.json();
-        msg.innerText = result.message || result.error;
-        msg.style.color = result.message ? "green" : "red";
+      if (result.message) form.reset();
+    } catch (err) {
+      msg.innerText = "Erro ao conectar com a API.";
+      msg.style.color = "red";
+    }
+  });
+</script>
 
-        if (result.message) form.reset();
-      } catch (err) {
-        msg.innerText = "Erro ao conectar com a API.";
-        msg.style.color = "red";
-      }
-    });
-  </script>
 </body>
 </html>
