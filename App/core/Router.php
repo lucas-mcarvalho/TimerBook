@@ -19,7 +19,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Remove o prefixo da pasta
+
 $endpoint = str_replace('/PHP/TIMERBOOK/public', '', $uri);
+
+$endpoint = str_replace('/TIMERBOOK/public', '', $uri);
+
 
 switch ("$method $endpoint") {
     case 'POST /register':
@@ -37,6 +41,16 @@ switch ("$method $endpoint") {
        $controller->getAll(); // Exemplo: lista usuários
         break;
 
+    case 'POST /forgot-password':
+        $controller = new UserController();
+        $controller->forgotPassword();
+        break;
+
+    case 'POST /reset-password':
+        $controller = new UserController();
+        $controller->resetPassword();
+        break;
+    
     default:
         http_response_code(404);
         echo json_encode(["error" => "Endpoint não encontrado"]);
