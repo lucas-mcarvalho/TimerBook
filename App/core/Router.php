@@ -19,7 +19,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Remove o prefixo da pasta
+
+$endpoint = str_replace('/PHP/TIMERBOOK/public', '', $uri);
+
 $endpoint = str_replace('/TIMERBOOK/public', '', $uri);
+
 
 switch ("$method $endpoint") {
     case 'POST /register':

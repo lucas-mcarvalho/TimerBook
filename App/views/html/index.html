@@ -80,32 +80,6 @@
     <div class="msg" id="msg"></div>
   </form>
 
-  <script>
-  const form = document.getElementById("registerForm");
-  const msg = document.getElementById("msg");
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(form); // pega tudo automaticamente
-
-    try {
-      const res = await fetch("http://localhost/PHP/TimerBook/public/register", {
-        method: "POST",
-        body: formData
-      });
-
-      const result = await res.json();
-      msg.innerText = result.message || result.error;
-      msg.style.color = result.message ? "green" : "red";
-
-      if (result.message) form.reset();
-    } catch (err) {
-      msg.innerText = "Erro ao conectar com a API.";
-      msg.style.color = "red";
-    }
-  });
-</script>
-
+  <script src="scripts.js"></script>
 </body>
 </html>
