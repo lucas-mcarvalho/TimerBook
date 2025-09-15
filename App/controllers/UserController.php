@@ -1,6 +1,10 @@
 <?php
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../core/database_config.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class UserController {
 
@@ -62,6 +66,63 @@ class UserController {
             echo json_encode($users);
         } else {
             echo json_encode($users);
+        }
+    }
+
+    public function forgotPassword() {
+        $email = $_POST['email'] ?? '';
+        $pdo = Database::connect();
+        $stmt = $pdo->prepare("SELECT id FROM `User` WHERE email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            $token = bin2hex(random_bytes(32));
+            $stmt = $pdo->prepare("UPDATE `User` SET reset_token = ?, reset_token_expire = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = ?");
+            $stmt->execute([$token, $user['id']]);
+
+            $resetLink = "http://localhost/TIMERBOOK/public/reset-password?token=$token";
+            $mail = new PHPMailer(true);
+
+            try {
+                $mail->SMTPDebug = 2;
+                $mail->Debugoutput = 'html';
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com'; 
+                $mail->SMTPAuth = true;
+                $mail->Username = 'timerbook.app@gmail.com';
+                $mail->Password = 'scrflqdpzcbuctbs';
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+                $mail->setFrom('timerbook.app@gmail.com', 'TimerBook');
+                $mail->addAddress($email);
+                $mail->Subject = 'Redefinir Senha';
+                $mail->Body = "Clique no link para redefinir sua senha: $resetLink";
+                $mail->send();
+                echo json_encode(['success' => true]);
+            } catch (Exception $e) {
+                echo json_encode(['error' => $e->getMessage()]);
+            }
+        } else {
+            echo json_encode(['error' => 'E-mail não encontrado.']);
+        }
+    }
+
+    public function resetPassword() {
+        $token = $_POST['token'] ?? '';
+        $newPassword = $_POST['new_password'] ?? '';
+        $pdo = Database::connect();
+        $stmt = $pdo->prepare("SELECT id FROM `User` WHERE reset_token = ? AND reset_token_expire > NOW()");
+        $stmt->execute([$token]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            $hash = password_hash($newPassword, PASSWORD_DEFAULT);
+            $stmt = $pdo->prepare("UPDATE `User` SET senha = ?, reset_token = NULL, reset_token_expire = NULL WHERE id = ?");
+            $stmt->execute([$hash, $user['id']]);
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['error' => 'Token inválido ou expirado.']);
         }
     }
 }
