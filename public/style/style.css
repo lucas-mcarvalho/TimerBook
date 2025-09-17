@@ -1,0 +1,233 @@
+body {
+    font-family: helvetica;
+    background: #8ab696;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../uploads/68c5c0b3b920b.jpg');
+    margin-bottom: 20px;
+    height: 100vh;
+    background-size: cover; 
+}
+form {
+    background: #F5F2ED;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 10px rgba(0,0,0,0.1);
+    width: 300px;
+    float: left;  /* deixa o form à esquerda */
+    margin-left: 240px; /* opcional */
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: bold; 
+    display: block;
+    left: 5px;
+    top: 20px;
+    margin-top: 10px;
+    background: transparent;
+}
+
+input {
+    font-size: 16px;
+    padding: 10px 10px 10px 5px;
+    display: block;
+    width: 200px;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #0A1A3A;
+    background: transparent;
+
+}
+
+button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background:  #79bc75;
+    color: #F5F2ED;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #7FA77C;
+}
+
+.msg {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/*foto do perfil */
+
+.foto-perfil{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+
+}
+/* dixa aculto o input da foto do perfil*/
+.file-input {
+    display: none; 
+}
+/* posição da foto de perfil */
+.profile-pic-label {
+    display: inline-block;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-pic-label img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+/* logo */
+.logo {
+    position: absolute;   
+    top: 20px;            
+    left: 20px;     
+}
+.logo img {
+
+    width: 120px;
+}
+
+/* carrossel de imagem  */
+section {
+    display: flex;
+    
+    background: #F5F2ED;
+    padding: -2px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.362);
+}
+
+section.slider {
+    position: relative;
+    width: 800px;
+    height: 400px;
+    margin: auto;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.slider {
+    margin: 0 auto;
+    width: 800px;
+    height: 400px;
+    overflow: hidden;
+    position: relative; 
+}
+
+.slides {
+    width: 400%;
+    height: 100%;
+    display: flex;
+    transition: margin-left 0.5s ease-in-out; /* Esta é a regra principal de transição */
+}
+section.slider input[type="radio"] {
+    display: none;
+}
+
+.slide{
+   position: relative; 
+
+}
+.slide img {
+    width: 800px;
+}
+.manual-navigation {
+    position: absolute;
+    bottom: 15px;      
+    left: 50%;
+    transform: translateX(-50%);  
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: auto;
+}
+.manual-btn{
+    border: 2px solid #F5F2ED;
+    padding: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 1s;   
+}
+
+/* barra de navegação */
+/* pasa as imagens */
+.manual-btn:not(:last-child){
+    margin-right: 30px;
+}
+.manual-btn:hover{
+    background:#79bc75 ;
+}
+#radio1:checked ~.slides{
+    margin-left: 0%;
+}
+
+#radio2:checked ~.slides{
+    margin-left: -100%;
+}
+
+#radio3:checked ~.slides{
+    margin-left: -200%;
+}
+
+#radio4:checked ~.slides{
+    margin-left: -300%;
+}
+
+
+.navigation-auto div{
+    border: 2px solid transparent;
+    padding: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 1s;
+}
+.navigation-auto {
+    position: absolute;
+    bottom: 15px;
+    left: 50%; 
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+}
+.navigation-auto div:not(:last-child){
+    margin-right: 40px;
+
+}
+#radio1:checked ~.navigation-auto .auto-btn1{
+    background-color: #79bc75;
+}
+
+#radio2:checked ~.navigation-auto .auto-btn2{
+    background-color: #79bc75;
+}
+
+#radio3:checked ~.navigation-auto .auto-btn3{
+    background-color: #79bc75;
+}
+
+#radio4:checked ~.navigation-auto .auto-btn4{
+    background-color: #79bc75;
+}
