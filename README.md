@@ -32,5 +32,9 @@ Para a realização deste projeto já foram definidas as sprints que podem ser v
 feature/tela-login
 Também foram realizadas as User Stories juntamente com as prototipações das telas, disponível em: https://www.figma.com/proto/IihsrG5vSCSRwtLC64WnLd/User-Stories?node-id=0-1&t=epDzeNh9tx9MlHN4-1
 
+
 Também foram realizadas as User Stories juntamente com as prototipações das telas, disponível em: https://www.figma.com/proto/IihsrG5vSCSRwtLC64WnLd/User-Stories?node-id=0-1&t=epDzeNh9tx9MlHN4-1
+
+
+Toda a organização e planejamento do projeto está sendo registrado também no Trello: https://trello.com/invite/b/68b82f577628beec4e63bd4d/ATTIf70074ce1d6a576ae194b3ab7e7bfe61632043E9/timerbook-sistema-de-gerenciamento-de-leitura
 
