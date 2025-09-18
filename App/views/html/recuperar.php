@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/public/style/recuperar.css">
+    <link rel="stylesheet" href="style/recuperar.css">
     <title>recuperar senha</title>
 </head>
 <body>
     
-    <img class="logo" src="/public/uploads/Design sem nome (1) (1).png" alt="logo">
+    <img class="logo" src="uploads/main_logo.png" alt="logo">
     <form action="enviar_recuperacao.php" method="post">
         <h1>Recuperar Senha</h1>
         <p>Digite o e-mail associado à sua conta um link será enviado para confirmação:</p>

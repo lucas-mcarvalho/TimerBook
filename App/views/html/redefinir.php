@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/public/style/redefinir.css">
+    <link rel="stylesheet" href="style/redefinir.css">
     <title>Redefinir senha</title>
 </head>
 <body>
 
-    <img class="logo" src="/public/uploads/Design sem nome (1) (1).png" alt="logo">
+    <img class="logo" src="uploads/main_logo.png" alt="logo">
 
 
     <form action="salvar_nova_senha.php" method="post">
