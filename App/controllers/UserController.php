@@ -81,7 +81,7 @@ class UserController {
             $stmt = $pdo->prepare("UPDATE `User` SET reset_token = ?, reset_token_expire = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = ?");
             $stmt->execute([$token, $user['id']]);
 
-            $resetLink = "http://localhost/TIMERBOOK/public/reset-password?token=$token";
+            $resetLink = "http://localhost:8000/TimerBook/public/reset-password?token=$token";
             $mail = new PHPMailer(true);
 
             try {

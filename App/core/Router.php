@@ -1,6 +1,7 @@
 <?php
 require_once '../App/controllers/UserController.php';
 
+
 header('Content-Type: application/json; charset=utf-8');
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -20,9 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Remove o prefixo da pasta
 
-$endpoint = str_replace('/PHP/TIMERBOOK/public', '', $uri);
-
-$endpoint = str_replace('/TIMERBOOK/public', '', $uri);
+$endpoint = str_replace('/TimerBook/public', '', $uri);
 
 
 switch ("$method $endpoint") {
@@ -33,7 +32,7 @@ switch ("$method $endpoint") {
 
     case 'POST /login':
         $controller = new UserController();
-     #   $controller->login();
+        #$controller->login();
         break;
 
     case 'GET /users':

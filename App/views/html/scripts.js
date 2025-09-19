@@ -13,7 +13,7 @@ form.addEventListener('submit', async event => {
   
   try{
 // Inicia a requisição para a API usando fetch e aguarda a resposta.
-  const res = await fetch("http://localhost/TIMERBOOK/public/register", {
+  const res = await fetch("http://localhost:8000/TimerBook/public/register", {
     method: 'POST',
     body: formData
   });

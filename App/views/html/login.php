@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>Login de Usuário</title>
-  <link rel="stylesheet" href="../../public/style/login.css">
+  <link rel="stylesheet" href="style/login.css">
 </head>
 <body>
   <div class="login-container">
-    <img src="../../public/uploads/Design sem nome (1) (1).png" alt="Logo" class="logo">
-    <form id="loginForm">
+    <img src="uploads/main_logo.png" alt="Logo" class="logo">
+    <form action="" method="" id="loginForm">
       <input type="email" id="email" name="email" required placeholder="E-mail">
       <input type="password" id="password" name="password" required placeholder="Senha">
-      <a href="#" class="forgot-password">Esqueci minha senha</a>
+      <a href="index.php?action=forgot_password" class="forgot-password">Esqueci minha senha</a>
       <button type="button" class="social-login-button">
-        Logar com: <img src="../../public/uploads/app1_logo.png" alt="Google Logo" class="google-icon">
+        Logar com: <img src="uploads/app1_logo.png" alt="Google Logo" class="google-icon">
       </button>
       <div class="register-link">
         <span>Ainda não tem uma conta?</span>
-        <a href="#" class="register-now">Cadastre-se</a>
+        <a href="index.php?action=register" class="register-now">Cadastre-se</a>
       </div>
       <button type="submit" class="login-button">Entrar</button>
     </form>

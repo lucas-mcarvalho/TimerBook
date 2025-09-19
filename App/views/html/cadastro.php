@@ -1,9 +1,15 @@
 <!DOCTYPE html>
+
+
+<!--- Tiago: Na minha máquine tive que trocar os caminhos absolutos(/public) por 
+caminhos relativos. Se a estrutura do seu projeto estiver correta não deverá ter
+probelmas. Também mudei as ocorrências de "localhost" para locahost:8000-->
+
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <title>Cadastro de Usuário</title>
-  <link rel="stylesheet" href="/public/style/style.css">
+  <link rel="stylesheet" href="style/style.css">
   
 </head>
 <body>
@@ -11,7 +17,7 @@
 
   <!-- logo -->
   <div class="logo">
-    <img src="/public/uploads/Design sem nome (1) (1).png" alt="logo">
+    <img src="uploads/main_logo.png" alt="logo">
 
   </div>
 
@@ -64,18 +70,19 @@
     <input type="radio" name="radio-btn" id="radio3">
     <input type="radio" name="radio-btn" id="radio4">
 
+    <!--- ou use /public/uploads se no seu funcionar -->
     <div class="slides">
       <div class="slide first">
-        <img src="/public/uploads/img1.jpeg" alt="img1">
+        <img src="uploads/img1.jpeg" alt="img1">
       </div>
       <div class="slide">
-        <img src="/public/uploads/img2.jpg" alt="img2">
+        <img src="uploads/img2.jpg" alt="img2">
       </div>
       <div class="slide">
-        <img src="/public/uploads/img3.jpg" alt="img3">
+        <img src="uploads/img3.jpg" alt="img3">
       </div>
       <div class="slide">
-        <img src="/public/uploads/img4.jpg" alt="img4">
+        <img src="uploads/img4.jpg" alt="img4">
       </div>
     </div>
 
@@ -93,36 +100,7 @@
       <label for="radio4" class="manual-btn"></label>
     </div>
   </section>
-
-
-  <script>
-  const form = document.getElementById("registerForm");
-  const msg = document.getElementById("msg");
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(form); // pega tudo automaticamente
-
-    try {
-      const res = await fetch("http://localhost/PHP/TimerBook/public/register", {
-        method: "POST",
-        body: formData
-      });
-
-      const result = await res.json();
-      msg.innerText = result.message || result.error;
-      msg.style.color = result.message ? "green" : "red";
-
-      if (result.message) form.reset();
-    } catch (err) {
-      msg.innerText = "Erro ao conectar com a API.";
-      msg.style.color = "red";
-    }
-  });
-</script>
-
-
+  
   <script src="scripts.js"></script>
 
 </body>
