@@ -8,13 +8,68 @@ use PHPMailer\PHPMailer\Exception;
 
 class UserController {
 
+
+    public function login() {
+    $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+    if (stripos($contentType, "application/json") !== false) {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $email = $data['email'] ?? null;
+        $password = $data['password'] ?? null;
+    } else {
+        $email = $_POST['email'] ?? null;
+        $password = $_POST['password'] ?? null;
+    }
+
+    if (!$email || !$password) {
+        http_response_code(400);
+        echo json_encode(["error" => "E-mail e senha são obrigatórios"]);
+        return;
+    }
+
+    $user = User::findByEmail($email);
+
+    if ($user && isset($user['senha']) && password_verify($password, $user['senha'])) {
+        session_start();
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+
+        echo json_encode([
+            "success" => true,
+            "message" => "Login realizado com sucesso",
+            "user" => [
+                "id" => $user['id'],
+                "nome" => $user['nome'],
+                "username" => $user['username'],
+                "email" => $user['email'],
+                "profile_photo" => $user['profile_photo'] ?? null
+            ]
+        ]);
+    } else {
+        http_response_code(401);
+        echo json_encode(["error" => "E-mail ou senha inválidos"]);
+    }
+}
+
+
+
+
     public function register() {
-        // Usa $_POST (multipart ou x-www-form-urlencoded)
+         // Detecta se veio JSON
+    $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+
+    if (stripos($contentType, "application/json") !== false) {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $nome = $data['nome'] ?? null;
+        $username = $data['username'] ?? null;
+        $email = $data['email'] ?? null;
+        $password = $data['password'] ?? null;
+    } else {
+        // Fallback: form-data ou x-www-form-urlencoded
         $nome = $_POST['nome'] ?? null;
         $username = $_POST['username'] ?? null;
         $email = $_POST['email'] ?? null;
         $password = $_POST['password'] ?? null;
-
+    }
         if (!$email || !$password || !$username) {
             http_response_code(400);
             echo json_encode(["error" => "E-mail, senha e username são obrigatórios"]);

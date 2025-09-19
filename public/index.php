@@ -3,6 +3,9 @@
 $action = $_GET['action'] ?? 'login';
 
 switch ($action) {
+    case 'home':
+        require_once __DIR__ . '/../App/views/html/home.php';
+        break;
     case 'register':
         require_once __DIR__ . '/../App/views/html/cadastro.php';
         break;
