@@ -32,7 +32,7 @@ switch ("$method $endpoint") {
 
     case 'POST /login':
         $controller = new UserController();
-        #$controller->login();
+        $controller->login();
         break;
 
     case 'GET /users':
