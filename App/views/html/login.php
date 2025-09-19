@@ -22,5 +22,37 @@
       <button type="submit" class="login-button">Entrar</button>
     </form>
   </div>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async function(e) {
+      e.preventDefault(); // impede reload da página
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const response = await fetch("index.php?action=login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Login OK → redireciona
+          window.location.href = "home.php";
+        } else {
+          // Exibe erro
+          alert(data.error || "E-mail ou senha inválidos");
+        }
+      } catch (err) {
+        alert("Erro de conexão com o servidor.");
+        console.error(err);
+      }
+    });
+  </script>
+
+
 </body>
 </html>

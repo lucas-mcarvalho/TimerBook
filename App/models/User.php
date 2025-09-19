@@ -2,6 +2,20 @@
 require_once '../App/core/database_config.php';
 
 class User {
+    public static function findByEmail($email) {
+    try {
+        $pdo = Database::connect();
+        $stmt = $pdo->prepare("SELECT id, nome, username, email, senha, profile_photo 
+                               FROM User 
+                               WHERE email = ?");
+        $stmt->execute([$email]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        return ["error" => "Erro no banco: " . $e->getMessage()];
+    }
+}
+
+
     public static function create($email, $password, $nome = null, $username = null) {
         try {
             $pdo = Database::connect();
