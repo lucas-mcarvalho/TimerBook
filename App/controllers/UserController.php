@@ -77,7 +77,7 @@ class UserController {
         }
 
         // Cria usuário
-        $result = User::create($email, $password, $nome, $username);
+        $result = User::create($email, $password, $nome , $username);
 
         if (isset($result['error'])) {
             echo json_encode($result);
