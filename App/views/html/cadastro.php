@@ -41,7 +41,7 @@ probelmas. Também mudei as ocorrências de "localhost" para locahost:8000-->
 
     <div>
       <label for="username">Nome de usuário:</label>
-      <input type="text" id="username" name="username" required placeholder="ex: lucasm">
+      <input type="text" id="username" name="username" required placeholder="ex: teste">
     </div>
 
     <div>
