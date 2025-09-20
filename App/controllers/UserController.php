@@ -109,7 +109,7 @@ class UserController {
                 $result['photo_error'] = "Formato de arquivo não permitido";
             }
         }
-
+        
         echo json_encode($result);
     }
 
@@ -125,6 +125,7 @@ class UserController {
     }
 
     public function forgotPassword() {
+        
         $email = $_POST['email'] ?? '';
         $pdo = Database::connect();
         $stmt = $pdo->prepare("SELECT id FROM `User` WHERE email = ?");
