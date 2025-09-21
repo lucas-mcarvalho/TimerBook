@@ -125,8 +125,13 @@ class UserController {
     }
 
     public function forgotPassword() {
-        
-        $email = $_POST['email'] ?? '';
+        $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+if (stripos($contentType, "application/json") !== false) {
+    $data = json_decode(file_get_contents("php://input"), true);
+    $email = trim($data['email'] ?? '');
+} else {
+    $email = trim($_POST['email'] ?? '');
+}
         $pdo = Database::connect();
         $stmt = $pdo->prepare("SELECT id FROM `User` WHERE email = ?");
         $stmt->execute([$email]);
@@ -146,8 +151,8 @@ class UserController {
                 $mail->isSMTP();
                 $mail->Host = 'smtp.gmail.com'; 
                 $mail->SMTPAuth = true;
-                $mail->Username = 'timerbook.app@gmail.com';
-                $mail->Password = 'scrflqdpzcbuctbs';
+                $mail->Username = 'lucasgamescarva@gmail.com';
+                $mail->Password = 'xydpgcccmclvsozo';
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587;
                 $mail->setFrom('timerbook.app@gmail.com', 'TimerBook');
