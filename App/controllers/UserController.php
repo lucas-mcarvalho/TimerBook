@@ -6,9 +6,11 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 class UserController {
-
-
     public function login() {
     $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
     if (stripos($contentType, "application/json") !== false) {
@@ -125,49 +127,58 @@ class UserController {
     }
 
     public function forgotPassword() {
-        $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
-if (stripos($contentType, "application/json") !== false) {
-    $data = json_decode(file_get_contents("php://input"), true);
-    $email = trim($data['email'] ?? '');
-} else {
-    $email = trim($_POST['email'] ?? '');
-}
-        $pdo = Database::connect();
-        $stmt = $pdo->prepare("SELECT id FROM `User` WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user) {
-            $token = bin2hex(random_bytes(32));
-            $stmt = $pdo->prepare("UPDATE `User` SET reset_token = ?, reset_token_expire = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = ?");
-            $stmt->execute([$token, $user['id']]);
-
-            $resetLink = "http://localhost:8000/TimerBook/public/reset-password?token=$token";
-            $mail = new PHPMailer(true);
-
-            try {
-                $mail->SMTPDebug = 2;
-                $mail->Debugoutput = 'html';
-                $mail->isSMTP();
-                $mail->Host = 'smtp.gmail.com'; 
-                $mail->SMTPAuth = true;
-                $mail->Username = 'lucasgamescarva@gmail.com';
-                $mail->Password = 'xydpgcccmclvsozo';
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port = 587;
-                $mail->setFrom('timerbook.app@gmail.com', 'TimerBook');
-                $mail->addAddress($email);
-                $mail->Subject = 'Redefinir Senha';
-                $mail->Body = "Clique no link para redefinir sua senha: $resetLink";
-                $mail->send();
-                echo json_encode(['success' => true]);
-            } catch (Exception $e) {
-                echo json_encode(['error' => $e->getMessage()]);
-            }
-        } else {
-            echo json_encode(['error' => 'E-mail não encontrado.']);
-        }
+    $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+    if (stripos($contentType, "application/json") !== false) {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $email = trim($data['email'] ?? '');
+    } else {
+        $email = trim($_POST['email'] ?? '');
     }
+    $pdo = Database::connect();
+    $stmt = $pdo->prepare("SELECT id FROM `User` WHERE email = ?");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user) {
+        $token = bin2hex(random_bytes(32));
+        $stmt = $pdo->prepare("UPDATE `User` SET reset_token = ?, reset_token_expire = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = ?");
+        $stmt->execute([$token, $user['id']]);
+
+        $resetLink = "http://localhost/TimerBook/public/index.php?action=reset_password&token=$token";
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com'; 
+            $mail->SMTPAuth = true;
+            $mail->Username = 'lucasgamescarva@gmail.com';
+            $mail->Password = 'xydpgcccmclvsozo';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+            $mail->setFrom('lucasgamescarva@gmail.com', 'TimerBook');
+            $mail->addAddress($email);
+            $mail->Subject = 'Redefinir Senha';
+            $mail->Body = "Clique no link para redefinir sua senha: $resetLink";
+
+            // Força debug do PHPMailer na resposta
+            ob_start();
+            $mail->SMTPDebug = 2;
+            $mail->Debugoutput = function($str, $level) { echo "Debug: $str\n"; };
+            $enviado = $mail->send();
+            $debugOutput = ob_get_clean();
+
+            if ($enviado) {
+                echo json_encode(['success' => true, 'debug' => $debugOutput]);
+            } else {
+                echo json_encode(['error' => $mail->ErrorInfo, 'debug' => $debugOutput]);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['error' => $e->getMessage(), 'mail_error' => $mail->ErrorInfo ?? '', 'debug' => $debugOutput ?? '']);
+        }
+    } else {
+        echo json_encode(['error' => 'E-mail não encontrado.']);
+    }
+}
 
     public function resetPassword() {
         $token = $_POST['token'] ?? '';

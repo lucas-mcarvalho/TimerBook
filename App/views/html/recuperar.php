@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style/recuperar.css">
     <title>recuperar senha</title>
 </head>
-body>
+<body>
     
     <img class="logo" src="uploads/main_logo.png" alt="logo">
 
@@ -21,6 +21,6 @@ body>
         <div id="forgotResponse"></div>
     </form>
 
-    <script src="forgot-password.js"></script>
+    <script src="forgot_password.js"></script>
 </body>
 </html>
