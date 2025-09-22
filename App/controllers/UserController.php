@@ -149,13 +149,13 @@ class UserController {
 
         try {
             $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com'; 
+            $mail->Host = $_ENV['MAIL_HOST']; 
             $mail->SMTPAuth = true;
-            $mail->Username = 'lucasgamescarva@gmail.com';
-            $mail->Password = 'xydpgcccmclvsozo';
+            $mail->Username = $_ENV['MAIL_USERNAME']; ;
+            $mail->Password = $_ENV['MAIL_PASSWORD'];
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
-            $mail->setFrom('lucasgamescarva@gmail.com', 'TimerBook');
+            $mail->setFrom($_ENV['MAIL_FROM'], $_ENV['MAIL_FROM_NAME']);
             $mail->addAddress($email);
             $mail->Subject = 'Redefinir Senha';
             $mail->Body = "Clique no link para redefinir sua senha: $resetLink";
