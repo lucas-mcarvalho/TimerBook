@@ -1,6 +1,16 @@
 <?php
 
+$protected_actions = ['home'];
+
+require_once __DIR__ . '/../App/controllers/UserController.php';
+
+
 $action = $_GET['action'] ?? 'login';
+
+
+if (in_array($action, $protected_actions)) {
+    UserController::checkLogin();
+}
 
 switch ($action) {
     case 'home':
@@ -8,6 +18,7 @@ switch ($action) {
         break;
 
     case 'sair':
+        UserController::logout();
         require_once __DIR__ . '/../App/views/html/login.php';
         break;
     case 'register':
