@@ -15,9 +15,5 @@ UserController::checkLogin();
     </body>
     </html>
         <form action="index.php?action=sair">
-        <button>Sair.</button>
-
+        <a href="index.php?action=sair">Sair</a>
         </form>    
-    <?php
-    var_dump($_SESSION);
-    ?>

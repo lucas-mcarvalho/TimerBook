@@ -234,16 +234,23 @@ class UserController
         }
     }
 
-      public static function checkLogin() {
-    session_start();
-      if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
-        exit;
+    public static function checkLogin() {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
+            header('Location: /TimerBook/public/index.php?action=login');
+            exit;
+        }
     }
-}
 
     public static function logout() {
-        session_start();
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        $_SESSION = [];
         session_destroy();
+        header('Location: /TimerBook/public/index.php?action=login');
         exit;
     }
 }
