@@ -22,6 +22,18 @@ switch ($action) {
     case 'reset_password':
         require_once __DIR__ . '/../App/views/html/redefinir.php';
         break;
+    case 'Adicionar_Livro':
+        require_once __DIR__ . '/../App/views/html/adicionarLivro.php';
+        break;
+    case 'admin':
+        require_once __DIR__ . '/../App/views/html/admin.php';
+        break;
+    case 'adm_editar':
+        require_once __DIR__ . '/../App/views/html/admEditar.php';
+        break;
+    case 'listar_livros':
+          require_once __DIR__ . '/../App/views/html/listarLivro.php';
+          break;
     default:
         echo "Ação não reconhecida.";
         break;
