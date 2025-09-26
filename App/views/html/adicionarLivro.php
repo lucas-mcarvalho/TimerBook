@@ -29,7 +29,7 @@
 
             <div class="form-buttons">
                 <button type="submit" id="register-button" class="register-button">Cadastrar</button>
-                <button type="button" id="back-button" class="back-button">Voltar</button>
+                <button type="button" id="back-button" class="back-button" onclick="window.location.href='index.php?action=home'">Voltar</button>
             </div>
         </form>
     </main>
