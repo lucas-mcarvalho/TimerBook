@@ -34,7 +34,4 @@ form.addEventListener('submit', async event => {
     msg.innerText = "Erro ao conectar com a API. ";
     msg.style.color = "red";
 }
-
-
-
 });
