@@ -35,11 +35,7 @@
                         <img src="uploads/boasvindas_carrossel.png" alt="Imagem 1">
                     </div>
                     <div class="slide">
-
                         <a href="index.php?action=Adicionar_Livro">
-
-                        <a href="index.php?action=register">
-
                             <img src="uploads/aindanaocadastrou.png" alt="Imagem 2">
                         </a>
                     </div>
@@ -74,21 +70,11 @@
         </aside>
     </main>
 
-
     <footer class="main-footer">
         <a href="index.php?action=Adicionar_Livro" class="add-book-button">
             <span class="plus-icon">+</span> Cadastrar Livro
         </a>
     </footer>
-
-   <footer class="main-footer">
-    <a href="index.php?action=Adicionar_Livro" class="add-book-button">
-        <span class="plus-icon">+</span> Cadastrar Livro
-    </a>
-    <br>
-    <a href="index.php?action=sair" style="color: white;">Encerrar Sessão</a>
-</footer>
-
 
     <script>
         let count = 1;
