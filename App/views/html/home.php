@@ -71,6 +71,8 @@
     <a href="index.php?action=Adicionar_Livro" class="add-book-button">
         <span class="plus-icon">+</span> Cadastrar Livro
     </a>
+    <br>
+    <a href="index.php?action=sair" style="color: white;">Encerrar Sessão</a>
 </footer>
 
     <script>
