@@ -1,5 +1,6 @@
 <?php
 require_once '../App/controllers/UserController.php';
+require_once '../App/controllers/BookController.php';
 
 
 header('Content-Type: application/json; charset=utf-8');
@@ -50,6 +51,19 @@ switch ("$method $endpoint") {
         $controller->resetPassword();
         break;
     
+
+
+    // ---------------- BOOK ROUTES ----------------
+    case 'POST /books':
+        $controller = new BookController();
+        $controller->create();
+        break;
+
+    case 'GET /books':
+        $controller = new BookController();
+        $controller->getAll();
+        break;
+
     default:
         http_response_code(404);
         echo json_encode(["error" => "Endpoint não encontrado"]);

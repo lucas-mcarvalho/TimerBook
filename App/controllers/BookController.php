@@ -1,0 +1,91 @@
+<?php
+require_once __DIR__ . '/../models/Books.php';
+require_once __DIR__ . '/../core/database_config.php';
+
+
+
+class BookController
+{
+    // Criar um novo livro```php
+public function create()
+{
+    $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+
+    if (stripos($contentType, "application/json") !== false) {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $titulo = $data['titulo'] ?? null;
+        $autor = $data['autor'] ?? null;
+        $ano_publicacao = $data['ano_publicacao'] ?? null;
+        $caminho_arquivo = $data['caminho_arquivo'] ?? null;
+        $user_id = $data['user_id'] ?? null;
+    } else {
+        $titulo = $_POST['titulo'] ?? null;
+        $autor = $_POST['autor'] ?? null;
+        $ano_publicacao = $_POST['ano_publicacao'] ?? null;
+        $caminho_arquivo = $_POST['caminho_arquivo'] ?? null;
+        $user_id = $_POST['user_id'] ?? null;
+    }
+
+    // Validações básicas
+    if (!$titulo) {
+        http_response_code(400);
+        echo json_encode(["error" => "Título é obrigatório"]);
+        return;
+    }
+
+    if (!$user_id) {
+        http_response_code(400);
+        echo json_encode(["error" => "Usuário é obrigatório"]);
+        return;
+    }
+
+    $result = Book::create($titulo, $autor, $ano_publicacao,$user_id, $caminho_arquivo);
+    echo json_encode($result);
+}
+
+
+
+    // Buscar livro por ID
+    public function findById($id)
+    {
+        $result = Book::findById($id);
+
+        if ($result) {
+            echo json_encode($result);
+        } else {
+            http_response_code(404);
+            echo json_encode(["error" => "Livro não encontrado"]);
+        }
+    }
+
+    // Buscar livro por título
+    public function findByTitle()
+    {
+        $titulo = $_GET['titulo'] ?? '';
+        if (!$titulo) {
+            http_response_code(400);
+            echo json_encode(["error" => "Informe um título para buscar"]);
+            return;
+        }
+
+        $result = Book::findByTitle($titulo);
+        echo json_encode($result);
+    }
+
+    // Listar todos os livros
+    public function getAll()
+    {
+        $result = Book::getAll();
+        echo json_encode($result);
+    }
+
+    // Listar livros de um usuário
+  
+
+    // Deletar livro
+    public function delete($id)
+    {
+        $result = Book::delete($id);
+        echo json_encode($result);
+    }
+}
