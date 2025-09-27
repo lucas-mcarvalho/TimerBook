@@ -11,18 +11,17 @@ public function create()
 {
     $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
 
+    // Recebe os dados do POST ou JSON
     if (stripos($contentType, "application/json") !== false) {
         $data = json_decode(file_get_contents("php://input"), true);
         $titulo = $data['titulo'] ?? null;
         $autor = $data['autor'] ?? null;
         $ano_publicacao = $data['ano_publicacao'] ?? null;
-        $caminho_arquivo = $data['caminho_arquivo'] ?? null;
         $user_id = $data['user_id'] ?? null;
     } else {
         $titulo = $_POST['titulo'] ?? null;
         $autor = $_POST['autor'] ?? null;
         $ano_publicacao = $_POST['ano_publicacao'] ?? null;
-        $caminho_arquivo = $_POST['caminho_arquivo'] ?? null;
         $user_id = $_POST['user_id'] ?? null;
     }
 
@@ -39,9 +38,28 @@ public function create()
         return;
     }
 
-    $result = Book::create($titulo, $autor, $ano_publicacao,$user_id, $caminho_arquivo);
+    // Upload do arquivo do livro
+    $caminho_arquivo = null;
+    if(isset($_FILES['caminho_arquivo']) && $_FILES['caminho_arquivo']['error'] === UPLOAD_ERR_OK){
+        $uploadDir = "books/"; // pasta onde vai salvar
+        if(!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+
+        $filename = basename($_FILES['caminho_arquivo']['name']);
+        $targetPath = $uploadDir . $filename;
+
+        if(move_uploaded_file($_FILES['caminho_arquivo']['tmp_name'], $targetPath)){
+            $caminho_arquivo = $targetPath;
+        }
+    }
+
+    // Cria o livro no banco
+    $result = Book::create($titulo, $autor, $ano_publicacao, $user_id, $caminho_arquivo);
+
     echo json_encode($result);
 }
+
+
+
 
 
 

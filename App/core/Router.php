@@ -9,6 +9,8 @@ $method = $_SERVER['REQUEST_METHOD'];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 
+
+
 // Libera CORS para permitir acesso do front-end
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
@@ -20,9 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+
+
 // Remove o prefixo da pasta
 
 $endpoint = str_replace('/TimerBook/public', '', $uri);
+
 
 
 switch ("$method $endpoint") {
@@ -50,7 +55,6 @@ switch ("$method $endpoint") {
         $controller = new UserController();
         $controller->resetPassword();
         break;
-    
 
 
     // ---------------- BOOK ROUTES ----------------
@@ -62,6 +66,10 @@ switch ("$method $endpoint") {
     case 'GET /books':
         $controller = new BookController();
         $controller->getAll();
+        break;
+    case 'DELETE /books/[id]': // Novo case para a exclusão
+        $controller = new BookController();
+        $controller->delete($bookId); // Passa o ID capturado para o método
         break;
 
     default:
