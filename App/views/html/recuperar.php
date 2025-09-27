@@ -21,6 +21,6 @@
         <div id="forgotResponse"></div>
     </form>
 
-    <script src="forgot_password.js"></script>
+    <script src="/TimerBook/App/views/javascript/forgot_password.js"></script>
 </body>
 </html>

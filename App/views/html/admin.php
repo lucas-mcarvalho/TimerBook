@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/public/style/admin.css">
+    <link rel="stylesheet" href="style/admin.css">
     <title>Timer Book</title>
 </head>
 <body>
-    <header class="header">
-        <h2 class="title">PAINEL DE ADMIN</h2>
-        <button id="logout-button" class="logout-button">Sair</button>
-    </header>
+   <header class="header">
+    <h2 class="title">PAINEL DE ADMIN</h2>
+    <a href="index.php?action=sair" class="logout-button">Sair</a>
+</header>
 
     <main class="admin-container">
         <div class="user-actions">
@@ -29,11 +29,11 @@
 
             <div class="user-item">
                 <span>Nome do Usuário</span>
-                <div class="user-controls">
-                    <button class="edit-button">Editar</button>
-                    <button class="delete-button">Excluir</button>
-                </div>
-            </div>
+              <div class="user-controls">
+    <a href="index.php?action=adm_editar&id=1" class="edit-button">Editar</a>
+    <a href="index.php?action=adm_excluir&id=1" class="delete-button">Excluir</a>
+    </div>
+    <!--        </div>
             
             <div class="user-item">
                 <span>Outro Usuário</span>
@@ -41,7 +41,7 @@
                     <button class="edit-button">Editar</button>
                     <button class="delete-button">Excluir</button>
                 </div>
-            </div>
+            </div> -->
         </div>
     </main>
 

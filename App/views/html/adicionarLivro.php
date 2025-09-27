@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Livro</title>
-    <link rel="stylesheet" href="/public/style/adicionarLivro.css">
+    <link rel="stylesheet" href="style/adicionarLivro.css">
 </head>
 <body>
 
@@ -29,7 +29,7 @@
 
             <div class="form-buttons">
                 <button type="submit" id="register-button" class="register-button">Cadastrar</button>
-                <button type="button" id="back-button" class="back-button">Voltar</button>
+                <button type="button" id="back-button" class="back-button" onclick="window.location.href='index.php?action=home'">Voltar</button>
             </div>
         </form>
     </main>

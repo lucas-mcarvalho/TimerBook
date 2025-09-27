@@ -8,7 +8,7 @@ require __DIR__ . '/../../vendor/autoload.php'; // carrega o autoload do Compose
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
 
-// Define constantes
+// CONEXAO DO BANCO DE DADOS MYSQL
 define('DB_HOST', $_ENV['DB_HOST']);
 define('DB_USER', $_ENV['DB_USER']);
 define('DB_PASS', $_ENV['DB_PASS']);

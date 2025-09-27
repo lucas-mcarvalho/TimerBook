@@ -24,7 +24,7 @@
   </div>
 
 
-<script src="login.js"></script>
+<script src="/TimerBook/App/views/javascript/login.js"></script>
 
 </body>
 </html>

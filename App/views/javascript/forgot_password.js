@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = document.getElementById("email").value;
 
         try {
-            const res = await fetch("http://localhost/TimerBook/public/forgot-password", {
+            const res = await fetch("http://localhost:8000/TimerBook/public/forgot-password", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: "email=" + encodeURIComponent(email)
