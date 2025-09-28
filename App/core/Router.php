@@ -58,11 +58,19 @@ switch ("$method $endpoint") {
 
 
     // ---------------- BOOK ROUTES ----------------
+        //INSERCAO DE LIVROS NO BANCO DE DADOS
     case 'POST /books':
         $controller = new BookController();
         $controller->create();
         break;
+    
+    //BUSCAR LIVROS POR TITULO
+    case 'GET /books/search':
+    $controller = new BookController();
+    $controller->findByTitle();
+    break;
 
+    //BUSCAR TODOS OS LIVROS DO BANCO DE DADOS·
     case 'GET /books':
         $controller = new BookController();
         if (isset($_GET['user_id'])) {
@@ -71,10 +79,16 @@ switch ("$method $endpoint") {
         $controller->getAll(); // retorna todos os livros
              }
         break;
-    case 'DELETE /books/[id]': // Novo case para a exclusão
-        $controller = new BookController();
-        $controller->delete($bookId); // Passa o ID capturado para o método
-        break;
+
+    //DELETAR O LIVRO PELO ID.
+    case (preg_match('#^DELETE /books/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $bookId = $matches[1];
+    $controller = new BookController();
+    $controller->delete($bookId);
+    break;
+    
+
+    //BUSCAR LIVROS DO USUARIO AUTENTICADO
     case 'GET /my-books':
     $controller = new BookController();
     $controller->getMyBooks();

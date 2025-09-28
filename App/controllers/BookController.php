@@ -2,13 +2,12 @@
 require_once __DIR__ . '/../models/Books.php';
 require_once __DIR__ . '/../core/database_config.php';
 
-
-
 class BookController
 {
     // Criar um novo livro```php
 public function create()
-{
+{   
+
     $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
 
     // Recebe os dados do POST ou JSON
@@ -37,11 +36,11 @@ public function create()
         echo json_encode(["error" => "Usuário é obrigatório"]);
         return;
     }
-
+    
     // Upload do arquivo do livro
     $caminho_arquivo = null;
     if(isset($_FILES['caminho_arquivo']) && $_FILES['caminho_arquivo']['error'] === UPLOAD_ERR_OK){
-        $uploadDir = "books/"; // pasta onde vai salvar
+        $uploadDir = __DIR__ . '/../../public/Books/';
         if(!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
 
         $filename = basename($_FILES['caminho_arquivo']['name']);
@@ -58,11 +57,6 @@ public function create()
     echo json_encode($result);
 }
 
-
-
-
-
-
     // Buscar livro por ID
     public function findById($id)
     {
@@ -76,19 +70,6 @@ public function create()
         }
     }
 
-    // Buscar livro por título
-    public function findByTitle()
-    {
-        $titulo = $_GET['titulo'] ?? '';
-        if (!$titulo) {
-            http_response_code(400);
-            echo json_encode(["error" => "Informe um título para buscar"]);
-            return;
-        }
-
-        $result = Book::findByTitle($titulo);
-        echo json_encode($result);
-    }
 
     // Listar todos os livros
     public function getAll()
@@ -106,8 +87,8 @@ public function create()
         $result = Book::delete($id);
         echo json_encode($result);
     }
-    // Listar livros de um usuário
-// Listar livros de um usuário
+  
+// Listar livros de um usuário , Postman
 public function getByUser($user_id)
 {
     if (!$user_id) {
@@ -121,6 +102,7 @@ public function getByUser($user_id)
     echo json_encode($result);
 }
 
+  // Listar livros de um usuário  pegando id da sessao
 public function getByUserFromQuery()
 {
     $user_id = $_GET['user_id'] ?? null;
@@ -136,6 +118,7 @@ public function getByUserFromQuery()
     echo json_encode($result);
 }
 
+// Listar livros do usuário autenticado
 
 public function getMyBooks()
 {
@@ -152,6 +135,19 @@ public function getMyBooks()
     echo json_encode($result);
 }
 
+    // Buscar livro por título
+public function findByTitle()
+{
+    $titulo = $_GET['titulo'] ?? '';
+    if (!$titulo) {
+        http_response_code(400);
+        echo json_encode(["error" => "Informe um título para buscar"]);
+        return;
+    }
 
-    
+    $result = Book::findByTitle($titulo);
+    echo json_encode($result);
+}
+
+
 }
