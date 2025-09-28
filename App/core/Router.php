@@ -64,14 +64,17 @@ switch ("$method $endpoint") {
         break;
 
     case 'GET /books':
-        $controller = new BookController();
-        $controller->getAll();
+        if (isset($_GET['user_id'])) {
+        $controller->getByUserFromQuery(); // método que retorna livros do usuário
+        } else {
+        $controller->getAll(); // retorna todos os livros
+    }
         break;
     case 'DELETE /books/[id]': // Novo case para a exclusão
         $controller = new BookController();
         $controller->delete($bookId); // Passa o ID capturado para o método
         break;
-
+    
     default:
         http_response_code(404);
         echo json_encode(["error" => "Endpoint não encontrado"]);

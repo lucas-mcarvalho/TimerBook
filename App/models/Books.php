@@ -58,4 +58,13 @@ class Book
             return ["error" => "Erro no banco: " . $e->getMessage()];
         }
     }
+
+    public static function getByUser($user_id)
+{
+    $pdo = Database::connect();
+    $stmt = $pdo->prepare("SELECT * FROM Books WHERE user_id = ?");
+    $stmt->execute([$user_id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 }

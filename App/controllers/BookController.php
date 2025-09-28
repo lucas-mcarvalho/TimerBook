@@ -106,4 +106,38 @@ public function create()
         $result = Book::delete($id);
         echo json_encode($result);
     }
+    // Listar livros de um usuário
+// Listar livros de um usuário
+public function getByUser($user_id)
+{
+    if (!$user_id) {
+        http_response_code(400);
+        echo json_encode(["error" => "Usuário é obrigatório"]);
+        return;
+    }
+
+    $result = Book::getByUser($user_id);
+
+    echo json_encode($result);
+}
+
+public function getByUserFromQuery()
+{
+    $user_id = $_GET['user_id'] ?? null;
+
+    if (!$user_id) {
+        http_response_code(400);
+        echo json_encode(["error" => "Informe o ID do usuário"]);
+        return;
+    }
+
+    $result = Book::getByUser($user_id);
+
+    echo json_encode($result);
+}
+
+
+
+
+    
 }
