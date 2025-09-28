@@ -49,6 +49,7 @@ class UserController
             // Armazena informações do usuário na sessão
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
+           $_SESSION['profile_photo'] = ltrim($user['profile_photo'], '/'); 
 
             //RETORNA A MENSAGEM DE SUCESSO E OS DADOS DO USUARIO ,SEM INCLUIR A SENHA
             echo json_encode([

@@ -1,3 +1,8 @@
+<?php 
+$profilePhoto = $_SESSION['profile_photo'] ?? "uploads/default.png";
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -16,7 +21,9 @@
             </a>
         </div>
         <div class="header-profile">
-            <img src=" " alt="Foto de Perfil" class="profile-pic">
+         <img src="<?= htmlspecialchars($profilePhoto) ?>" alt="Foto de Perfil" class="profile-pic">
+
+
             <a href="index.php?action=listar_livros" class="profile-button">Meu Perfil</a>
             <a href="index.php?action=sair" class="logout-button">Encerrar Sessão</a>
         </div>
