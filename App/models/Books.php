@@ -4,6 +4,7 @@ require_once __DIR__ . '/../core/database_config.php';
 class Book
 {
  
+    //inserindo o livro
    public static function create($titulo, $autor, $ano_publicacao, $user_id, $caminho_arquivo = null)
 {
     try {
@@ -24,6 +25,7 @@ class Book
     }
 }
 
+// Buscar livro por ID
     public static function findById($id)
     {
         $pdo = Database::connect();
@@ -31,7 +33,7 @@ class Book
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
+// Buscar livro por título
     public static function findByTitle($titulo)
     {
         $pdo = Database::connect();
@@ -46,7 +48,7 @@ class Book
         $stmt = $pdo->query("SELECT * FROM Books");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
+// Deletar livro (Incompleto)
     public static function delete($id)
     {
         try {

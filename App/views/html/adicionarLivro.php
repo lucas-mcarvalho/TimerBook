@@ -42,5 +42,3 @@ if(!isset($_SESSION['user_id'])){
     <div id="response" class="response-message"></div>
 
 </form>
-
- <script src="/TimerBook/App/views/javascript/books.js"></script>

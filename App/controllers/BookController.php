@@ -137,6 +137,20 @@ public function getByUserFromQuery()
 }
 
 
+public function getMyBooks()
+{
+    session_start();
+    if (!isset($_SESSION['user_id'])) {
+        http_response_code(401);
+        echo json_encode(["error" => "Usuário não autenticado"]);
+        return;
+    }
+
+    $user_id = $_SESSION['user_id'];
+    $result = Book::getByUser($user_id);
+
+    echo json_encode($result);
+}
 
 
     
