@@ -57,4 +57,58 @@ class User {
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $users;
     }
+
+    public static function findWithBooks($id) {
+    $pdo = Database::connect(); // Usando o método centralizado que criamos
+
+    // CORREÇÃO APLICADA AQUI: "FROM users u"
+    $sql = "SELECT
+                u.id as user_id,
+                u.nome as user_name,
+                u.email as user_email,
+                b.id as book_id,
+                b.titulo as book_title,
+                b.autor as book_author
+            FROM
+                users u -- Nome da tabela corrigido para minúsculo e plural
+            LEFT JOIN
+                books b ON u.id = b.user_id
+            WHERE
+                u.id = ?";
+
+    try {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$id]);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($results)) {
+            return null;
+        }
+
+        // O resto do seu código para estruturar os dados está perfeito!
+        $user_data = [
+            'id' => $results[0]['user_id'],
+            'nome' => $results[0]['user_name'],
+            'email' => $results[0]['user_email'],
+            'books' => []
+        ];
+
+        foreach ($results as $row) {
+            if ($row['book_id'] !== null) {
+                $user_data['books'][] = [
+                    'id' => $row['book_id'],
+                    'titulo' => $row['book_title'],
+                    'autor' => $row['book_author']
+                ];
+            }
+        }
+
+        return $user_data;
+
+    } catch (PDOException $e) {
+        // Para depuração, você pode temporariamente logar o erro:
+        // error_log($e->getMessage());
+        return null;
+    }
+}
 }

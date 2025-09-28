@@ -17,7 +17,11 @@
         </div>
         <div class="header-profile">
             <img src=" " alt="Foto de Perfil" class="profile-pic">
+
+            <a href="index.php?action=listar_livros" class="profile-button">Meu Perfil</a>
+
             <a href="index.php?action=perfil" class="profile-button">Meu Perfil</a>
+
             <a href="index.php?action=sair" class="logout-button">Encerrar Sessão</a>
         </div>
     </header>
@@ -35,7 +39,14 @@
                         <img src="uploads/boasvindas_carrossel.png" alt="Imagem 1">
                     </div>
                     <div class="slide">
+
+
                         <a href="index.php?action=Adicionar_Livro">
+
+                        <a href="index.php?action=register">
+
+                        <a href="index.php?action=Adicionar_Livro">
+
                             <img src="uploads/aindanaocadastrou.png" alt="Imagem 2">
                         </a>
                     </div>
@@ -70,11 +81,25 @@
         </aside>
     </main>
 
+
+
+
     <footer class="main-footer">
         <a href="index.php?action=Adicionar_Livro" class="add-book-button">
             <span class="plus-icon">+</span> Cadastrar Livro
         </a>
     </footer>
+
+
+   <footer class="main-footer">
+    <a href="index.php?action=Adicionar_Livro" class="add-book-button">
+        <span class="plus-icon">+</span> Cadastrar Livro
+    </a>
+    <br>
+    <a href="index.php?action=sair" style="color: white;">Encerrar Sessão</a>
+</footer>
+
+
 
     <script>
         let count = 1;

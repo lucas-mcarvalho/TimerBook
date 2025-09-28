@@ -9,24 +9,29 @@
 <body>
 
 <header class="navbar">
-        <div class="nav-buttons">
-            <button class="nav-button"><</button> <button class="nav-button">&#8962;</button> </div>
-    </header>
-
-    <main class="books-container">
-        <h2 class="title">MEUS LIVROS</h2>
+    <div class="nav-buttons">
+        <!-- Botão voltar para a página anterior no histórico -->
+        <button class="nav-button" onclick="window.history.back()"><</button> 
         
-        <div id="book-list" class="book-list">
-            <div id="placeholder" class="placeholder-box">
-                Sua lista de livros estará aqui.
-            </div>
+        <!-- Botão para ir para a página inicial -->
+        <button class="nav-button" onclick="window.location.href='index.php?action=home'">&#8962;</button> 
+    </div>
+</header>
+
+<main class="books-container">
+    <h2 class="title">MEUS LIVROS</h2>
+    
+    <div id="book-list" class="book-list">
+        <div id="placeholder" class="placeholder-box">
+            Sua lista de livros estará aqui.
         </div>
-        
-        <button id="add-button" class="add-button">
-            <span>+</span> CADASTRAR NOVO LIVRO
-        </button>
-    </main>
-
+    </div>
+    
+    <!-- Botão para cadastrar novo livro -->
+    <button id="add-button" class="add-button" onclick="window.location.href='index.php?action=Adicionar_Livro'">
+        <span>+</span> CADASTRAR NOVO LIVRO
+    </button>
+</main>
 
 </body>
 </html>

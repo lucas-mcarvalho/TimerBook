@@ -34,7 +34,5 @@
         </form>
     </main>
 
-    <script src="cadastro-livro.js"></script>
-
 </body>
 </html>
