@@ -10,7 +10,7 @@
 
 <header class="navbar">
     <div class="nav-buttons">
-        <!-- Botão voltar para a página anterior no histórico -->
+        <!-- Botão voltar para a página anterior -->
         <button class="nav-button" onclick="window.history.back()"><</button> 
         
         <!-- Botão para ir para a página inicial -->
@@ -32,6 +32,9 @@
         <span>+</span> CADASTRAR NOVO LIVRO
     </button>
 </main>
+
+<!-- Script para listar os livros -->
+<script src="/TimerBook/App/views/javascript/listar.js"></script>
 
 </body>
 </html>
