@@ -18,7 +18,7 @@ class Admin {
     public static function findByEmail($email) {
         try {
             $pdo = Database::connect();
-            $stmt = $pdo->prepare("SELECT id, nome, username, email, senha 
+            $stmt = $pdo->prepare("SELECT id, nome, username, email, password 
                                    FROM Admin 
                                    WHERE email = ?");
             $stmt->execute([$email]);
