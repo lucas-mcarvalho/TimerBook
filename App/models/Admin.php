@@ -28,7 +28,7 @@ class Admin {
         }
     }
 
-    public static function create($nome = null, $username = null, $email, $senha) {
+    public static function create($nome, $username, $email, $senha) {
         try {
             $pdo = Database::connect();
 

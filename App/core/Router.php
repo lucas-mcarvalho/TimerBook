@@ -1,7 +1,7 @@
 <?php
 require_once '../App/controllers/UserController.php';
 require_once '../App/controllers/BookController.php';
-
+require_once '../App/controllers/AdminController.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -94,22 +94,17 @@ switch ("$method $endpoint") {
     $controller->getMyBooks();
     break;
 
-    // ---------------- ADMIN ROUTES ----------------
-    case 'POST /register-admin':
-        $controller = new AdminController();
-        $controller->register();
-        break;
+    //ADMIN 
 
-    case 'GET /login-admin':
+    case 'POST /admin':
         $controller = new AdminController();
         $controller->login();
         break;
-
-    case 'GET /admins':
+   case 'GET /admin':
         $controller = new AdminController();
         $controller->getAll();
         break;
-  
+
     default:
         http_response_code(404);
         echo json_encode(["error" => "Endpoint não encontrado"]);
