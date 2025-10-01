@@ -94,6 +94,22 @@ switch ("$method $endpoint") {
     $controller->getMyBooks();
     break;
 
+    // ---------------- ADMIN ROUTES ----------------
+    case 'POST /register-admin':
+        $controller = new AdminController();
+        $controller->register();
+        break;
+
+    case 'GET /login-admin':
+        $controller = new AdminController();
+        $controller->login();
+        break;
+
+    case 'GET /admins':
+        $controller = new AdminController();
+        $controller->getAll();
+        break;
+  
     default:
         http_response_code(404);
         echo json_encode(["error" => "Endpoint não encontrado"]);
