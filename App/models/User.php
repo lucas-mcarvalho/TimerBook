@@ -16,40 +16,41 @@ class User {
 }
 
 
-    public static function create($email, $password, $nome = null, $username = null) {
-        try {
-            $pdo = Database::connect();
+    public static function create($email, $password, $nome = null, $username = null, $profilePhoto = null) {
+    try {
+        $pdo = Database::connect();
 
-            // Verifica se email já existe
-            $stmt = $pdo->prepare("SELECT id FROM User WHERE email = ?");
-            $stmt->execute([$email]);
-            if ($stmt->fetch()) {
-                return ["error" => "E-mail já cadastrado"];
-            }
-
-            // Verifica se username já existe
-            $stmt = $pdo->prepare("SELECT id FROM User WHERE username = ?");
-            $stmt->execute([$username]);
-            if ($stmt->fetch()) {
-                return ["error" => "Username já está em uso"];
-            }
-
-            $hash = password_hash($password, PASSWORD_DEFAULT);
-
-            $stmt = $pdo->prepare(
-                "INSERT INTO User (nome, username, email, senha) VALUES (?, ?, ?, ?)"
-            );
-            $stmt->execute([$nome ?? '', $username, $email, $hash]);
-
-            return [
-                "message" => "Usuário cadastrado com sucesso",
-                "user_id" => $pdo->lastInsertId()
-            ];
-
-        } catch (PDOException $e) {
-            return ["error" => "Erro no banco: " . $e->getMessage()];
+        // Verifica se email já existe
+        $stmt = $pdo->prepare("SELECT id FROM User WHERE email = ?");
+        $stmt->execute([$email]);
+        if ($stmt->fetch()) {
+            return ["error" => "E-mail já cadastrado"];
         }
+
+        // Verifica se username já existe
+        $stmt = $pdo->prepare("SELECT id FROM User WHERE username = ?");
+        $stmt->execute([$username]);
+        if ($stmt->fetch()) {
+            return ["error" => "Username já está em uso"];
+        }
+
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+
+        // Agora já inclui a foto no INSERT
+        $stmt = $pdo->prepare(
+            "INSERT INTO User (nome, username, email, senha, profile_photo) VALUES (?, ?, ?, ?, ?)"
+        );
+        $stmt->execute([$nome ?? '', $username, $email, $hash, $profilePhoto]);
+
+        return [
+            "message" => "Usuário cadastrado com sucesso",
+            "user_id" => $pdo->lastInsertId()
+        ];
+
+    } catch (PDOException $e) {
+        return ["error" => "Erro no banco: " . $e->getMessage()];
     }
+}
 
     public static function getAll() {
         $pdo = Database::connect();

@@ -111,7 +111,7 @@ class UserController
 //PEGA O ID DO USUARIO CRIADO   
         $userId = $result['user_id'];
 
-        //SE O USUARIO ENVIOU UMA FOTO, PROCESSA O UPLOAD
+        //SE O USUARIO ENVIOU UMA FOTO, PROCESSA O UPLOAD·
         if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
             //
             $file = $_FILES['photo'];

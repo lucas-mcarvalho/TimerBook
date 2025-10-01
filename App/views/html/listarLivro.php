@@ -1,3 +1,7 @@
+<?php 
+$id = $_SESSION['id'] ?? "uploads/default.png";
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>

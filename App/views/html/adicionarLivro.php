@@ -1,45 +1,38 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastrar Novo Livro</title>
-    <style>
-        /* Estilos simples para o exemplo */
-        body { font-family: sans-serif; max-width: 600px; margin: 2em auto; }
-        form { display: flex; flex-direction: column; gap: 10px; }
-        input, button { padding: 10px; }
-        #feedback { margin-top: 15px; padding: 10px; border-radius: 5px; }
-        .success { background-color: #d4edda; color: #155724; }
-        .error { background-color: #f8d7da; color: #721c24; }
-    </style>
+    <title>Cadastro de Livro</title>
+    <link rel="stylesheet" href="style/adicionarLivro.css">
 </head>
 <body>
-    <h1>Cadastrar Novo Livro</h1>
-    
-    <form id="bookForm">
-        <label for="titulo">Título:</label>
-        <input type="text" id="titulo" name="titulo" required>
 
-        <label for="autor">Autor:</label>
-        <input type="text" id="autor" name="autor">
+    <main class="cadastro-container">
+        <h2 class="title">CADASTRAR NOVO LIVRO</h2>
+        
+        <form class="cadastro-form">
+            <div class="cover-upload">
+                <div class="cover-placeholder">Capa do Livro</div>
+                <button type="button" class="upload-button">Selecionar Imagem</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="book-name-input">Nome do Livro:</label>
+                <input type="text" id="book-name-input" placeholder="Digite o nome do livro">
+            </div>
 
-        <label for="ano_publicacao">Ano de Publicação:</label>
-        <input type="number" id="ano_publicacao" name="ano_publicacao">
+            <div class="form-group">
+                <label for="book-year-input">Ano:</label>
+                <input type="text" id="book-year-input" placeholder="Digite o ano de publicação">
+            </div>
 
-        <label for="user_id">ID do Usuário:</label>
-        <input type="number" id="user_id" name="user_id" required>
+            <div class="form-buttons">
+                <button type="submit" id="register-button" class="register-button">Cadastrar</button>
+                <button type="button" id="back-button" class="back-button" onclick="window.location.href='index.php?action=home'">Voltar</button>
+            </div>
+        </form>
+    </main>
 
-        <label for="caminho_arquivo">Arquivo do Livro (PDF, EPUB, etc.):</label>
-        <input type="file" id="caminho_arquivo" name="caminho_arquivo" required>
-
-        <button type="submit">Salvar Livro</button>
-    </form>
-    
-    <div id="feedback"></div>
-
-    
-    <script src="/TimerBook/App/views/javascript/livro.js"></script>
-
-
+</body>
 </html>

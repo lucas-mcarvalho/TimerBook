@@ -8,8 +8,8 @@ require __DIR__ . '/../../vendor/autoload.php';
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 
-// Se estiver usando o phpdotenv para carregar as variáveis de ambiente
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../..'); // Ajuste o caminho para a raiz do seu projeto
+// Carrega variáveis de ambiente do .env
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../..');
 $dotenv->load();
 
 class BookController // Supondo que isso está dentro de uma classe
@@ -122,11 +122,21 @@ class BookController // Supondo que isso está dentro de uma classe
   
 
     // Deletar livro
-    public function delete($id)
-    {
-        $result = Book::delete($id);
-        echo json_encode($result);
+   public function delete($id)
+{
+    $result = Book::delete($id);
+
+    if (isset($result['error'])) {
+        http_response_code(400); // ou 500, dependendo do erro
+    } else {
+        http_response_code(200);
     }
+
+    echo json_encode($result);
+}
+
+
+    
   
 // Listar livros de um usuário , Postman
 public function getByUser($user_id)
