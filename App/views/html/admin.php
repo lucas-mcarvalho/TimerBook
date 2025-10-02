@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../../models/Admin.php';
-$admins = Admin::getAll();
+require_once __DIR__ . '/../../models/User.php';
+$users = User::getAll();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -18,11 +18,11 @@ $admins = Admin::getAll();
 
     <main class="admin-container">
         <div class="user-actions">
-            <a href="index.php?action=adm_editar" id="add-user-button" class="add-button">Adicionar Admin</a>
+            <a href="index.php?action=adm_editar" id="add-user-button" class="add-button">Adicionar Usuário</a>
         </div>
         
         <div class="user-list-header">
-            <h3>Admins</h3>
+            <h3>Usuários</h3>
         </div>
 
         <div id="user-list" class="user-list">
@@ -31,18 +31,18 @@ $admins = Admin::getAll();
                 <input type="text" id="search" placeholder="Pesquisa" oninput="filterList()">
             </div>
 
-            <?php if (is_array($admins) && count($admins) > 0): ?>
-                <?php foreach ($admins as $admin): ?>
-                    <div class="user-item" data-name="<?php echo htmlspecialchars($admin['nome'] ?? $admin['username']); ?>">
-                        <span><?php echo htmlspecialchars(($admin['nome'] ?: $admin['username']) . ' (' . $admin['email'] . ')'); ?></span>
+            <?php if (is_array($users) && count($users) > 0): ?>
+                <?php foreach ($users as $user): ?>
+                    <div class="user-item" data-name="<?php echo htmlspecialchars($user['nome'] ?? $user['username']); ?>">
+                        <span><?php echo htmlspecialchars(($user['nome'] ?: $user['username']) . ' (' . $user['email'] . ')'); ?></span>
                         <div class="user-controls">
-                            <a href="index.php?action=adm_editar&id=<?php echo urlencode($admin['id']); ?>" class="edit-button">Editar</a>
-                            <a href="index.php?action=adm_excluir&id=<?php echo urlencode($admin['id']); ?>" class="delete-button" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+                            <a href="index.php?action=adm_editar&id=<?php echo urlencode($user['id']); ?>" class="edit-button">Editar</a>
+                            <a href="index.php?action=adm_excluir&id=<?php echo urlencode($user['id']); ?>" class="delete-button" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
                         </div>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <p>Nenhum admin encontrado.</p>
+                <p>Nenhum usuário encontrado.</p>
             <?php endif; ?>
         </div>
     </main>

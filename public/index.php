@@ -54,9 +54,9 @@ switch ($action) {
         $senha = $_POST['senha'] ?? null;
 
         if ($id && $nome && $email && $username) {
-            Admin::update($id, $nome, $username, $email, $senha);
+            User::update($id, $nome, $username, $email, $senha);
         } elseif (!$id && $nome && $email && $username && $senha) {
-            Admin::create($nome, $username, $email, $senha);
+            User::create($email, $senha, $nome, $username);
         }
         header('Location: index.php?action=admin');
         exit;
@@ -64,7 +64,7 @@ switch ($action) {
         AdminController::checkLogin();
         $id = $_GET['id'] ?? null;
         if ($id) {
-            Admin::delete($id);
+            User::delete($id);
         }
         header('Location: index.php?action=admin');
         exit;

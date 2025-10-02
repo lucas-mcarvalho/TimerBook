@@ -1,9 +1,9 @@
 <?php
 require_once __DIR__ . '/../../models/Admin.php';
 $id = $_GET['id'] ?? null;
-$admin = null;
+$user = null;
 if ($id) {
-    $admin = Admin::getById($id);
+    $user = User::getById($id);
 }
 ?>
 <!DOCTYPE html>
@@ -17,29 +17,29 @@ if ($id) {
 <body>
     <main class="edit-container">
 
-        <h2 class="title"><?php echo $admin ? 'EDITAR ADMIN' : 'ADICIONAR ADMIN'; ?></h2>
+        <h2 class="title"><?php echo $user ? 'EDITAR USER' : 'ADICIONAR USER'; ?></h2>
         
         <form class="edit-form" action="index.php?action=adm_salvar" method="post">
-            <input type="hidden" name="id" value="<?php echo htmlspecialchars($admin['id'] ?? ''); ?>">
+            <input type="hidden" name="id" value="<?php echo htmlspecialchars($user['id'] ?? ''); ?>">
 
             <div class="form-group">
                 <label for="user-name-input">Nome:</label>
-                <input type="text" id="user-name-input" name="nome" placeholder="Digite o nome completo" value="<?php echo htmlspecialchars($admin['nome'] ?? ''); ?>" required>
+                <input type="text" id="user-name-input" name="nome" placeholder="Digite o nome completo" value="<?php echo htmlspecialchars($user['nome'] ?? ''); ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="user-email-input">E-mail:</label>
-                <input type="email" id="user-email-input" name="email" placeholder="Digite o e-mail" value="<?php echo htmlspecialchars($admin['email'] ?? ''); ?>" required>
+                <input type="email" id="user-email-input" name="email" placeholder="Digite o e-mail" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="username-input">Nome de Usuário:</label>
-                <input type="text" id="username-input" name="username" placeholder="Digite o nome de usuário" value="<?php echo htmlspecialchars($admin['username'] ?? ''); ?>" required>
+                <input type="text" id="username-input" name="username" placeholder="Digite o nome de usuário" value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>" required>
             </div>
             
             <div class="form-group">
                 <label for="password-input">Senha:</label>
-                <input type="password" id="password-input" name="senha" placeholder="<?php echo $admin ? 'Deixe em branco para manter' : 'Defina a senha'; ?>">
+                <input type="password" id="password-input" name="senha" placeholder="<?php echo $user ? 'Deixe em branco para manter' : 'Defina a senha'; ?>">
             </div>
 
             <div class="form-buttons">
