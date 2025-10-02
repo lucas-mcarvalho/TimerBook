@@ -10,6 +10,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+
+use Aws\S3\S3Client;
+use Aws\S3\Exception\S3Exception;
+
+
 class UserController
 {
 
@@ -123,31 +128,49 @@ class UserController
 
             //PEGA A EXTENSAO DO ARQUIVO E VERIFICA SE ESTA DENTRO DO ALLOWED
             if (in_array(strtolower($ext), $allowed)) {
-                //FUNCAO PRA GERAR UM NOME UNICO PARA O ARQUIVO
-                $newName = uniqid() . "." . $ext;
-                //CAMINHO ONDE VAI SER SALVO O ARQUIVO
-                $target = __DIR__ . '/../../public/uploads/' . $newName;
+                // Instancia o cliente S3
+        $s3Client = new S3Client([
+            'version'     => 'latest',
+            'region'      => $_ENV['AWS_DEFAULT_REGION'],
+            'credentials' => [
+                'key'    => $_ENV['AWS_ACCESS_KEY_ID'],
+                'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
+            ]
+        ]);
 
+        $bucketName = $_ENV['S3_BUCKET_NAME'];
+        
+        // Gera nome único para a foto
+        $newName = 'profile_photos/' . uniqid() . "." . $ext;
 
-                //MOVE O ARQUIVO DO DESTINO TEMPORARIO PRA ONDE VAI SER SALVO
-                if (move_uploaded_file($file['tmp_name'], $target)) {
-                    //SE MOVER ENTRA NO IF E SALVA A INFORMAÇÃO NO BANCO
-                    $pdo = Database::connect();
-                    $stmt = $pdo->prepare("UPDATE `User` SET profile_photo=? WHERE id=?");
-                    $stmt->execute(['/uploads/' . $newName, $userId]);
-                    //ADICIONA O CAMINHO DA FOTO NO RESULTADO PRA RETORNAR JUNTO COM OS DADOS DO USUARIO
-                    $result['photo_path'] = '/uploads/' . $newName;
-                } else {
-                    //SE NAO MOVER A FOTO , RETORNA ERRO.
-                    $result['photo_error'] = "Erro ao salvar a foto";
-                }
-                //OU SE O ARQUIVO NAO ESTA NO FORMATO PERMITIDO
-            } else {
-                $result['photo_error'] = "Formato de arquivo não permitido";
-            }
+        try {
+            // Faz upload para o S3
+            $resultS3 = $s3Client->putObject([
+                'Bucket'     => $bucketName,
+                'Key'        => $newName,
+                'SourceFile' => $file['tmp_name'],
+                //'ACL'      => 'public-read' // opcional se quiser acesso público
+            ]);
+
+            // Monta a URL do S3
+            $photoUrl = "https://{$bucketName}.s3.{$_ENV['AWS_DEFAULT_REGION']}.amazonaws.com/{$newName}";
+
+            // Atualiza no banco a URL
+            $pdo = Database::connect();
+            $stmt = $pdo->prepare("UPDATE `User` SET profile_photo=? WHERE id=?");
+            $stmt->execute([$photoUrl, $userId]);
+
+            $result['photo_path'] = $photoUrl;
+        } catch (S3Exception $e) {
+            $result['photo_error'] = "Erro ao enviar para o S3: " . $e->getMessage();
         }
-        //RETORNA OS DADOS EM JSON
+    } else {
+        $result['photo_error'] = "Formato de arquivo não permitido";
+    }
+      //RETORNA OS DADOS EM JSON
         echo json_encode($result);
+}
+      
     }
 
     public function getAll()

@@ -88,10 +88,45 @@ class BookController // Supondo que isso está dentro de uma classe
                 return;
             }
         }
+
+
+
+         // --- UPLOAD DA CAPA ---
+        if (isset($_FILES['capa_arquivo']) && $_FILES['capa_arquivo']['error'] === UPLOAD_ERR_OK) {
+            $ext = pathinfo($_FILES['capa_arquivo']['name'], PATHINFO_EXTENSION);
+            $allowedImages = ['jpg', 'jpeg', 'png', 'gif'];
+
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeType = finfo_file($finfo, $_FILES['capa_arquivo']['tmp_name']);
+            finfo_close($finfo);
+
+            if (in_array(strtolower($ext), $allowedImages) && str_starts_with($mimeType, 'image/')) {
+                $fileTmpPath = $_FILES['capa_arquivo']['tmp_name'];
+                $fileName = basename($_FILES['capa_arquivo']['name']);
+                $fileKey = 'books/covers/' . uniqid() . '-' . $fileName;
+
+                try {
+                    $s3Client->putObject([
+                        'Bucket'     => $bucketName,
+                        'Key'        => $fileKey,
+                        'SourceFile' => $fileTmpPath,
+                    ]);
+                    $capa_arquivo_s3 = "https://{$bucketName}.s3.{$_ENV['AWS_DEFAULT_REGION']}.amazonaws.com/{$fileKey}";
+                } catch (S3Exception $e) {
+                    http_response_code(500);
+                    echo json_encode(["error" => "Falha no upload da capa: " . $e->getMessage()]);
+                    return;
+                }
+            } else {
+                http_response_code(400);
+                echo json_encode(["error" => "Formato de capa inválido. Permitido: JPG, JPEG, PNG, GIF."]);
+                return;
+            }
+        }
         // --- FIM DA LÓGICA DE UPLOAD PARA O S3 ---
 
         // Cria o livro no banco, agora salvando a URL do S3
-        $result = Book::create($titulo, $autor, $ano_publicacao, $user_id, $caminho_arquivo_s3);
+        $result = Book::create($titulo, $autor, $ano_publicacao, $user_id, $caminho_arquivo_s3,$caminho_arquivo_s3);
 
         echo json_encode($result);
     }
