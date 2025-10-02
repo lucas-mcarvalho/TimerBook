@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . '/../../models/Admin.php';
+$admins = Admin::getAll();
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -9,41 +13,49 @@
 <body>
    <header class="header">
     <h2 class="title">PAINEL DE ADMIN</h2>
-    <a href="index.php?action=sair" class="logout-button">Sair</a>
+    <a href="index.php?action=admin_sair" class="logout-button">Sair</a>
 </header>
 
     <main class="admin-container">
         <div class="user-actions">
-            <button id="add-user-button" class="add-button">Adicionar Usuário</button>
+            <a href="index.php?action=adm_editar" id="add-user-button" class="add-button">Adicionar Admin</a>
         </div>
         
         <div class="user-list-header">
-            <h3>Usuários</h3>
+            <h3>Admins</h3>
         </div>
 
         <div id="user-list" class="user-list">
-             <div class="form-group">
+            <div class="form-group">
                 <label for="search">Pesquisa por nome: </label>
-                <input type="text" id="search" placeholder="Pesquisa">
+                <input type="text" id="search" placeholder="Pesquisa" oninput="filterList()">
             </div>
 
-            <div class="user-item">
-                <span>Nome do Usuário</span>
-              <div class="user-controls">
-    <a href="index.php?action=adm_editar&id=1" class="edit-button">Editar</a>
-    <a href="index.php?action=adm_excluir&id=1" class="delete-button">Excluir</a>
-    </div>
-    <!--        </div>
-            
-            <div class="user-item">
-                <span>Outro Usuário</span>
-                <div class="user-controls">
-                    <button class="edit-button">Editar</button>
-                    <button class="delete-button">Excluir</button>
-                </div>
-            </div> -->
+            <?php if (is_array($admins) && count($admins) > 0): ?>
+                <?php foreach ($admins as $admin): ?>
+                    <div class="user-item" data-name="<?php echo htmlspecialchars($admin['nome'] ?? $admin['username']); ?>">
+                        <span><?php echo htmlspecialchars(($admin['nome'] ?: $admin['username']) . ' (' . $admin['email'] . ')'); ?></span>
+                        <div class="user-controls">
+                            <a href="index.php?action=adm_editar&id=<?php echo urlencode($admin['id']); ?>" class="edit-button">Editar</a>
+                            <a href="index.php?action=adm_excluir&id=<?php echo urlencode($admin['id']); ?>" class="delete-button" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>Nenhum admin encontrado.</p>
+            <?php endif; ?>
         </div>
     </main>
+
+<script>
+function filterList() {
+  const term = document.getElementById('search').value.toLowerCase();
+  document.querySelectorAll('.user-item').forEach(function(row){
+    const name = row.getAttribute('data-name').toLowerCase();
+    row.style.display = name.includes(term) ? '' : 'none';
+  });
+}
+</script>
 
 </body>
 </html>

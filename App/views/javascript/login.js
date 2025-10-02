@@ -11,28 +11,38 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("password").value;
 
     try {
-      //FAZ A REQUISICAO PARA A API
-      const res = await fetch("http://localhost/TimerBook/public/login", {
+      // 1) Tenta login como ADMIN
+      const adminRes = await fetch("http://localhost/TimerBook/public/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
       });
 
-      //PEGA A RESPOSTA DA API
-      const data = await res.json();
+      if (adminRes.ok) {
+        const adminData = await adminRes.json();
+        // opcional: armazenar admin no localStorage
+        localStorage.setItem("admin", JSON.stringify(adminData.admin));
+        // Redireciona para o painel do admin
+        window.location.href = "index.php?action=admin";
+        return;
+      }
 
-      //SE FOR UM 200 ENTRA NO IF
-      if (res.ok) {
-        // Salvar usuário no localStorage
+      // 2) Se não for admin (ex.: 401), tenta login como USUÁRIO comum
+      const userRes = await fetch("http://localhost/TimerBook/public/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await userRes.json();
+      if (userRes.ok) {
         localStorage.setItem("user", JSON.stringify(data.user));
-        // Redirecionar para home
         window.location.href = "index.php?action=home";
       } else {
-        // Se deu erro (ex: 400 ou 401), mostra mensagem vinda da API
-        alert(data.error || "Erro desconhecido");
+        alert(data.error || "E-mail ou senha inválidos");
       }
     } catch (err) {
-      console.error("Erro:", err); // <-- corrigido aqui
+      console.error("Erro:", err);
       alert("Falha ao conectar com o servidor");
     }
   });

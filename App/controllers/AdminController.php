@@ -34,7 +34,19 @@ class AdminController
 
         $admin = Admin::findByEmail($email);
 
-        if ($admin && isset($admin['password'])) {
+        // Verifica a senha - prioriza texto puro, depois hash
+        $isAuthenticated = false;
+        if ($admin && isset($admin['senha'])) {
+            // Primeiro tenta comparação direta (texto puro)
+            if ($password === $admin['senha']) {
+                $isAuthenticated = true;
+            } else if (password_verify($password, $admin['senha'])) {
+                // Se não for texto puro, tenta verificar como hash
+                $isAuthenticated = true;
+            }
+        }
+
+        if ($isAuthenticated) {
             session_start();
             $_SESSION['admin_logged_in'] = true;
             $_SESSION['admin'] = $admin;
@@ -88,7 +100,7 @@ class AdminController
             return;
         }
 
-        $result = Admin::create($nome, $email, $password, $username);
+        $result = Admin::create($nome, $username, $email, $password);
 
         if (isset($result['error'])) {
             echo json_encode($result);
@@ -111,34 +123,96 @@ class AdminController
         }
     }
 
+    // OBTÉM ADMIN POR ID
+    public function getById($id = null)
+    {
+        if ($id === null) {
+            // tenta via query string
+            $id = $_GET['id'] ?? null;
+        }
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode(["error" => "ID é obrigatório"]);
+            return;
+        }
+        $admin = Admin::getById($id);
+        if ($admin) {
+            unset($admin['senha']);
+            echo json_encode($admin);
+        } else {
+            http_response_code(404);
+            echo json_encode(["error" => "Admin não encontrado"]);
+        }
+    }
+
+    // Retorna admin autenticado via sessão (para front identificar se é admin)
+    public function me()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (!empty($_SESSION['admin_logged_in']) && !empty($_SESSION['admin'])) {
+            $admin = $_SESSION['admin'];
+            unset($admin['senha']);
+            echo json_encode(["authenticated" => true, "admin" => $admin]);
+        } else {
+            http_response_code(401);
+            echo json_encode(["authenticated" => false, "error" => "Não autenticado como admin"]);
+        }
+    }
+
     // EDITAR ADMIN
     public function update()
     {
-        $id = $_POST['id'] ?? null;
-        $nome = $_POST['nome'] ?? null;
-        $email = $_POST['email'] ?? null;
-        $username = $_POST['username'] ?? null;
-        $senha = $_POST['senha'] ?? null;
+        $data = [];
+        if (!empty($_SERVER["CONTENT_TYPE"]) && stripos($_SERVER["CONTENT_TYPE"], "application/json") !== false) {
+            $data = json_decode(file_get_contents("php://input"), true);
+        } else {
+            $data = $_POST;
+        }
 
+
+        $id = $data['id'] ?? null;
+        $nome = $data['nome'] ?? null;
+        $email = $data['email'] ?? null;
+        $username = $data['username'] ?? null;
+        $senha = $data['senha'] ?? null;
+
+        // Para update, só senha não é obrigatória
         if (!$id || !$nome || !$email || !$username) {
             http_response_code(400);
-            echo json_encode(["error" => "Campos obrigatórios não preenchidos"]);
+            echo json_encode(["error" => "Campos obrigatórios não preenchidos (id, nome, email, username)"]);
             return;
         }
 
-        $updated = Admin::update($id, $nome, $email, $username, $senha);
+        // Se senha está vazia, não atualiza a senha
+        if (empty($senha)) {
+            $senha = null;
+        }
 
-        if ($updated) {
-            echo json_encode(["success" => true, "message" => "Admin atualizado com sucesso"]);
+        $updated = Admin::update($id, $nome, $username, $email, $senha);
+
+
+        if (isset($updated['error'])) {
+            http_response_code(400);
+            echo json_encode($updated);
         } else {
-            echo json_encode(["error" => "Erro ao atualizar admin"]);
+            echo json_encode(["success" => true, "message" => "Admin atualizado com sucesso"]);
         }
     }
 
     // DELETAR ADMIN
     public function delete()
     {
-        $id = $_POST['id'] ?? null;
+        $data = [];
+        if (!empty($_SERVER["CONTENT_TYPE"]) && stripos($_SERVER["CONTENT_TYPE"], "application/json") !== false) {
+            $data = json_decode(file_get_contents("php://input"), true);
+        } else {
+            $data = $_POST;
+        }
+
+        // Permite também via query string (para ações via página)
+        $id = $data['id'] ?? ($_GET['id'] ?? null);
 
         if (!$id) {
             http_response_code(400);
@@ -148,10 +222,11 @@ class AdminController
 
         $deleted = Admin::delete($id);
 
-        if ($deleted) {
-            echo json_encode(["success" => true, "message" => "Admin excluído com sucesso"]);
+        if (isset($deleted['error'])) {
+            http_response_code(400);
+            echo json_encode($deleted);
         } else {
-            echo json_encode(["error" => "Erro ao excluir admin"]);
+            echo json_encode(["success" => true, "message" => "Admin excluído com sucesso"]);
         }
     }
 

@@ -105,6 +105,39 @@ switch ("$method $endpoint") {
         $controller->getAll();
         break;
 
+    // GET /admin/{id}
+    case (preg_match('#^GET /admin/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $id = (int)$matches[1];
+        $controller = new AdminController();
+        $controller->getById($id);
+        break;
+
+    case 'POST /admin/login':
+        $controller = new AdminController();
+        $controller->login();
+        break;
+
+    case 'POST /admin/register':
+        $controller = new AdminController();
+        $controller->register();
+        break;
+
+    case 'POST /admin/update':
+        $controller = new AdminController();
+        $controller->update();
+        break;
+
+    case 'POST /admin/delete':
+        $controller = new AdminController();
+        $controller->delete();
+        break;
+
+    // Sessão atual
+    case 'GET /admin/me':
+        $controller = new AdminController();
+        $controller->me();
+        break;
+
     default:
         http_response_code(404);
         echo json_encode(["error" => "Endpoint não encontrado"]);

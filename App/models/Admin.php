@@ -18,7 +18,8 @@ class Admin {
     public static function findByEmail($email) {
         try {
             $pdo = Database::connect();
-            $stmt = $pdo->prepare("SELECT id, nome, username, email, password 
+            // A coluna correta para a senha na tabela é 'senha'
+            $stmt = $pdo->prepare("SELECT id, nome, username, email, senha, profile_photo 
                                    FROM Admin 
                                    WHERE email = ?");
             $stmt->execute([$email]);
@@ -74,7 +75,7 @@ class Admin {
         }
     }
 
-    public static function update($id, $nome = null, $username = null, $email = null, $senha = null) {
+    public static function update($id, $nome = null, $username = null, $email = null, $senha = null, $isAlreadyHashed = false) {
         try {
             $pdo = Database::connect();
 
@@ -122,7 +123,7 @@ class Admin {
             }
             if ($senha !== null) {
                 $fields[] = "senha = ?";
-                $values[] = password_hash($senha, PASSWORD_DEFAULT);
+                $values[] = $isAlreadyHashed ? $senha : password_hash($senha, PASSWORD_DEFAULT);
             }
 
             if (empty($fields)) {
