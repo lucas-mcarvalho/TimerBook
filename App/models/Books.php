@@ -8,16 +8,16 @@ class Book
 {
  
     //inserindo o livro
-   public static function create($titulo, $autor, $ano_publicacao, $user_id, $caminho_arquivo = null)
+   public static function create($titulo, $autor, $ano_publicacao, $user_id, $caminho_arquivo = null,$capa_livro = null)
 {
     try {
         $pdo = Database::connect();
 
         $stmt = $pdo->prepare(
-            "INSERT INTO Books (titulo, autor, ano_publicacao, user_id, caminho_arquivo)
+            "INSERT INTO Books (titulo, autor, ano_publicacao, user_id, caminho_arquivo,capa_livro)
              VALUES (?, ?, ?, ?, ?)"
         );
-        $stmt->execute([$titulo, $autor, $ano_publicacao, $user_id, $caminho_arquivo]);
+        $stmt->execute([$titulo, $autor, $ano_publicacao, $user_id, $caminho_arquivo, $capa_livro]);
 
         return [
             "message" => "Livro cadastrado com sucesso",
