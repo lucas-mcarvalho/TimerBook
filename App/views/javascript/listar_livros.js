@@ -19,7 +19,8 @@ async function listarLivros() {
             <p class="titulo">${livro.titulo}</p>
             <p class="autor">${livro.autor}</p>
             <a class="link_livro" href="${livro.caminho_arquivo}" target="_blank">
-                <img src="https://m.media-amazon.com/images/I/215JtdYm8RL.jpg" alt="Capa do livro">
+              
+
             </a>
         </div>
     `;
