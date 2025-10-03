@@ -18,7 +18,7 @@ if ($id) {
 <body>
     <main class="edit-container">
         <h2 class="title"><?php echo $user ? 'EDITAR USER' : 'ADICIONAR USER'; ?></h2>
-        
+       
         <form class="edit-form" action="index.php?action=adm_salvar" method="post" enctype="multipart/form-data">
             <input type="hidden" name="id" value="<?php echo htmlspecialchars($user['id'] ?? ''); ?>">
 
@@ -26,7 +26,17 @@ if ($id) {
             <div class="form-group">
                 <label>Foto Atual:</label>
                 <div class="current-photo">
-                    <img src="../public/uploads/<?php echo htmlspecialchars($user['profile_photo']); ?>" alt="Foto atual" style="max-width: 100px; max-height: 100px; border-radius: 50%;">
+                    <?php
+                    // Verifica se é URL do S3 ou caminho local
+                    $photoUrl = $user['profile_photo'];
+                    if (strpos($photoUrl, 'http') === 0) {
+                        // É URL do S3
+                        echo '<img src="' . htmlspecialchars($photoUrl) . '" alt="Foto atual" style="max-width: 100px; max-height: 100px; border-radius: 50%;">';
+                    } else {
+                        // É caminho local (para compatibilidade com fotos antigas)
+                        echo '<img src="../public/uploads/' . htmlspecialchars($photoUrl) . '" alt="Foto atual" style="max-width: 100px; max-height: 100px; border-radius: 50%;">';
+                    }
+                    ?>
                 </div>
             </div>
             <?php endif; ?>
@@ -51,7 +61,7 @@ if ($id) {
                 <label for="username-input">Nome de Usuário:</label>
                 <input type="text" id="username-input" name="username" placeholder="Digite o nome de usuário" value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>" required>
             </div>
-            
+           
             <div class="form-group">
                 <label for="password-input">Senha:</label>
                 <input type="password" id="password-input" name="senha" placeholder="<?php echo $user ? 'Deixe em branco para manter' : 'Defina a senha'; ?>">
@@ -64,7 +74,7 @@ if ($id) {
         </form>
     </main>
 
-    
-    
+   
+   
 </body>
 </html>

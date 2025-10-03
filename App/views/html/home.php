@@ -1,5 +1,14 @@
-<?php 
+<?php
 $profilePhoto = $_SESSION['profile_photo'] ?? "uploads/default.png";
+// Se a foto é URL do S3, usa diretamente, senão adiciona o caminho local
+if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
+    // É URL do S3, mantém como está
+} else {
+    // É caminho local, adiciona o prefixo uploads/ se necessário
+    if ($profilePhoto && strpos($profilePhoto, 'uploads/') !== 0) {
+        $profilePhoto = "uploads/" . $profilePhoto;
+    }
+}
 ?>
 
 
@@ -37,7 +46,7 @@ $profilePhoto = $_SESSION['profile_photo'] ?? "uploads/default.png";
                     <input type="radio" name="radio-btn" id="radio2">
                     <input type="radio" name="radio-btn" id="radio3">
                     <input type="radio" name="radio-btn" id="radio4">
-                    
+                   
                     <div class="slide first">
                         <img src="uploads/boasvindas_carrossel.png" alt="Imagem 1">
                     </div>
@@ -57,7 +66,7 @@ $profilePhoto = $_SESSION['profile_photo'] ?? "uploads/default.png";
                         </a>
                     </div>
                 </div>
-                
+               
                 <div class="manual-navigation">
                     <label for="radio1" class="manual-btn"></label>
                     <label for="radio2" class="manual-btn"></label>

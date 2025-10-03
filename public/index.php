@@ -5,6 +5,10 @@ $protected_actions = ['home'];
 require_once __DIR__ . '/../App/controllers/UserController.php';
 require_once __DIR__ . '/../App/controllers/AdminController.php';
 require_once __DIR__ . '/../App/models/Admin.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use Aws\S3\S3Client;
+use Aws\S3\Exception\S3Exception;
 
 
 $action = $_GET['action'] ?? 'login';
@@ -46,24 +50,47 @@ switch ($action) {
         break;
     case 'adm_salvar':
         AdminController::checkLogin();
-        
-        // Processa upload da foto
+       
+        // Processa upload da foto para S3
         $profilePhoto = null;
         if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = __DIR__ . '/uploads/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
-            }
-            
-            $extension = pathinfo($_FILES['profile_photo']['name'], PATHINFO_EXTENSION);
-            $fileName = uniqid() . '.' . $extension;
-            $filePath = $uploadDir . $fileName;
-            
-            if (move_uploaded_file($_FILES['profile_photo']['tmp_name'], $filePath)) {
-                $profilePhoto = $fileName;
+            $file = $_FILES['profile_photo'];
+            $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+
+            if (in_array(strtolower($ext), $allowed)) {
+                // Instancia o cliente S3
+                $s3Client = new S3Client([
+                    'version'     => 'latest',
+                    'region'      => $_ENV['AWS_DEFAULT_REGION'],
+                    'credentials' => [
+                        'key'    => $_ENV['AWS_ACCESS_KEY_ID'],
+                        'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
+                    ]
+                ]);
+
+                $bucketName = $_ENV['S3_BUCKET_NAME'];
+               
+                // Gera nome único para a foto
+                $newName = 'profile_photos/' . uniqid() . "." . $ext;
+
+                try {
+                    // Faz upload para o S3
+                    $resultS3 = $s3Client->putObject([
+                        'Bucket'     => $bucketName,
+                        'Key'        => $newName,
+                        'SourceFile' => $file['tmp_name'],
+                    ]);
+
+                    // Monta a URL do S3
+                    $profilePhoto = "https://{$bucketName}.s3.{$_ENV['AWS_DEFAULT_REGION']}.amazonaws.com/{$newName}";
+                } catch (S3Exception $e) {
+                    error_log("Erro ao fazer upload para S3: " . $e->getMessage());
+                    // Continua sem foto se der erro no upload
+                }
             }
         }
-        
+       
         // Cria ou atualiza usuário via form
         $id = $_POST['id'] ?? null;
         $nome = $_POST['nome'] ?? null;
@@ -78,7 +105,7 @@ switch ($action) {
             // Criar novo usuário
             User::create($email, $senha, $nome, $username, $profilePhoto);
         }
-        
+       
         header('Location: index.php?action=admin');
         exit;
     case 'adm_excluir':
