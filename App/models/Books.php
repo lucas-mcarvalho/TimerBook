@@ -15,7 +15,7 @@ class Book
 
         $stmt = $pdo->prepare(
             "INSERT INTO Books (titulo, autor, ano_publicacao, user_id, caminho_arquivo,capa_livro)
-             VALUES (?, ?, ?, ?, ?)"
+             VALUES (?, ?, ?, ?, ?, ?)"
         );
         $stmt->execute([$titulo, $autor, $ano_publicacao, $user_id, $caminho_arquivo, $capa_livro]);
 
