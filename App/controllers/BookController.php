@@ -126,7 +126,7 @@ class BookController // Supondo que isso está dentro de uma classe
         // --- FIM DA LÓGICA DE UPLOAD PARA O S3 ---
 
         // Cria o livro no banco, agora salvando a URL do S3
-        $result = Book::create($titulo, $autor, $ano_publicacao, $user_id, $caminho_arquivo_s3,$caminho_arquivo_s3);
+        $result = Book::create($titulo, $autor, $ano_publicacao, $user_id, $caminho_arquivo_s3,$capa_arquivo_s3);
 
         echo json_encode($result);
     }
