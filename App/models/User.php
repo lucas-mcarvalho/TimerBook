@@ -131,7 +131,7 @@ class User {
         }
     }
 
-    public static function update($id, $nome = null, $username = null, $email = null, $senha = null, $isAlreadyHashed = false) {
+    public static function update($id, $nome = null, $username = null, $email = null, $senha = null, $isAlreadyHashed = false, $profilePhoto = null) {
         try {
             $pdo = Database::connect();
 
@@ -180,6 +180,10 @@ class User {
             if ($senha !== null) {
                 $fields[] = "senha = ?";
                 $values[] = $isAlreadyHashed ? $senha : password_hash($senha, PASSWORD_DEFAULT);
+            }
+            if ($profilePhoto !== null) {
+                $fields[] = "profile_photo = ?";
+                $values[] = $profilePhoto;
             }
 
             if (empty($fields)) {

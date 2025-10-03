@@ -46,7 +46,25 @@ switch ($action) {
         break;
     case 'adm_salvar':
         AdminController::checkLogin();
-        // Cria ou atualiza admin via form
+        
+        // Processa upload da foto
+        $profilePhoto = null;
+        if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/uploads/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            
+            $extension = pathinfo($_FILES['profile_photo']['name'], PATHINFO_EXTENSION);
+            $fileName = uniqid() . '.' . $extension;
+            $filePath = $uploadDir . $fileName;
+            
+            if (move_uploaded_file($_FILES['profile_photo']['tmp_name'], $filePath)) {
+                $profilePhoto = $fileName;
+            }
+        }
+        
+        // Cria ou atualiza usuário via form
         $id = $_POST['id'] ?? null;
         $nome = $_POST['nome'] ?? null;
         $email = $_POST['email'] ?? null;
@@ -54,10 +72,13 @@ switch ($action) {
         $senha = $_POST['senha'] ?? null;
 
         if ($id && $nome && $email && $username) {
-            User::update($id, $nome, $username, $email, $senha);
+            // Atualizar usuário existente
+            User::update($id, $nome, $username, $email, $senha, false, $profilePhoto);
         } elseif (!$id && $nome && $email && $username && $senha) {
-            User::create($email, $senha, $nome, $username);
+            // Criar novo usuário
+            User::create($email, $senha, $nome, $username, $profilePhoto);
         }
+        
         header('Location: index.php?action=admin');
         exit;
     case 'adm_excluir':
