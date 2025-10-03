@@ -177,7 +177,8 @@ class User {
                 $fields[] = "email = ?";
                 $values[] = $email;
             }
-            if ($senha !== null) {
+            // Atualiza senha somente se fornecida (não nula e não vazia)
+            if ($senha !== null && $senha !== '') {
                 $fields[] = "senha = ?";
                 $values[] = $isAlreadyHashed ? $senha : password_hash($senha, PASSWORD_DEFAULT);
             }

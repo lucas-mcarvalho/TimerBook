@@ -96,7 +96,11 @@ switch ($action) {
         $nome = $_POST['nome'] ?? null;
         $email = $_POST['email'] ?? null;
         $username = $_POST['username'] ?? null;
-        $senha = $_POST['senha'] ?? null;
+        $senha = isset($_POST['senha']) ? trim($_POST['senha']) : null;
+        // Não atualizar a senha se o campo vier vazio
+        if ($senha === '') {
+            $senha = null;
+        }
 
         if ($id && $nome && $email && $username) {
             // Atualizar usuário existente
