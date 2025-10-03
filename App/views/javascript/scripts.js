@@ -2,6 +2,35 @@
 const form = document.querySelector('#registerForm');
 const msg = document.getElementById("msg");
 
+const photoInput = document.getElementById('photo');
+const profilePicPreview = document.getElementById('profilePreview');
+const resetBtn = document.getElementById('resetPhoto');
+
+// Salva a imagem padrão
+const defaultImage = profilePicPreview.src;
+
+// Preview da imagem escolhida
+photoInput.addEventListener('change', () => {
+  const file = photoInput.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      profilePicPreview.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  } else {
+    profilePicPreview.src = defaultImage;
+  }
+});
+
+// Resetar manualmente
+resetBtn.addEventListener('click', () => {
+  photoInput.value = '';              // limpa seleção do input
+  profilePicPreview.src = defaultImage; // volta para imagem padrão
+});
+
+
+
 
 // Adiciona um "escutador" que aguarda o evento de 'submit' (envio) do formulário.
 form.addEventListener('submit', async event => {

@@ -26,9 +26,10 @@ probelmas. Também mudei as ocorrências de "localhost" para locahost:8000-->
     
     <div class="foto-perfil">
       <label for="photo" class="profile-pic-label" >
-        <img src="https://via.placeholder.com/120">
+        <img src="https://static.vecteezy.com/ti/vetor-gratis/p1/1631580-adicionar-icone-de-foto-com-camera-vetor.jpg" alt="Prévia da foto" id="profilePreview">
       </label>
       <input type="file" id="photo" name="photo" accept="image/*" class="file-input">
+      <button type="button" id="resetPhoto" class="reset-btn">Remover foto</button>
     </div>
 
 
@@ -61,7 +62,6 @@ probelmas. Também mudei as ocorrências de "localhost" para locahost:8000-->
   </form>
 
   <!-- Radio Buttons-->
-</form>
 
   <section class="slider">
 
