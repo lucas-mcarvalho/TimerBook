@@ -52,9 +52,17 @@ class BookController // Supondo que isso está dentro de uma classe
              $ext = pathinfo($_FILES['caminho_arquivo']['name'], PATHINFO_EXTENSION);
                 $allowedDocs = ['pdf'];
 
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mimeType = finfo_file($finfo, $_FILES['caminho_arquivo']['tmp_name']);
-    finfo_close($finfo);
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $_FILES['caminho_arquivo']['tmp_name']);
+        finfo_close($finfo);
+            // --- CORREÇÃO ADICIONADA AQUI ---
+    if (in_array(strtolower($ext), $allowedDocs) && $mimeType === 'application/pdf') {
+        
+        // Se for um PDF válido, o código de upload continua...
+        $s3Client = new S3Client([ ... ]);
+        // ... (resto do código de upload)
+
+    
             // 1. Instanciar o cliente S3
             $s3Client = new S3Client([
                 'version'     => 'latest',
@@ -94,7 +102,11 @@ class BookController // Supondo que isso está dentro de uma classe
             }
         }
 
+    }else{
 
+                http_response_code(400);
+                echo json_encode(["error" => "Formato de documento  inválido. Permitido: PDF"]);
+    }
 
          // --- UPLOAD DA CAPA ---
         if (isset($_FILES['capa_arquivo']) && $_FILES['capa_arquivo']['error'] === UPLOAD_ERR_OK) {
