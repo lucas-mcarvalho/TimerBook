@@ -49,7 +49,12 @@ class BookController // Supondo que isso está dentro de uma classe
 
         // --- INÍCIO DA LÓGICA DE UPLOAD PARA O S3 ---
         if (isset($_FILES['caminho_arquivo']) && $_FILES['caminho_arquivo']['error'] === UPLOAD_ERR_OK) {
-            
+             $ext = pathinfo($_FILES['caminho_arquivo']['name'], PATHINFO_EXTENSION);
+                $allowedDocs = ['pdf'];
+
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mimeType = finfo_file($finfo, $_FILES['caminho_arquivo']['tmp_name']);
+    finfo_close($finfo);
             // 1. Instanciar o cliente S3
             $s3Client = new S3Client([
                 'version'     => 'latest',
@@ -103,7 +108,7 @@ class BookController // Supondo que isso está dentro de uma classe
             if (in_array(strtolower($ext), $allowedImages) && str_starts_with($mimeType, 'image/')) {
                 $fileTmpPath = $_FILES['capa_arquivo']['tmp_name'];
                 $fileName = basename($_FILES['capa_arquivo']['name']);
-                $fileKey = 'books/covers/' . uniqid() . '-' . $fileName;
+                $fileKey = 'Capas_dos_Livros/' . uniqid() . '-' . $fileName;
 
                 try {
                     $s3Client->putObject([

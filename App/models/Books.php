@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../core/database_config.php';
 
 use Aws\S3\S3Client;
-use Aws\S3\Exception\S3Exception;
+use Aws\Exception\AwsException;
 
 class Book
 {
@@ -73,52 +73,66 @@ class Book
 }
 
 public static function delete($id)
-    {
-        // 1. Buscar o livro
-        $book = self::findById($id);
-        if (!$book) {
-            return ["error" => "Livro não encontrado"];
-        }
+{
+    $book = self::findById($id);
+    if (!$book) {
+        return ["error" => "Livro não encontrado"];
+    }
 
-        // 2. Se existir arquivo no S3, tenta excluir
-        if (!empty($book['caminho_arquivo'])) {
-            try {
-                $fileUrl = $book['caminho_arquivo'];
-                $urlParts = parse_url($fileUrl);
-                $fileKey = ltrim($urlParts['path'], '/');
+    // cria cliente S3 uma vez
+    $s3Client = new S3Client([
+        'version'     => 'latest',
+        'region'      => $_ENV['AWS_DEFAULT_REGION'],
+        'credentials' => [
+            'key'    => $_ENV['AWS_ACCESS_KEY_ID'],
+            'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
+        ]
+    ]);
 
-                $s3Client = new S3Client([
-                    'version'     => 'latest',
-                    'region'      => $_ENV['AWS_DEFAULT_REGION'],
-                    'credentials' => [
-                        'key'    => $_ENV['AWS_ACCESS_KEY_ID'],
-                        'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
-                    ]
-                ]);
+    // monta lista de objetos a deletar (evita duplicatas)
+    $objects = [];
 
-                $s3Client->deleteObject([
-                    'Bucket' => $_ENV['S3_BUCKET_NAME'],
-                    'Key'    => $fileKey,
-                ]);
+    if (!empty($book['caminho_arquivo'])) {
+        $path = parse_url($book['caminho_arquivo'], PHP_URL_PATH);
+        $key = ltrim($path, '/');
+        if ($key !== '') $objects[] = ['Key' => $key];
+    }
 
-            } catch (S3Exception $e) {
-                return [
-                    "error" => "Falha ao deletar arquivo no S3",
-                    "aws_error_message" => $e->getAwsErrorMessage(),
-                    "aws_error_code" => $e->getAwsErrorCode(),
-                ];
-            }
-        }
-
-        // 3. Agora deleta do banco
-        try {
-            $pdo = Database::connect();
-            $stmt = $pdo->prepare("DELETE FROM Books WHERE id = ?");
-            $stmt->execute([$id]);
-            return ["message" => "Livro excluído com sucesso"];
-        } catch (PDOException $e) {
-            return ["error" => "Erro no banco: " . $e->getMessage()];
+    if (!empty($book['capa_livro'])) {
+        $path = parse_url($book['capa_livro'], PHP_URL_PATH);
+        $key = ltrim($path, '/');
+        if ($key !== '' && !in_array($key, array_column($objects, 'Key'))) {
+            $objects[] = ['Key' => $key];
         }
     }
 
+    // se houver objetos, deleta em lote
+    if (!empty($objects)) {
+        try {
+            $s3Client->deleteObjects([
+                'Bucket' => $_ENV['S3_BUCKET_NAME'],
+                'Delete' => [
+                    'Objects' => $objects,
+                    'Quiet' => false
+                ],
+            ]);
+        } catch (AwsException $e) {
+            // retorna erro e não remove do banco
+            return [
+                "error" => "Falha ao deletar arquivos no S3",
+                "aws_message" => $e->getMessage()
+            ];
+        }
+    }
+
+    // finalmente deleta do banco
+    try {
+        $pdo = Database::connect();
+        $stmt = $pdo->prepare("DELETE FROM Books WHERE id = ?");
+        $stmt->execute([$id]);
+        return ["message" => "Livro e arquivos excluídos com sucesso"];
+    } catch (PDOException $e) {
+        return ["error" => "Erro no banco: " . $e->getMessage()];
+    }
+}
 }
