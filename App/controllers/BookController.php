@@ -59,7 +59,7 @@ class BookController // Supondo que isso está dentro de uma classe
     if (in_array(strtolower($ext), $allowedDocs) && $mimeType === 'application/pdf') {
         
         // Se for um PDF válido, o código de upload continua...
-        $s3Client = new S3Client([ ... ]);
+       // $s3Client = new S3Client([ ... ]);
         // ... (resto do código de upload)
 
     
