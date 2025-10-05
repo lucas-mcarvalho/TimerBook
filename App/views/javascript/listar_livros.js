@@ -50,6 +50,8 @@ async function listarLivros() {
                  <img src="${livro.capa_livro}" alt="Capa do livro">
             </a>
             <button class="delete-button" onclick="deletarLivro(${livro.id})">Excluir</button>
+
+            <a href=""><button class="edit-button" data-id="${livro.id}">Editar</button></a>
         </div>
     `;
 });
@@ -63,3 +65,30 @@ async function listarLivros() {
 
 
 listarLivros(); // chama a função
+
+
+// rologem da barra de visualisação de livro 
+document.addEventListener('DOMContentLoaded', () => {
+    const bookList = document.getElementById('book-list');
+    const prevButton = document.getElementById('prev-button');
+    const nextButton = document.getElementById('next-button');
+
+    // Verifica se os elementos existem para evitar erros
+    if (bookList && prevButton && nextButton) {
+        // Rola a lista para a esquerda quando o botão anterior é clicado
+        prevButton.addEventListener('click', () => {
+            bookList.scrollBy({
+                left: -200, // Ajuste este valor para a distância de rolagem desejada
+                behavior: 'smooth'
+            });
+        });
+
+        // Rola a lista para a direita quando o botão próximo é clicado
+        nextButton.addEventListener('click', () => {
+            bookList.scrollBy({
+                left: 200, // Ajuste este valor para a distância de rolagem desejada
+                behavior: 'smooth'
+            });
+        });
+    }
+});

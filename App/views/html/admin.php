@@ -11,15 +11,23 @@ $users = User::getAll();
     <title>Timer Book</title>
 </head>
 <body>
-   <header class="header">
-    <h2 class="title">PAINEL DE ADMIN</h2>
-    <a href="index.php?action=admin_sair" class="logout-button">Sair</a>
+
+<header class="header">
+    <div class="header-logo">
+        <img src="uploads/main_logo.png" alt="Logo TimerBook">
+        <span class="header-title">TimerBook</span>
+    </div>
+    
+    <div class="header-right">
+        
+        <a href="index.php?action=adm_editar" id="add-user-button" class="add-button">Adicionar Usuário +</a>
+        
+        <a href="index.php?action=admin_sair" class="logout-button">sair</a>
+    </div>
 </header>
 
     <main class="admin-container">
-        <div class="user-actions">
-            <a href="index.php?action=adm_editar" id="add-user-button" class="add-button">Adicionar Usuário</a>
-        </div>
+        
         
         <div class="user-list-header">
             <h3>Usuários</h3>
@@ -36,8 +44,8 @@ $users = User::getAll();
                     <div class="user-item" data-name="<?php echo htmlspecialchars($user['nome'] ?? $user['username']); ?>">
                         <span><?php echo htmlspecialchars(($user['nome'] ?: $user['username']) . ' (' . $user['email'] . ')'); ?></span>
                         <div class="user-controls">
-                            <a href="index.php?action=adm_editar&id=<?php echo urlencode($user['id']); ?>" class="edit-button">Editar</a>
-                            <a href="index.php?action=adm_excluir&id=<?php echo urlencode($user['id']); ?>" class="delete-button" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+                            <a href="index.php?action=adm_editar&id=<?php echo urlencode($user['id']); ?>" class="edit-button  btn2">Editar</a>
+                            <a href="index.php?action=adm_excluir&id=<?php echo urlencode($user['id']); ?>" class="delete-button btn" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
                         </div>
                     </div>
                 <?php endforeach; ?>
