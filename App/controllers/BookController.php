@@ -58,13 +58,8 @@ class BookController // Supondo que isso está dentro de uma classe
             // --- CORREÇÃO ADICIONADA AQUI ---
     if (in_array(strtolower($ext), $allowedDocs) && $mimeType === 'application/pdf') {
         
-        // Se for um PDF válido, o código de upload continua...
-
-        
-        // ... (resto do código de upload)
-
-    
-            // 1. Instanciar o cliente S3
+       
+            //  Instanciar o cliente S3
             $s3Client = new S3Client([
                 'version'     => 'latest',
                 'region'      => $_ENV['AWS_DEFAULT_REGION'],
