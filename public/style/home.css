@@ -209,7 +209,7 @@ body {
   justify-content: center;
   padding: 10px 20px 30px 20px;
 }
-
+/* botão de cadastro */
 .add-book-button {
   background: #79bc75;
   color: white;
@@ -243,9 +243,9 @@ body {
   text-align: center;
   font-weight: bold;
 }
-
+/* botão de sair */
 .logout-button {
-  background-color: #d9534f;
+  background-color:#c76360;
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
@@ -256,5 +256,5 @@ body {
 }
 
 .logout-button:hover {
-  background-color: #c76360;
+  background-color: #d9534f;
 }

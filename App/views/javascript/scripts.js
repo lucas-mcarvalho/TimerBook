@@ -64,3 +64,23 @@ form.addEventListener('submit', async event => {
     msg.style.color = "red";
 }
 });
+
+/* teste  */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const radioButtons = document.querySelectorAll('input[name="radio-btn"]');
+    let currentSlide = 0;
+
+    function nextSlide() {
+        currentSlide++;
+        if (currentSlide > radioButtons.length - 1) {
+            currentSlide = 0;
+        }
+        radioButtons[currentSlide].checked = true;
+    }
+
+    // Passa a imagem a cada 4 segundos
+    setInterval(nextSlide, 4000);
+
+});
