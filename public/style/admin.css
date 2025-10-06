@@ -1,0 +1,147 @@
+body {
+    font-family:Helvetica;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background-color: aliceblue;
+}
+
+
+label {
+    display: block;
+    font-weight: bold; 
+    display: block;
+    left: 5px;
+    top: 20px;
+    margin-top: 10px;
+    background: transparent;
+}
+
+input {
+    font-size: 16px;
+    padding: 10px 10px 10px 5px;
+    display: block;
+    width: 200px;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #0A1A3A;
+    background: transparent;
+
+}
+
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background-color: #F5F2ED; 
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-logo img {
+    height: 50px;
+    width: auto;
+}
+
+
+.header-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #0A1A3A; 
+}
+
+.title {
+    margin: 0;
+}
+
+.logout-button {
+    padding: 10px 20px;
+    background-color: #d9534f;
+    color: aliceblue;
+    border-radius: 5px;
+    cursor: pointer; 
+    text-decoration: none;
+}
+
+.admin-container {
+    width: 90%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 50px;
+}
+
+.user-actions {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.add-button {
+    padding: 10px 20px;
+    background-color: #79bc75;
+    color: aliceblue;
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: 5px;
+
+}
+
+.user-list-header {
+    width: 100%;
+    border-bottom: 1px solid black;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.user-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    
+}
+
+.user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #0A1A3A;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.user-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.edit-button, .delete-button {
+    padding: 10px 20px;
+    cursor: pointer;
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+
+}
+
+.btn{
+    background-color: #d9534f;
+    border-radius: 5px;
+}
+.btn2{
+    background-color:#79bc75;
+    border-radius: 5px;
+}
