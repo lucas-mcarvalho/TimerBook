@@ -51,18 +51,6 @@ class Book
         $stmt = $pdo->query("SELECT * FROM Books");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-// Deletar livro (Incompleto)
-  /*  public static function delete($id)
-    {
-        try {
-            $pdo = Database::connect();
-            $stmt = $pdo->prepare("DELETE FROM Books WHERE id = ?");
-            $stmt->execute([$id]);
-            return ["message" => "Livro excluído com sucesso"];
-        } catch (PDOException $e) {
-            return ["error" => "Erro no banco: " . $e->getMessage()];
-        }
-    }*/
 
     public static function getByUser($user_id)
 {
@@ -89,7 +77,7 @@ public static function delete($id)
         ]
     ]);
 
-    // monta lista de objetos a deletar (evita duplicatas)
+    // monta lista de objetos a deletar.
     $objects = [];
 
     if (!empty($book['caminho_arquivo'])) {
