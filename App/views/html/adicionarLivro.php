@@ -19,14 +19,10 @@ session_start();
             
             <!-- Upload da capa -->
             <div class="form-group">
-                <label for="capa_arquivo">Capa do Livro:</label>
-                
-                <!-- O retângulo é o "botão invisível" -->
-                <label for="capa_arquivo" class="cover-placeholder">
-                    + Adicionar Capa
-                </label>
-
-                <!-- Input escondido -->
+            <label for="capa_arquivo">Capa do Livro:</label>
+            <label for="capa_arquivo" class="cover-placeholder">
+                <img src="https://us.123rf.com/450wm/oliviart/oliviart2004/oliviart200400338/144688847-cone-mais-isolado-no-fundo-branco-adicionar-ícone-mais-sinal-de-adição-cone-medical-plus.jpg?ver=6" alt="Prévia da foto" id="capaPreview">
+            </label>
                 <input type="file" id="capa_arquivo" name="capa_arquivo" accept="image/*" required class="file-input">
             </div>
 
@@ -34,7 +30,7 @@ session_start();
             <div class="form-group">
                 <label for="caminho_arquivo" class="btn_pdf">Arquivo do Livro (PDF):</label>
                 
-                <input type="file" id="caminho_arquivo" name="caminho_arquivo" accept=".pdf" required class="file-input">
+                <input type="file" id="caminho_arquivo" name="caminho_arquivo" accept=".pdf" required class="file-input01">
             </div>
             
             <!-- Nome do livro -->
