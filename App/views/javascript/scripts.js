@@ -11,12 +11,17 @@ const defaultImage = profilePicPreview.src;
 
 // Preview da imagem escolhida
 photoInput.addEventListener('change', () => {
+//Pega o primeiro arquivo selecionado   
   const file = photoInput.files[0];
+//Faz a verificação se o arquivo existe   
   if (file) {
+//Cria um objeto FileReader que ler o conteúdo do arquivo    
     const reader = new FileReader();
+//A foto recebe o conteúdo do reader    
     reader.onload = e => {
       profilePicPreview.src = e.target.result;
     };
+//Inicia a leitura e transforma em uma DataURL    
     reader.readAsDataURL(file);
   } else {
     profilePicPreview.src = defaultImage;
