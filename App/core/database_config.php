@@ -1,10 +1,18 @@
 <?php
-// Configuração do banco de dados MySQL
-define('DB_HOST', '15.228.179.50'); // IP ou hostname
-define('DB_USER', 'Database');     // Usuário do MySQL
-define('DB_NAME', 'Users');         // Nome do banco de dados
-define('DB_PASS', 'database123');  // Senha do MySQL
 
+require __DIR__ . '/../../vendor/autoload.php'; // carrega o autoload do Composer
+
+// Carrega o .env da raiz do projeto
+
+// Carrega o .env da raiz do projeto
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
+$dotenv->load();
+
+// CONEXAO DO BANCO DE DADOS MYSQL
+define('DB_HOST', $_ENV['DB_HOST']);
+define('DB_USER', $_ENV['DB_USER']);
+define('DB_PASS', $_ENV['DB_PASS']);
+define('DB_NAME', $_ENV['DB_NAME']);
 
 class Database {
     public static function connect() {

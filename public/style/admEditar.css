@@ -1,0 +1,116 @@
+body {
+    font-family: Helvetica, sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgb(240, 242, 245), rgb(161, 169, 185)); /* Novo fundo com degradê */
+}
+
+/* Novo estilo para o contêiner do formulário */
+.edit-container {
+    background-color: rgba(255, 255, 255, 0.95); /* Fundo semi-transparente */
+    backdrop-filter: blur(10px); /* Efeito de vidro fosco */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1); /* Sombra suave para destaque */
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+    box-sizing: border-box;
+}
+
+.title {
+    margin-bottom: 30px;
+    color: #333;
+    font-weight: bold;
+}
+
+.edit-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    gap: 5px;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    font-size: 16px;
+    padding: 10px 10px 10px 5px;
+    width: 100%;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #0A1A3A;
+    background: transparent;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    border-bottom: 2px solid #0A1A3A; /* Melhor destaque no foco */
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 20px;
+}
+
+.save-button, .back-button {
+    flex: 1; /* Faz com que os botões ocupem o mesmo espaço */
+    padding: 12px 20px;
+    border: none;
+    text-decoration: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.save-button {
+    color: white;
+    background-color: #8dd88a;
+}
+
+.back-button {
+    color: white;
+    background-color: #e74c3c;
+}
+
+.back-button:hover{
+    background-color: #c0392b;
+    transform: translateY(-2px); /* Efeito de elevação no hover */
+}
+
+.save-button:hover{
+    background-color: #79bc75;
+    transform: translateY(-2px); /* Efeito de elevação no hover */
+}
+
+/* Classes para a foto de perfil */
+.form-group.foto-perfil {
+    align-items: center;
+}
+
+.form-group.foto-perfil label {
+    margin-bottom: 10px;
+}
+
+.current-photo img {
+    border: 3px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
