@@ -67,9 +67,7 @@ class User {
     }
 
     public static function findWithBooks($id) {
-    $pdo = Database::connect(); // Usando o método centralizado que criamos
-
-    // CORREÇÃO APLICADA AQUI: "FROM users u"
+    $pdo = Database::connect();
     $sql = "SELECT
                 u.id as user_id,
                 u.nome as user_name,
@@ -78,7 +76,7 @@ class User {
                 b.titulo as book_title,
                 b.autor as book_author
             FROM
-                users u -- Nome da tabela corrigido para minúsculo e plural
+                users u 
             LEFT JOIN
                 books b ON u.id = b.user_id
             WHERE
@@ -93,7 +91,6 @@ class User {
             return null;
         }
 
-        // O resto do seu código para estruturar os dados está perfeito!
         $user_data = [
             'id' => $results[0]['user_id'],
             'nome' => $results[0]['user_name'],
@@ -114,8 +111,6 @@ class User {
         return $user_data;
 
     } catch (PDOException $e) {
-        // Para depuração, você pode temporariamente logar o erro:
-        // error_log($e->getMessage());
         return null;
     }
 }

@@ -78,7 +78,7 @@ button:hover {
     transform: translate(10px, -15%);
 
 }
-/* dixa aculto o input da foto do perfil*/
+/* deixa oculto o input da foto do perfil*/
 .file-input {
     display: none; 
 }

@@ -18,7 +18,7 @@ class BookController // Supondo que isso está dentro de uma classe
     {
         $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
 
-        // Recebe os dados do POST ou JSON (esta parte permanece a mesma)
+        // Recebe os dados do POST ou JSON
         if (stripos($contentType, "application/json") !== false) {
             $data = json_decode(file_get_contents("php://input"), true);
             $titulo = $data['titulo'] ?? null;
@@ -32,7 +32,7 @@ class BookController // Supondo que isso está dentro de uma classe
             $user_id = $_POST['user_id'] ?? null;
         }
 
-        // Validações básicas (permanecem as mesmas)
+        // Validações básicas
         if (!$titulo) {
             http_response_code(400);
             echo json_encode(["error" => "Título é obrigatório"]);
@@ -48,14 +48,14 @@ class BookController // Supondo que isso está dentro de uma classe
         $caminho_arquivo_s3 = null; // Variável que guardará a URL do S3
 
         // --- INÍCIO DA LÓGICA DE UPLOAD PARA O S3 ---
+        //VERIFICA SE O ARQUIVO FOI ENVIADO 
         if (isset($_FILES['caminho_arquivo']) && $_FILES['caminho_arquivo']['error'] === UPLOAD_ERR_OK) {
              $ext = pathinfo($_FILES['caminho_arquivo']['name'], PATHINFO_EXTENSION);
-                $allowedDocs = ['pdf'];
+            $allowedDocs = ['pdf'];
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mimeType = finfo_file($finfo, $_FILES['caminho_arquivo']['tmp_name']);
         finfo_close($finfo);
-            // --- CORREÇÃO ADICIONADA AQUI ---
     if (in_array(strtolower($ext), $allowedDocs) && $mimeType === 'application/pdf') {
             // Instanciar o cliente S3
             $s3Client = new S3Client([
@@ -82,7 +82,6 @@ class BookController // Supondo que isso está dentro de uma classe
         'Bucket'     => $bucketName,
         'Key'        => $fileKey, 
         'SourceFile' => $fileTmpPath,
-        // 'ACL'        => 'public-read',  <-- LINHA REMOVIDA OU COMENTADA
     ]);
 
     // 4. Obter a URL do arquivo no S3 para salvar no banco

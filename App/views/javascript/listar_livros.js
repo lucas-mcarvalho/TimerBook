@@ -1,13 +1,15 @@
 async function deletarLivro(id) {
+    //Pede a confirmação ao usuário para realmente apagar o livro 
     const confirmar = confirm("Tem certeza que deseja excluir este livro?");
     if (!confirmar) return; 
 
     try {
+        //Inicia a requisição HTTP
         const res = await fetch(`http://localhost/TimerBook/public/books/${id}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" }
         });
-
+        //Checa se deu algum erro na hora da deleção
         if (!res.ok) {
             throw new Error(`Erro ao deletar: ${res.status}`);
         }
