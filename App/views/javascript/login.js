@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       // 1) Tenta login como ADMIN
-      const adminRes = await fetch("http://localhost/TimerBook/public/admin/login", {
+      const adminRes = await fetch("http://15.228.179.50/TimerBook/public/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // 2) Se não for admin (ex.: 401), tenta login como USUÁRIO comum
-      const userRes = await fetch("http://localhost/TimerBook/public/login", {
+      const userRes = await fetch("http://15.228.179.50/TimerBook/public/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })

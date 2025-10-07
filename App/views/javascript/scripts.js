@@ -47,7 +47,7 @@ form.addEventListener('submit', async event => {
   
   try{
 // Inicia a requisição para a API usando fetch e aguarda a resposta.
-  const res = await fetch("http://localhost/TimerBook/public/register", {
+  const res = await fetch("http://15.228.179.50/TimerBook/public/register", {
     method: 'POST',
     body: formData
   });
