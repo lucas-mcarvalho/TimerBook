@@ -47,7 +47,9 @@ class AdminController
         }
 
         if ($isAuthenticated) {
-            session_start();
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
             $_SESSION['admin_logged_in'] = true;
             $_SESSION['admin'] = $admin;
             $_SESSION['admin_id'] = $admin['id'];

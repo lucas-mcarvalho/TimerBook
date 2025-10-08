@@ -44,11 +44,11 @@ class BookController // Supondo que isso está dentro de uma classe
             echo json_encode(["error" => "Usuário é obrigatório"]);
             return;
         }
-        
+       
         $caminho_arquivo_s3 = null; // Variável que guardará a URL do S3
 
         // --- INÍCIO DA LÓGICA DE UPLOAD PARA O S3 ---
-        //VERIFICA SE O ARQUIVO FOI ENVIADO 
+        //VERIFICA SE O ARQUIVO FOI ENVIADO
         if (isset($_FILES['caminho_arquivo']) && $_FILES['caminho_arquivo']['error'] === UPLOAD_ERR_OK) {
              $ext = pathinfo($_FILES['caminho_arquivo']['name'], PATHINFO_EXTENSION);
             $allowedDocs = ['pdf'];
@@ -68,11 +68,11 @@ class BookController // Supondo que isso está dentro de uma classe
             ]);
 
             $bucketName = $_ENV['S3_BUCKET_NAME'];
-            
+           
             // 2. Preparar os dados para o upload
             $fileTmpPath = $_FILES['caminho_arquivo']['tmp_name'];
             $fileName = basename($_FILES['caminho_arquivo']['name']);
-            
+           
             // Gera um nome de arquivo único para evitar sobreposições
             $fileKey = 'books/' . uniqid() . '-' . $fileName;
 
@@ -80,7 +80,7 @@ class BookController // Supondo que isso está dentro de uma classe
           try {
     $resultS3 = $s3Client->putObject([
         'Bucket'     => $bucketName,
-        'Key'        => $fileKey, 
+        'Key'        => $fileKey,
         'SourceFile' => $fileTmpPath,
     ]);
 
@@ -164,7 +164,7 @@ class BookController // Supondo que isso está dentro de uma classe
     }
 
     // Listar livros de um usuário
-  
+ 
 
     // Deletar livro
    public function delete($id)
@@ -181,8 +181,8 @@ class BookController // Supondo que isso está dentro de uma classe
 }
 
 
-    
-  
+   
+ 
 // Listar livros de um usuário , Postman
 public function getByUser($user_id)
 {
@@ -217,7 +217,9 @@ public function getByUserFromQuery()
 
 public function getMyBooks()
 {
-    session_start();
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
     if (!isset($_SESSION['user_id'])) {
         http_response_code(401);
         echo json_encode(["error" => "Usuário não autenticado"]);
@@ -246,3 +248,4 @@ public function findByTitle()
 
 
 }
+

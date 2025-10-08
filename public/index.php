@@ -1,6 +1,11 @@
 <?php
 
-$protected_actions = ['home'];
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+$protected_actions = ['home', 'Adicionar_Livro', 'listar_livros'];
+$admin_protected = ['admin', 'adm_editar', 'adm_salvar', 'adm_excluir', 'adm_sair'];
 
 require_once __DIR__ . '/../App/controllers/UserController.php';
 require_once __DIR__ . '/../App/controllers/AdminController.php';
@@ -16,6 +21,9 @@ $action = $_GET['action'] ?? 'login';
 
 if (in_array($action, $protected_actions)) {
     UserController::checkLogin();
+}
+if (in_array($action, $admin_protected)) {
+    AdminController::checkLogin();
 }
 
 switch ($action) {
@@ -41,16 +49,12 @@ switch ($action) {
         require_once __DIR__ . '/../App/views/html/adicionarLivro.php';
         break;
     case 'admin':
-        AdminController::checkLogin();
         require_once __DIR__ . '/../App/views/html/admin.php';
         break;
     case 'adm_editar':
-        AdminController::checkLogin();
         require_once __DIR__ . '/../App/views/html/admEditar.php';
         break;
     case 'adm_salvar':
-        AdminController::checkLogin();
-       
         // Processa upload da foto para S3
         $profilePhoto = null;
         if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK) {
@@ -113,7 +117,6 @@ switch ($action) {
         header('Location: index.php?action=admin');
         exit;
     case 'adm_excluir':
-        AdminController::checkLogin();
         $id = $_GET['id'] ?? null;
         if ($id) {
             User::delete($id);
@@ -134,3 +137,4 @@ switch ($action) {
         echo "Ação não reconhecida.";
         break;
 }
+
