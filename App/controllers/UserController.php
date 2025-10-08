@@ -23,7 +23,7 @@ class UserController
     {
         //VERIFICA O TIPO QUE FOI RECEBIDO
         $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
-        //SE FOI JSON 
+        //SE FOI JSON
         if (stripos($contentType, "application/json") !== false) {
             $data = json_decode(file_get_contents("php://input"), true);
             $email = $data['email'] ?? null;
@@ -46,9 +46,11 @@ class UserController
         $user = User::findByEmail($email);
         //VERIFICA SE O USUARIO E VALIDO E VERIFICA A SENHA COM O PASSWORD_VERIFY QUE E PARA VERIFICAR SENHAS CRIPTOGRAFADAS
         if ($user && isset($user['senha']) && password_verify($password, $user['senha'])) {
-            
-            session_start();
-            $_SESSION['user_logged_in'] = true; 
+           
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+            $_SESSION['user_logged_in'] = true;
             $_SESSION['user'] = $user;
 
             // Armazena informações do usuário na sessão
@@ -113,7 +115,7 @@ class UserController
             echo json_encode($result);
             return;
         }
-//PEGA O ID DO USUARIO CRIADO   
+//PEGA O ID DO USUARIO CRIADO  
         $userId = $result['user_id'];
 
         //SE O USUARIO ENVIOU UMA FOTO, PROCESSA O UPLOAD·
@@ -139,7 +141,7 @@ class UserController
         ]);
 
         $bucketName = $_ENV['S3_BUCKET_NAME'];
-        
+       
         // Gera nome único para a foto
         $newName = 'profile_photos/' . uniqid() . "." . $ext;
 
@@ -170,7 +172,7 @@ class UserController
       //RETORNA OS DADOS EM JSON
         echo json_encode($result);
 }
-      
+     
     }
 
     public function getAll()
@@ -281,3 +283,4 @@ class UserController
         exit;
     }
 }
+
