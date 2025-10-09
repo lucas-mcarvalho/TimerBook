@@ -5,6 +5,7 @@ $protected_actions = ['home'];
 require_once __DIR__ . '/../App/controllers/UserController.php';
 require_once __DIR__ . '/../App/controllers/AdminController.php';
 require_once __DIR__ . '/../App/models/Admin.php';
+require_once __DIR__ . '/../App/models/Books.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Aws\S3\S3Client;
@@ -48,6 +49,23 @@ switch ($action) {
         AdminController::checkLogin();
         require_once __DIR__ . '/../App/views/html/admEditar.php';
         break;
+
+    //Rota para listar livros do usuário no admin
+     case 'adm_listarLivros':
+        AdminController::checkLogin();
+        require_once __DIR__ . '/../App/views/html/editarLivroAdmin.php';
+        break;
+    
+    case 'adm_excluirLivro':
+        AdminController::checkLogin();
+        $id = $_GET['book-id'] ?? null;
+        if ($id) {
+            Book::delete($id);
+        }
+        // Redireciona de volta para a lista de livros do usuário
+        $userId = $_GET['user-id'] ?? null;
+        header('Location: index.php?action=adm_listarLivros&id=' . urlencode($userId));
+        exit;
     case 'adm_salvar':
         AdminController::checkLogin();
        
@@ -134,3 +152,4 @@ switch ($action) {
         echo "Ação não reconhecida.";
         break;
 }
+?>

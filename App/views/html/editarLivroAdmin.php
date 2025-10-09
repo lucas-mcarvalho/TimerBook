@@ -1,3 +1,17 @@
+<?php
+require_once __DIR__ . '/../../models/Admin.php';
+require_once __DIR__ . '/../../models/User.php';
+require_once __DIR__ . '/../../models/Books.php';
+$id = $_GET['id'] ?? null;
+$user = null;
+if ($id) {
+    $books = Admin::getUserBooks($id);
+}
+else {
+    $books = ["error" => "ID do usuário não fornecido"];   
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -34,16 +48,37 @@
                 </tr>
             </thead>
             <tbody>
-                
+                <?php
+                if (!isset($books)) {
+                    // tenta carregar o model Book e buscar pelo id passado na query string
+                    require_once __DIR__ . '/../../models/Books.php';
+                    $userId = $_GET['id'] ?? null;
+                    $books = $userId ? Book::getByUser($userId) : [];
+                }
+
+                if (is_array($books) && count($books) > 0):
+                    foreach ($books as $book):
+                        $cover = !empty($book['capa_livro']) ? $book['capa_livro'] : 'https://placehold.co/50x75';
+                ?>
                 <tr>
-                    <td><img src="https://placehold.co/50x75" alt="Capa" class="book-cover"></td>
-                    <td>O Senhor dos Anéis</td>
-                    <td>J.R.R. Tolkien</td>
+                    <td><img src="<?php echo htmlspecialchars($cover); ?>" alt="Capa" class="book-cover"></td>
+                    <td><?php echo htmlspecialchars($book['titulo'] ?? '—'); ?></td>
+                    <td><?php echo htmlspecialchars($book['autor'] ?? '—'); ?></td>
                     <td class="actions-cell">
-                        <a href=""><button class="edit-btn">Editar</button></a>
-                        <a href=""><button class="delete-btn">Excluir</button></a>
+                        <a href="index.php?action=editar_livro&book-id=<?php echo urlencode($book['id']); ?>"><button class="edit-btn">Editar</button></a>
+                        
+                        <a href="index.php?action=adm_excluirLivro&book-id=<?php echo urlencode
+                        ($book['id']);?>&user-id=<?php echo urlencode($id);?>" onclick="return confirm('Tem certeza que deseja excluir?')"><button class="delete-btn">Excluir</button></a>
                     </td>
                 </tr>
+                <?php
+                    endforeach;
+                else:
+                ?>
+                <tr>
+                    <td colspan="4">Nenhum livro encontrado para este usuário.</td>
+                </tr>
+                <?php endif; ?>
             </tbody>
         </table>
 

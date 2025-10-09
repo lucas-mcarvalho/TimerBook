@@ -46,7 +46,8 @@ $users = User::getAll();
                         <div class="user-controls">
                             <a href="index.php?action=adm_editar&id=<?php echo urlencode($user['id']); ?>" class="edit-button  btn2">Editar</a>
 
-                            <a href="" class="books-button btn3">Gerenciar Livros</a>
+                            <a href="index.php?action=adm_listarLivros&id=<?php echo urlencode($user['id']);
+                            ?>" class="books-button btn3">Gerenciar Livros</a>
 
                             <a href="index.php?action=adm_excluir&id=<?php echo urlencode($user['id']); ?>" class="delete-button btn" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
                         </div>
