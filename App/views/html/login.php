@@ -12,7 +12,7 @@
       <input type="email" id="email" name="email" required placeholder="E-mail">
       <input type="password" id="password" name="password" required placeholder="Senha">
       <a href="index.php?action=forgot_password" class="forgot-password">Esqueci minha senha</a>
-      <button type="button" class="social-login-button">
+      <button type="button" id="googleLoginBtn" class="social-login-button">
         Logar com: <img src="uploads/app1_logo.png" alt="Google Logo" class="google-icon">
       </button>
       <div class="register-link">
@@ -25,6 +25,10 @@
 
 
 <script src="/TimerBook/App/views/javascript/login.js"></script>
-
+<script>
+  document.getElementById("googleLoginBtn").addEventListener("click", () => {
+  window.location.href = "http://localhost/TimerBook/public/google-login";
+});
+</script>
 </body>
 </html>

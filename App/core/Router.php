@@ -138,6 +138,17 @@ switch ("$method $endpoint") {
         $controller->me();
         break;
 
+
+      // ---------------- GOOGLE LOGIN ----------------
+    case 'GET /google-login':
+        $controller = new UserController();
+        $controller->googleLogin();
+        break;
+
+    case 'GET /google-callback':
+        $controller = new UserController();
+        $controller->googleCallback();
+        break;
     default:
         http_response_code(404);
         echo json_encode(["error" => "Endpoint não encontrado"]);
