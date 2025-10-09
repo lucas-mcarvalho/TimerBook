@@ -142,4 +142,22 @@ class Admin {
             return ["error" => "Erro no banco: " . $e->getMessage()];
         }   
     }
+
+public static function getUserBooks($userId) {
+    try {
+        if (empty($userId)) {
+            return ["error" => "ID do usuário é obrigatório"];
+        }
+        // reutiliza a função do model Book
+        $books = Book::getByUser($userId);
+        if (is_array($books) && isset($books['error'])) {
+            return $books;
+        }
+        return $books;
+    } catch (PDOException $e) {
+        return ["error" => "Erro no banco: " . $e->getMessage()];
+    } catch (Exception $e) {
+        return ["error" => "Erro: " . $e->getMessage()];
+    }
+}
 }
