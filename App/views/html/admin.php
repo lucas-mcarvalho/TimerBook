@@ -45,6 +45,9 @@ $users = User::getAll();
                         <span><?php echo htmlspecialchars(($user['nome'] ?: $user['username']) . ' (' . $user['email'] . ')'); ?></span>
                         <div class="user-controls">
                             <a href="index.php?action=adm_editar&id=<?php echo urlencode($user['id']); ?>" class="edit-button  btn2">Editar</a>
+
+                            <a href="" class="books-button btn3">Gerenciar Livros</a>
+
                             <a href="index.php?action=adm_excluir&id=<?php echo urlencode($user['id']); ?>" class="delete-button btn" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
                         </div>
                     </div>
