@@ -24,10 +24,10 @@
   </div>
 
 
-<script src="/TimerBook/App/views/javascript/login.js"></script>
+<script src="/javascript/login.js"></script>
 <script>
   document.getElementById("googleLoginBtn").addEventListener("click", () => {
-  window.location.href = "http://localhost/TimerBook/public/google-login";
+  window.location.href = "http://localhost:8080/google-login";
 });
 </script>
 </body>

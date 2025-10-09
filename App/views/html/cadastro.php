@@ -106,7 +106,7 @@ probelmas. Também mudei as ocorrências de "localhost" para locahost:8000-->
     </div>
   </section>
   
-  <script src="/TimerBook/App/views/javascript/scripts.js"></script>
+  <script src="/javascript/scripts.js"></script>
 
 </body>
 </html>

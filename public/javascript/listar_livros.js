@@ -5,7 +5,7 @@ async function deletarLivro(id) {
 
     try {
         //Inicia a requisição HTTP
-        const res = await fetch(`http://localhost/TimerBook/public/books/${id}`, {
+        const res = await fetch(`http://localhost:8080/login/books/${id}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" }
         });
@@ -31,7 +31,7 @@ async function deletarLivro(id) {
 
 async function listarLivros() {
     try {
-        const res = await fetch("http://localhost/TimerBook/public/my-books", {
+        const res = await fetch("http://localhost:8080/my-books", {
             method: "GET",
             headers: { "Content-Type": "application/json" }
         });

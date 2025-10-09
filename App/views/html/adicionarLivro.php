@@ -61,6 +61,6 @@ session_start();
         </form>
     </main>
 
-    <script src="/TimerBook/App/views/javascript/cadastrar_livro.js"></script>
+    <script src="/javascript/cadastrar_livro.js"></script>
 </body>
 </html>

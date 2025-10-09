@@ -8,7 +8,7 @@ form.addEventListener("submit", async (event) => {
     console.log(formData); // Debug: Verifica os dados do formulário
 
     try {
-        const res = await fetch("http://localhost/TimerBook/public/books", {
+        const res = await fetch("http://localhost:8080/books", {
             method: "POST",
             body: formData,
             credentials: "include" // <- envia cookies de sessão

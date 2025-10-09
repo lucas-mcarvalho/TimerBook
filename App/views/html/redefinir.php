@@ -31,7 +31,7 @@
     <?php else: ?>
         <img class="logo" src="/TimerBook/public/uploads/main_logo.png" alt="logo">
 
-        <form action="/TimerBook/public/salvar_nova_senha.php" method="post">
+        <form action="/salvar_nova_senha.php" method="post">
           <h1>Redefinir Senha</h1>
           <input type="hidden" name="token" value="<?php echo htmlspecialchars($_GET['token'] ?? ''); ?>">
           <label for="nova_senha">Nova Senha:</label>
