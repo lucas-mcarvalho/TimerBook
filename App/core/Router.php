@@ -25,8 +25,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 
 // Remove o prefixo da pasta
-
 $endpoint = str_replace('/TimerBook/public', '', $uri);
+
+// Se for uma chamada para api.php, usa parâmetros para determinar a ação
+if (strpos($endpoint, '/api.php') !== false) {
+    $action = $_GET['action'] ?? $_POST['action'] ?? '';
+    if ($action) {
+        $endpoint = "/$action";
+    }
+}
 
 
 
@@ -154,4 +161,3 @@ switch ("$method $endpoint") {
         echo json_encode(["error" => "Endpoint não encontrado"]);
         break;
 }
-

@@ -246,20 +246,76 @@ class UserController
 
     public function resetPassword()
     {
-        $token = $_POST['token'] ?? '';
-        $newPassword = $_POST['new_password'] ?? '';
-        $pdo = Database::connect();
-        $stmt = $pdo->prepare("SELECT id FROM `User` WHERE reset_token = ? AND reset_token_expire > NOW()");
-        $stmt->execute([$token]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Detecta o tipo de conteúdo recebido
+        $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+        
+        // Pega os dados conforme o tipo enviado (JSON ou form data)
+        if (stripos($contentType, "application/json") !== false) {
+            $data = json_decode(file_get_contents("php://input"), true);
+            $token = $data['token'] ?? '';
+            $novaSenha = $data['nova_senha'] ?? '';
+            $confirmaSenha = $data['confirma_senha'] ?? '';
+        } else {
+            $token = $_POST['token'] ?? '';
+            $novaSenha = $_POST['nova_senha'] ?? '';
+            $confirmaSenha = $_POST['confirma_senha'] ?? '';
+        }
 
-        if ($user) {
-            $hash = password_hash($newPassword, PASSWORD_DEFAULT);
+        // Validação dos campos obrigatórios
+        if (!$token || !$novaSenha || !$confirmaSenha) {
+            http_response_code(400);
+            echo json_encode(["error" => "Preencha todos os campos."]);
+            return;
+        }
+
+        // Verifica se as senhas coincidem
+        if ($novaSenha !== $confirmaSenha) {
+            http_response_code(400);
+            echo json_encode(["error" => "As senhas não coincidem."]);
+            return;
+        }
+
+        try {
+            $pdo = Database::connect();
+
+            // Busca o usuário pelo token e verifica no banco se o token ainda é válido (evita problemas de fuso/hora no PHP)
+            $stmt = $pdo->prepare("SELECT id FROM `User` WHERE reset_token = ? AND reset_token_expire > NOW()");
+            $stmt->execute([$token]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$user) {
+                // Se não encontrou com validade, verificar se o token existe (então é expirado) ou é inválido
+                $stmt2 = $pdo->prepare("SELECT id FROM `User` WHERE reset_token = ?");
+                $stmt2->execute([$token]);
+                $exists = $stmt2->fetch(PDO::FETCH_ASSOC);
+
+                if ($exists) {
+                    http_response_code(400);
+                    echo json_encode(["error" => "Token expirado. Solicite uma nova redefinição."]); 
+                    return;
+                } else {
+                    http_response_code(400);
+                    echo json_encode(["error" => "Token inválido."]); 
+                    return;
+                }
+            }
+
+            // Atualiza a senha e limpa o token
+            $hash = password_hash($novaSenha, PASSWORD_DEFAULT);
             $stmt = $pdo->prepare("UPDATE `User` SET senha = ?, reset_token = NULL, reset_token_expire = NULL WHERE id = ?");
             $stmt->execute([$hash, $user['id']]);
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['error' => 'Token inválido ou expirado.']);
+
+            // Se a requisição foi JSON (API), retorna JSON. Caso contrário (form HTML), redireciona para a página de redefinir que já mostra a mensagem de sucesso.
+            if (stripos($contentType, "application/json") !== false) {
+                echo json_encode(["success" => true, "message" => "Senha redefinida com sucesso!"]);
+            } else {
+                header('Location: /TimerBook/public/index.php?action=reset_password&success=1');
+                exit;
+            }
+
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(["error" => "Erro ao redefinir senha: " . $e->getMessage()]);
         }
     }
 
