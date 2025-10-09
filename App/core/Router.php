@@ -44,7 +44,7 @@ switch ("$method $endpoint") {
         break;
 
     case 'POST /login':
-        $controller = new UserController();
+        $controller = new AuthenticationController();
         $controller->login();
         break;
 

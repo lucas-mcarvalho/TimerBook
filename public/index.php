@@ -4,8 +4,6 @@ $protected_actions = ['home'];
 
 require_once __DIR__ . '/../App/controllers/UserController.php';
 require_once __DIR__ . '/../App/controllers/AdminController.php';
-require_once __DIR__ . '/../App/models/Admin.php';
-require_once __DIR__ . '/../App/models/Books.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Aws\S3\S3Client;
