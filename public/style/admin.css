@@ -145,3 +145,23 @@ input {
     background-color:#79bc75;
     border-radius: 5px;
 }
+.bnt3{
+    background-color: #071126;
+    border-radius: 5px;
+}
+
+.books-button {
+    background-color: #79bc75;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    text-align: center;
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.books-button:hover {
+    background-color: #79bc75; 
+}
