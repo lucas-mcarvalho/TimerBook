@@ -2,6 +2,7 @@
 require_once '../App/controllers/UserController.php';
 require_once '../App/controllers/BookController.php';
 require_once '../App/controllers/AdminController.php';
+require_once '../App/controllers/AuthenticationController.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -54,12 +55,12 @@ switch ("$method $endpoint") {
         break;
 
     case 'POST /forgot-password':
-        $controller = new UserController();
+        $controller = new AuthenticationController();
         $controller->forgotPassword();
         break;
 
     case 'POST /reset-password':
-        $controller = new UserController();
+        $controller = new AuthenticationController();
         $controller->resetPassword();
         break;
 
@@ -148,12 +149,12 @@ switch ("$method $endpoint") {
 
       // ---------------- GOOGLE LOGIN ----------------
     case 'GET /google-login':
-        $controller = new UserController();
+        $controller = new GoogleController();
         $controller->googleLogin();
         break;
 
     case 'GET /google-callback':
-        $controller = new UserController();
+        $controller = new GoogleController();
         $controller->googleCallback();
         break;
     default:
