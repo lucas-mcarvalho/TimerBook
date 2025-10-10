@@ -45,14 +45,47 @@ switch ("$method $endpoint") {
         $controller->register();
         break;
 
-    case 'POST /login':
-        $controller = new AuthenticationController();
-        $controller->login();
-        break;
+ 
 
     case 'GET /users':
         $controller = new UserController();
        $controller->getAll(); // Exemplo: lista usuários
+        break;
+
+
+     // Deletar usuário  DELETE /users/{id}
+    case (preg_match('#^DELETE /users/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new UserController();
+        $userId = $matches[1];
+       $controller->delete($userid); 
+        break;
+
+    // Buscar usuário por ID → GET /users/{id}
+     case (preg_match('#^GET /users/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new UserController();
+        $userId = (int)$matches[1];
+        $controller->getById($userId);
+        break;
+
+    // Buscar usuário com seus livros  GET /users/{id}/books
+    case (preg_match('#^GET /users/(\d+)/books$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new UserController();
+        $userId = (int)$matches[1];
+        $controller->findWithBooks($userId);
+        break;
+
+    // Atualizar usuário PUT /users/{id}
+    case (preg_match('#^PUT /users/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new UserController();
+        $userId = (int)$matches[1];
+        $controller->update($userId);
+        break;
+
+    
+    //AUTHENTICATION
+    case 'POST /login':
+        $controller = new AuthenticationController();
+        $controller->login();
         break;
 
     case 'POST /forgot-password':

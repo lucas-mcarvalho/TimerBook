@@ -117,4 +117,90 @@ class UserController
             echo json_encode($users);
         }
     }
+
+     public function getById($id)
+    {
+        $user = User::getById($id);
+        if (!$user) {
+            http_response_code(404);
+            echo json_encode(["error" => "Usuário não encontrado"]);
+        } else {
+            echo json_encode($user);
+        }
+    }
+
+    public function findWithBooks($id)
+    {
+        $result = User::findWithBooks($id);
+        if (!$result) {
+            http_response_code(404);
+            echo json_encode(["error" => "Usuário não encontrado ou sem livros"]);
+        } else {
+            echo json_encode($result);
+        }
+}
+         public function update($id)
+    {
+        $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+
+        if (stripos($contentType, "application/json") !== false) {
+            $data = json_decode(file_get_contents("php://input"), true);
+            $nome = $data['nome'] ?? null;
+            $username = $data['username'] ?? null;
+            $email = $data['email'] ?? null;
+            $senha = $data['senha'] ?? null;
+        } else {
+            $nome = $_POST['nome'] ?? null;
+            $username = $_POST['username'] ?? null;
+            $email = $_POST['email'] ?? null;
+            $senha = $_POST['senha'] ?? null;
+        }
+
+        $profilePhoto = null;
+
+        // Se enviou nova foto
+        if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+            $file = $_FILES['photo'];
+            $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+
+            if (in_array(strtolower($ext), $allowed)) {
+                try {
+                    $s3Client = new S3Client([
+                        'version' => 'latest',
+                        'region' => $_ENV['AWS_DEFAULT_REGION'],
+                        'credentials' => [
+                            'key' => $_ENV['AWS_ACCESS_KEY_ID'],
+                            'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
+                        ]
+                    ]);
+
+                    $bucketName = $_ENV['S3_BUCKET_NAME'];
+                    $newName = 'profile_photos/' . uniqid() . "." . $ext;
+
+                    $s3Client->putObject([
+                        'Bucket' => $bucketName,
+                        'Key' => $newName,
+                        'SourceFile' => $file['tmp_name'],
+                    ]);
+
+                    $profilePhoto = "https://{$bucketName}.s3.{$_ENV['AWS_DEFAULT_REGION']}.amazonaws.com/{$newName}";
+
+                } catch (S3Exception $e) {
+                    echo json_encode(["error" => "Erro ao enviar imagem: " . $e->getMessage()]);
+                    return;
+                }
+            }
+        }
+
+        $result = User::update($id, $nome, $username, $email, $senha, false, $profilePhoto);
+        echo json_encode($result);
+    }
+
+       public function delete($id)
+    {
+        $result = User::delete($id);
+        echo json_encode($result);
+    }
+
 }

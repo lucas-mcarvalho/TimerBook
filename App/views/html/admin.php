@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -47,6 +46,7 @@ function filterList() {
   });
 }
 </script>
+<script src="/TimerBook/App/views/javascript/admin.js"></script>
 
 </body>
 </html>

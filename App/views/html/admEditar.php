@@ -46,4 +46,7 @@
    
    
 </body>
+
+ <script src="/TimerBook/App/views/javascript/adminEditar.js"></script>
+
 </html>

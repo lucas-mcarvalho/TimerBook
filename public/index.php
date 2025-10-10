@@ -40,6 +40,14 @@ switch ($action) {
     case 'listar_livros':
           require_once __DIR__ . '/../App/views/html/listarLivro.php';
           break;
+
+    case 'admin':
+          require_once __DIR__ . '/../App/views/html/admin.php';
+          break;
+
+    case 'adm_editar':
+        require_once __DIR__ . '/../App/views/html/admEditar.php';
+        break;
     default:
         echo "Ação não reconhecida.";
         break;
