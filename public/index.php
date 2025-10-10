@@ -1,8 +1,6 @@
 <?php
 
-// Inclui os controllers necessários
 require_once __DIR__ . '/../App/controllers/AuthenticationController.php';
-// Adicione outros controllers se forem necessários para as rotas de visualização
 
 // --- DEFINIÇÃO CENTRALIZADA DAS ROTAS DE VISUALIZAÇÃO ---
 // 'nome-da-acao' => ['handler_type' => 'caminho/do/arquivo' ou [Controller::class, 'metodo'], 'protected' => true/false]
@@ -45,12 +43,12 @@ $viewRoutes = [
     'admin' => [
         'type' => 'view',
         'handler' => '../App/views/html/admin.php',
-        'protected' => true // Assumindo que esta é uma área protegida
+        'protected' => false // Assumindo que esta é uma área protegida
     ],
     'adm_editar' => [
         'type' => 'view',
         'handler' => '../App/views/html/admEditar.php',
-        'protected' => true // Assumindo que esta é uma área protegida
+        'protected' => false // Assumindo que esta é uma área protegida
     ],
     'sair' => [
         'type' => 'controller',
