@@ -3,6 +3,7 @@ require_once '../App/controllers/UserController.php';
 require_once '../App/controllers/BookController.php';
 require_once '../App/controllers/AdminController.php';
 require_once '../App/controllers/AuthenticationController.php';
+require_once '../App/controllers/GoogleController.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
