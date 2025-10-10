@@ -1,12 +1,3 @@
-<?php
-require_once __DIR__ . '/../../models/Admin.php';
-require_once __DIR__ . '/../../models/User.php';
-$id = $_GET['id'] ?? null;
-$user = null;
-if ($id) {
-    $user = User::getById($id);
-}
-?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -22,24 +13,6 @@ if ($id) {
         <div>
             <form class="edit-form" action="index.php?action=adm_salvar" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($user['id'] ?? ''); ?>">
-                <?php if ($user && !empty($user['profile_photo'])): ?>
-                <div class="form-group foto-perfil">
-                    <label class="foto-perfil" >Foto Atual:</label>
-                    <div class="current-photo">
-                        <?php
-                        // Verifica se é URL do S3 ou caminho local
-                        $photoUrl = $user['profile_photo'];
-                        if (strpos($photoUrl, 'http') === 0) {
-                            // É URL do S3
-                            echo '<img src="' . htmlspecialchars($photoUrl) . '" alt="Foto atual" style="max-width: 100px; max-height: 100px; border-radius: 50%;">';
-                        } else {
-                            // É caminho local (para compatibilidade com fotos antigas)
-                            echo '<img src="../public/uploads/' . htmlspecialchars($photoUrl) . '" alt="Foto atual" style="max-width: 100px; max-height: 100px; border-radius: 50%;">';
-                        }
-                        ?>
-                    </div>
-                </div>
-                <?php endif; ?>
                 <div class="form-group">
                     <label for="profile-photo-input"><?php echo $user ? 'Nova Foto de Perfil:' : 'Foto de Perfil:'; ?></label>
                     <input type="file" id="profile-photo-input" name="profile_photo" accept="image/*">

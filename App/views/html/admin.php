@@ -1,7 +1,4 @@
-<?php
-require_once __DIR__ . '/../../models/User.php';
-$users = User::getAll();
-?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -38,24 +35,6 @@ $users = User::getAll();
                 <label for="search">Pesquisa por nome: </label>
                 <input type="text" id="search" placeholder="Pesquisa" oninput="filterList()">
             </div>
-
-            <?php if (is_array($users) && count($users) > 0): ?>
-                <?php foreach ($users as $user): ?>
-                    <div class="user-item" data-name="<?php echo htmlspecialchars($user['nome'] ?? $user['username']); ?>">
-                        <span><?php echo htmlspecialchars(($user['nome'] ?: $user['username']) . ' (' . $user['email'] . ')'); ?></span>
-                        <div class="user-controls">
-                            <a href="index.php?action=adm_editar&id=<?php echo urlencode($user['id']); ?>" class="edit-button  btn2">Editar</a>
-
-                            <a href="index.php?action=adm_listarLivros&id=<?php echo urlencode($user['id']);
-                            ?>" class="books-button btn3">Gerenciar Livros</a>
-
-                            <a href="index.php?action=adm_excluir&id=<?php echo urlencode($user['id']); ?>" class="delete-button btn" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>Nenhum usuário encontrado.</p>
-            <?php endif; ?>
         </div>
     </main>
 
