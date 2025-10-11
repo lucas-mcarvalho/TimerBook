@@ -10,7 +10,7 @@ probelmas. Também mudei as ocorrências de "localhost" para locahost:8000-->
   <meta charset="UTF-8">
   <title>Cadastro de Usuário</title>
   <link rel="stylesheet" href="style/style.css">
-  
+  <script src="/TimerBook/App/views/javascript/usuario_api.js"></script>
 </head>
 <body>
 
@@ -106,7 +106,7 @@ probelmas. Também mudei as ocorrências de "localhost" para locahost:8000-->
     </div>
   </section>
   
-  <script src="/TimerBook/App/views/javascript/scripts.js"></script>
+  <script>cadastrarUsuario();</script>
 
 </body>
 </html>

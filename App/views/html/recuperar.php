@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style/recuperar.css">
+    <script src="/TimerBook/App/views/javascript/usuario_api.js"></script>
+
     <title>recuperar senha</title>
 </head>
 <body>
@@ -21,6 +23,7 @@
         <div id="forgotResponse"></div>
     </form>
 
-    <script src="/TimerBook/App/views/javascript/forgot_password.js"></script>
+    <script>redefinirSenha();</script>
+
 </body>
 </html>

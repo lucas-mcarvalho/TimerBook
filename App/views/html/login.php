@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>Login de Usuário</title>
   <link rel="stylesheet" href="style/login.css">
+  <script src="/TimerBook/App/views/javascript/usuario_api.js"></script>
+
 </head>
 <body>
   <div class="login-container">
@@ -24,7 +26,7 @@
   </div>
 
 
-<script src="/TimerBook/App/views/javascript/login.js"></script>
+<script>loginUsuario();</script>
 <script>
   document.getElementById("googleLoginBtn").addEventListener("click", () => {
   window.location.href = "http://localhost/TimerBook/public/google-login";

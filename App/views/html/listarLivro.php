@@ -10,7 +10,7 @@ $id = $_SESSION['id'] ?? "uploads/default.png";
     <title>Timer Book</title>
     <link rel="stylesheet" href="style/listarLivro.css?v=<?php echo time(); ?>">
 
-    <script src="/TimerBook/App/views/javascript/listar_livros.js"></script>
+    <script src="/TimerBook/App/views/javascript/livros_api.js"></script>
 
     
 </head>
@@ -49,7 +49,7 @@ $id = $_SESSION['id'] ?? "uploads/default.png";
     </button>
 </main>
 
-
+<script>listarLivros();</script>
 
 </body>
 </html>

@@ -1,7 +1,3 @@
-<?php
-require_once __DIR__ . '/../../models/User.php';
-$users = User::getAll();
-?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -9,6 +5,8 @@ $users = User::getAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style/admin.css">
     <title>Timer Book</title>
+
+    <script src="/TimerBook/App/views/javascript/admin.js"></script>
 </head>
 <body>
 
@@ -20,15 +18,17 @@ $users = User::getAll();
     
     <div class="header-right">
         
-        <a href="index.php?action=adm_editar" id="add-user-button" class="add-button">Adicionar Usuário +</a>
+        <!-- Cria rota para adicionar usuários(via admin)-->
+        <a href="" id="add-user-button" class="add-button">Adicionar Usuário +</a>
         
-        <a href="index.php?action=admin_sair" class="logout-button">sair</a>
+        <!-- Cria rota para saida do admin-->
+        <a href="" class="logout-button">sair</a>
     </div>
 </header>
 
     <main class="admin-container">
         
-        
+    <!-- A função render do admin.js renderiza a tabela de usuários -->
         <div class="user-list-header">
             <h3>Usuários</h3>
         </div>
@@ -38,24 +38,6 @@ $users = User::getAll();
                 <label for="search">Pesquisa por nome: </label>
                 <input type="text" id="search" placeholder="Pesquisa" oninput="filterList()">
             </div>
-
-            <?php if (is_array($users) && count($users) > 0): ?>
-                <?php foreach ($users as $user): ?>
-                    <div class="user-item" data-name="<?php echo htmlspecialchars($user['nome'] ?? $user['username']); ?>">
-                        <span><?php echo htmlspecialchars(($user['nome'] ?: $user['username']) . ' (' . $user['email'] . ')'); ?></span>
-                        <div class="user-controls">
-                            <a href="index.php?action=adm_editar&id=<?php echo urlencode($user['id']); ?>" class="edit-button  btn2">Editar</a>
-
-                            <a href="index.php?action=adm_listarLivros&id=<?php echo urlencode($user['id']);
-                            ?>" class="books-button btn3">Gerenciar Livros</a>
-
-                            <a href="index.php?action=adm_excluir&id=<?php echo urlencode($user['id']); ?>" class="delete-button btn" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>Nenhum usuário encontrado.</p>
-            <?php endif; ?>
         </div>
     </main>
 
@@ -69,5 +51,7 @@ function filterList() {
 }
 </script>
 
+
+<script>listarUsuarios();</script>
 </body>
 </html>

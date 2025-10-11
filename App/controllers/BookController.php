@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/Books.php';
-require_once __DIR__ . '/../core/database_config.php';
+
 
 require __DIR__ . '/../../vendor/autoload.php';
 
