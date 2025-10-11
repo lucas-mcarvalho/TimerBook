@@ -117,6 +117,14 @@ switch ("$method $endpoint") {
     $controller = new BookController();
     $controller->getMyBooks();
     break;
+
+    //UPDATE DO LIVRO
+    case (preg_match('#^PUT /books/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $bookId = (int)$matches[1];
+    $controller = new BookController();
+    $controller->update($bookId);
+    break;
+
     //ADMIN 
     case 'POST /admin':
         $controller = new AdminController();

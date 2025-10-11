@@ -244,5 +244,42 @@ public function findByTitle()
     echo json_encode($result);
 }
 
+public function update($id) // <-- 1. Receba o ID como parâmetro
+{
+    $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+
+    // Captura os dados JSON ou formulário
+    if (stripos($contentType, "application/json") !== false) {
+        $data = json_decode(file_get_contents("php://input"), true);
+    } else {
+        parse_str(file_get_contents("php://input"), $data);
+    }
+
+    $titulo = $data['titulo'] ?? null;
+    $autor = $data['autor'] ?? null;
+    $ano_publicacao = $data['ano_publicacao'] ?? null;
+    
+    if (!$id) {
+        http_response_code(400);
+        echo json_encode(["error" => "ID do livro não fornecido na URL"]);
+        return;
+    }
+
+    $result = Book::update($id, $titulo, $autor, $ano_publicacao);
+
+    if (isset($result['error'])) {
+        if ($result['error'] === "Livro não encontrado") {
+            http_response_code(404); 
+        } else {
+            http_response_code(400);
+        }
+    } else {
+        http_response_code(200);
+    }
+
+    echo json_encode($result);
+}
+
+
 
 }

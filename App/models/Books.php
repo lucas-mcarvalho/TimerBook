@@ -123,4 +123,53 @@ public static function delete($id)
         return ["error" => "Erro no banco: " . $e->getMessage()];
     }
 }
+
+
+public static function update($id, $titulo, $autor, $ano_publicacao)
+{
+    try {
+        $pdo = Database::connect();
+
+        // Verifica se o livro existe
+        $livroExistente = self::findById($id);
+        if (!$livroExistente) {
+            return ["error" => "Livro não encontrado"];
+        }
+
+    
+        $campos = [];
+        $valores = [];
+
+        if ($titulo !== null) {
+            $campos[] = "titulo = ?";
+            $valores[] = $titulo;
+        }
+
+        if ($autor !== null) {
+            $campos[] = "autor = ?";
+            $valores[] = $autor;
+        }
+
+        if ($ano_publicacao !== null) {
+            $campos[] = "ano_publicacao = ?";
+            $valores[] = $ano_publicacao;
+        }
+
+        if (empty($campos)) {
+            return ["error" => "Nenhum campo para atualizar"];
+        }
+
+        $valores[] = $id;
+
+        $sql = "UPDATE Books SET " . implode(", ", $campos) . " WHERE id = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($valores);
+
+        return ["message" => "Livro atualizado com sucesso"];
+    } catch (PDOException $e) {
+        return ["error" => "Erro no banco: " . $e->getMessage()];
+    }
+}
+
+
 }
