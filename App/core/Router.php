@@ -165,6 +165,12 @@ switch ("$method $endpoint") {
         $controller = new AdminController();
         $controller->me();
         break;
+
+    case 'GET /admin/logout':
+        $controller = new AdminController();
+        $controller->logout();
+        break;
+
       // ---------------- GOOGLE LOGIN ----------------
     case 'GET /google-login':
         $controller = new GoogleController();

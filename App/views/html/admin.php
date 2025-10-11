@@ -22,7 +22,7 @@
         <a href="" id="add-user-button" class="add-button">Adicionar Usuário +</a>
         
         <!-- Cria rota para saida do admin-->
-        <a href="" class="logout-button">sair</a>
+        <a href="/TimerBook/public/admin/logout" class="logout-button">sair</a>
     </div>
 </header>
 
