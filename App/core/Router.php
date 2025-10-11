@@ -47,7 +47,7 @@ switch ("$method $endpoint") {
     case (preg_match('#^DELETE /users/(\d+)$#', "$method $endpoint", $matches) ? true : false):
         $controller = new UserController();
         $userId = $matches[1];
-       $controller->delete($userid); 
+       $controller->delete($userId); 
         break;
 
 
