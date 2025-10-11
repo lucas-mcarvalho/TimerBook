@@ -234,6 +234,12 @@ class AdminController
         }
         $_SESSION = [];
         session_destroy();
+
+        // Garanta que o navegador receba um redirect HTML
+        header('Content-Type: text/html; charset=utf-8');
+
+        // Redireciona para a página de login do projeto (ajuste o path se necessário)
+        header('Location: /TimerBook/public/');
         exit;
     }
 
