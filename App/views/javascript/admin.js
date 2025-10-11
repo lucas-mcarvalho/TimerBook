@@ -1,25 +1,21 @@
 // js/admin.js
-const API_BASE = "http://localhost/TimerBook/public"; // ajuste se necessário (case-sensitive)
+(function () {
+  const API_BASE = "http://localhost/TimerBook/public";
 
-// ao carregar a página
-document.addEventListener("DOMContentLoaded", () => {
-  const userList = document.getElementById("user-list");
+  // ==========================
+  // LISTAGEM DE USUÁRIOS
+  // ==========================
+  async function listarUsuarios() {
+    const userList = document.getElementById("user-list");
+    if (!userList) return;
 
-  // garante que exista um container para os resultados (não sobrescreve o form de busca)
-  let resultsContainer = document.getElementById("usersContainer");
-  if (!resultsContainer) {
-    resultsContainer = document.createElement("div");
-    resultsContainer.id = "usersContainer";
-    resultsContainer.className = "users-container";
-    userList.appendChild(resultsContainer);
-  }
+    const resultsContainer = ensureResultsContainer(userList);
 
-  // busca usuários do backend
-  async function fetchUsers() {
-    resultsContainer.innerHTML = `<p>Carregando usuários...</p>`;
     try {
+      resultsContainer.innerHTML = `<p>Carregando usuários...</p>`;
       const res = await fetch(`${API_BASE}/users`, { cache: "no-store" });
-      const text = await res.text(); // pega o texto pra evitar erro se o backend retornar algo inesperado
+      const text = await res.text();
+
       let data;
       try {
         data = JSON.parse(text);
@@ -27,104 +23,220 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error("Resposta do servidor inválida: " + text);
       }
 
-      if (!res.ok) {
-        const msg = data && (data.error || data.message) ? (data.error || data.message) : "Erro ao buscar usuários";
-        throw new Error(msg);
-      }
+      if (!res.ok) throw new Error(data?.error || data?.message || "Erro ao buscar usuários");
 
-      // aceita tanto um array direto quanto { users: [...] }
-      const users = Array.isArray(data) ? data : (Array.isArray(data.users) ? data.users : []);
-
-      renderUsers(users);
+      const users = Array.isArray(data) ? data : Array.isArray(data.users) ? data.users : [];
+      renderUsers(resultsContainer, users);
     } catch (err) {
       console.error("Erro ao buscar usuários:", err);
       resultsContainer.innerHTML = `<p class="error">⚠️ Falha ao carregar usuários: ${err.message}</p>`;
     }
   }
 
-  // renderiza a lista de usuários
-  function renderUsers(users) {
+  function ensureResultsContainer(userList) {
+    let resultsContainer = document.getElementById("usersContainer");
+    if (!resultsContainer) {
+      resultsContainer = document.createElement("div");
+      resultsContainer.id = "usersContainer";
+      resultsContainer.className = "users-container";
+      userList.appendChild(resultsContainer);
+    }
+    return resultsContainer;
+  }
+
+  function renderUsers(container, users) {
+    container.innerHTML = "";
+
     if (!users || users.length === 0) {
-      resultsContainer.innerHTML = `<p>Nenhum usuário encontrado.</p>`;
+      container.innerHTML = `<p>Nenhum usuário encontrado.</p>`;
       return;
     }
 
-    resultsContainer.innerHTML = ""; // limpa
-
     users.forEach((user) => {
-      const userItem = document.createElement("div");
-      userItem.className = "user-item";
-      userItem.setAttribute("data-name", (user.nome || "").toLowerCase());
+      const userItem = createUserItem(user);
+      container.appendChild(userItem);
+    });
 
-      // monta a imagem (se existir) e os dados
-      const photoHtml = user.profile_photo
-        ? `<img src="${user.profile_photo}" alt="${user.nome}" class="user-photo" width="48" height="48">`
-        : `<div class="user-photo placeholder" style="width:48px;height:48px;border-radius:4px;background:#eee;display:inline-block;"></div>`;
+    attachUserActionListeners(container);
+    setupSearchFilter(container); // Filtro configurado após renderização
+  }
 
-      userItem.innerHTML = `
-        <div class="user-row" style="display:flex;align-items:center;gap:12px;justify-content:space-between;padding:8px;border-bottom:1px solid #eee;">
-          <div style="display:flex;align-items:center;gap:12px;">
-            ${photoHtml}
-            <div>
-              <div><strong>${escapeHtml(user.nome || "(sem nome)")}</strong></div>
-              <div style="font-size:0.9em;color:#666;">${escapeHtml(user.email || "")}</div>
-            </div>
-          </div>
+  function createUserItem(user) {
+    const userItem = document.createElement("div");
+    userItem.className = "user-item";
+    userItem.setAttribute("data-name", (user.nome || "").toLowerCase());
 
-          <div class="user-actions" style="display:flex;gap:8px;">
-            <button class="edit-btn" data-id="${user.id}">Editar</button>
-            <button class="delete-btn" data-id="${user.id}">Excluir</button>
+    const photoHtml = user.profile_photo
+      ? `<img src="${user.profile_photo}" alt="${user.nome}" class="user-photo" width="48" height="48">`
+      : `<div class="user-photo placeholder" style="width:48px;height:48px;border-radius:4px;background:#eee;display:inline-block;"></div>`;
+
+    userItem.innerHTML = `
+      <div class="user-row" style="display:flex;align-items:center;gap:12px;justify-content:space-between;padding:8px;border-bottom:1px solid #eee;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          ${photoHtml}
+          <div>
+            <div><strong>${escapeHtml(user.nome || "(sem nome)")}</strong></div>
+            <div style="font-size:0.9em;color:#666;">${escapeHtml(user.email || "")}</div>
           </div>
         </div>
-      `;
+        <div class="user-actions" style="display:flex;gap:8px;">
+          <button class="edit-btn" data-id="${user.id}">Editar</button>
+          <button class="delete-btn" data-id="${user.id}">Excluir</button>
+        </div>
+      </div>
+    `;
+    return userItem;
+  }
 
-      resultsContainer.appendChild(userItem);
+  function attachUserActionListeners(container) {
+    container.querySelectorAll(".delete-btn").forEach((btn) => {
+      btn.onclick = () => deletarUsuario(btn.getAttribute("data-id"));
     });
-
-    // adiciona listeners (delegation para botões)
-    resultsContainer.querySelectorAll(".delete-btn").forEach(btn => {
-      btn.onclick = () => deleteUser(btn.getAttribute("data-id"));
-    });
-    resultsContainer.querySelectorAll(".edit-btn").forEach(btn => {
-      btn.onclick = () => editUser(btn.getAttribute("data-id"));
+    container.querySelectorAll(".edit-btn").forEach((btn) => {
+      btn.onclick = () => {
+        const id = btn.getAttribute("data-id");
+        if (!id) {
+          alert("ID do usuário não encontrado!");
+          return;
+        }
+        // redireciona para a página de edição
+        window.location.href = `index.php?action=adm_editar&id=${encodeURIComponent(id)}`;
+      };
     });
   }
 
-  // função para deletar usuário
-  async function deleteUser(id) {
-    if (!confirm("Tem certeza que deseja excluir este usuário?")) return;
+ async function deletarUsuario(id) {
+  if (!confirm("Tem certeza que deseja excluir este usuário?")) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/users/${id}`, { method: "DELETE" });
+
+    if (!res.ok) {
+      // tenta pegar mensagem do backend, se existir
+      let errorMsg = "";
+      try {
+        errorMsg = await res.text();
+      } catch {}
+      throw new Error(errorMsg || "Erro ao deletar usuário");
+    }
+
+    alert("Usuário excluído com sucesso!");
+    listarUsuarios();
+  } catch (err) {
+    console.error("Erro ao deletar usuário:", err);
+    alert("Erro ao excluir: " + (err.message || "verifique o console"));
+  }
+}
+
+
+
+  // ==========================
+  // EDIÇÃO DE USUÁRIO
+  // ==========================
+  async function editarUsuario() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get("id");
+
+    if (!userId) {
+      alert("ID do usuário não encontrado na URL!");
+      return;
+    }
+
+    const form = document.getElementById("editUserForm");
+    const preview = document.getElementById("photoPreview");
+    const fileInput = document.getElementById("photo");
+
+    // Carrega dados do usuário
     try {
-      const res = await fetch(`${API_BASE}/users/${id}`, { method: "DELETE" });
+      const res = await fetch(`${API_BASE}/users/${userId}`);
       const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || data.message || "Erro ao deletar usuário");
-      }
-      alert(data.message || "Usuário excluído com sucesso!");
-      fetchUsers();
+      if (!res.ok) throw new Error(data.error || data.message || "Erro ao buscar usuário");
+
+      document.getElementById("nome").value = data.nome || "";
+      document.getElementById("username").value = data.username || "";
+      document.getElementById("email").value = data.email || "";
+      document.getElementById("senha").value = "";
+      if (preview && data.profile_photo) preview.src = data.profile_photo;
     } catch (err) {
-      console.error("Erro ao deletar usuário:", err);
-      alert("Erro ao excluir: " + (err.message || "verifique o console"));
+      console.error(err);
+      alert("Falha ao carregar usuário: " + err.message);
+    }
+
+  
+    // Preview da foto
+    if (fileInput) {
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => (preview.src = e.target.result);
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // Submissão do formulário
+    if (form) {
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const nome = document.getElementById("nome").value.trim();
+        const username = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const senha = document.getElementById("senha").value.trim();
+        const photoFile = fileInput?.files[0];
+
+        const useFormData = !!photoFile;
+        let body, headers = {};
+
+        if (useFormData) {
+          body = new FormData();
+          body.append("nome", nome);
+          body.append("username", username);
+          body.append("email", email);
+          body.append("senha", senha);
+          body.append("photo", photoFile);
+        } else {
+          headers["Content-Type"] = "application/json";
+          body = JSON.stringify({ nome, username, email, senha });
+        }
+
+        try {
+          const res = await fetch(`${API_BASE}/users/${userId}`, {
+            method: "PUT",
+            headers,
+            body,
+          });
+
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || data.message || "Erro ao atualizar");
+
+          alert("✅ Usuário atualizado com sucesso!");
+          window.location.href = "index.php?action=admin";
+        } catch (err) {
+          console.error(err);
+          alert("Erro ao salvar alterações: " + err.message);
+        }
+      });
     }
   }
 
-  // redireciona para página de edição (usa sua rota existente)
-  function editUser(id) {
-    window.location.href = `index.php?action=adm_editar&id=${encodeURIComponent(id)}`;
-  }
+  // ==========================
+  // FILTRO DE BUSCA
+  // ==========================
+  function setupSearchFilter(container) {
+    const searchInput = document.getElementById("search");
+    if (!searchInput || !container) return;
 
-  // filtro (usa o input #search que já está no HTML)
-  const searchInput = document.getElementById("search");
-  if (searchInput) {
     searchInput.addEventListener("input", () => {
       const term = searchInput.value.trim().toLowerCase();
-      document.querySelectorAll("#usersContainer .user-item").forEach(row => {
+      container.querySelectorAll(".user-item").forEach((row) => {
         const name = row.getAttribute("data-name") || "";
         row.style.display = name.includes(term) ? "" : "none";
       });
     });
   }
 
-  // função simples para escapar HTML (segurança básica ao injetar strings)
   function escapeHtml(str) {
     return String(str)
       .replace(/&/g, "&amp;")
@@ -134,6 +246,10 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/>/g, "&gt;");
   }
 
-  // inicia carregamento
-  fetchUsers();
-});
+  // ==========================
+  // EXPOSIÇÃO GLOBAL
+  // ==========================
+  window.listarUsuarios = listarUsuarios;
+  window.deletarUsuario = deletarUsuario;
+  window.editarUsuario = editarUsuario;
+})();

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style/admin.css">
     <title>Timer Book</title>
+
+    <script src="/TimerBook/App/views/javascript/admin.js"></script>
 </head>
 <body>
 
@@ -16,15 +18,17 @@
     
     <div class="header-right">
         
-        <a href="index.php?action=adm_editar" id="add-user-button" class="add-button">Adicionar Usuário +</a>
+        <!-- Cria rota para adicionar usuários(via admin)-->
+        <a href="" id="add-user-button" class="add-button">Adicionar Usuário +</a>
         
-        <a href="index.php?action=admin_sair" class="logout-button">sair</a>
+        <!-- Cria rota para saida do admin-->
+        <a href="" class="logout-button">sair</a>
     </div>
 </header>
 
     <main class="admin-container">
         
-        
+    <!-- A função render do admin.js renderiza a tabela de usuários -->
         <div class="user-list-header">
             <h3>Usuários</h3>
         </div>
@@ -47,7 +51,7 @@ function filterList() {
 }
 </script>
 
-<script src="/TimerBook/App/views/javascript/admin.js"></script>
 
+<script>listarUsuarios();</script>
 </body>
 </html>
