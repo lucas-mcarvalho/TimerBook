@@ -65,7 +65,7 @@ switch ("$method $endpoint") {
         $controller->findWithBooks($userId);
         break;
     // Atualizar usuário PUT /users/{id}
-    case (preg_match('#^PUT /users/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    case (preg_match('#^POST /users/(\d+)$#', "$method $endpoint", $matches) ? true : false):
         $controller = new UserController();
         $userId = (int)$matches[1];
         $controller->update($userId);

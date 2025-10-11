@@ -191,6 +191,7 @@
 
         if (useFormData) {
           body = new FormData();
+           body.append("_method", "PUT"); 
           body.append("nome", nome);
           body.append("username", username);
           body.append("email", email);
@@ -203,7 +204,7 @@
 
         try {
           const res = await fetch(`${API_BASE}/users/${userId}`, {
-            method: "PUT",
+            method: "POST",
             headers,
             body,
           });
