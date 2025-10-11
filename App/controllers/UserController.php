@@ -3,11 +3,6 @@ require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../core/database_config.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-use Google\Client as GoogleClient;
-use Google\Service\Oauth2;
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -19,70 +14,6 @@ use Aws\S3\Exception\S3Exception;
 
 class UserController
 {
-
-    //FUNCAO DE LOGIN
-    public function login()
-    {
-        //VERIFICA O TIPO QUE FOI RECEBIDO
-        $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
-        //SE FOI JSON 
-        if (stripos($contentType, "application/json") !== false) {
-            $data = json_decode(file_get_contents("php://input"), true);
-            $email = $data['email'] ?? null;
-            $password = $data['password'] ?? null;
-        } else {
-            //OU SE FOI FORM DATA , DO TIPO HTML
-            $email = $_POST['email'] ?? null;
-            $password = $_POST['password'] ?? null;
-        }
-
-        //VERIFICA SE OS CAMPOS EMAIL E SENHA FORAM PREENCHIDOS
-        if (!$email || !$password) {
-            //RETORNA A RESPOSTA HTTP 400
-            http_response_code(400);
-            //RETORNA NO FORMATO JSON
-            echo json_encode(["error" => "E-mail e senha são obrigatórios"]);
-            return;
-        }
-        //CHAMA A FUNCAO DA MODEL PRA BUSCAR EMAIL
-        $user = User::findByEmail($email);
-        //VERIFICA SE O USUARIO E VALIDO E VERIFICA A SENHA COM O PASSWORD_VERIFY QUE E PARA VERIFICAR SENHAS CRIPTOGRAFADAS
-        if ($user && isset($user['senha']) && password_verify($password, $user['senha'])) {
-            
-            session_start();
-            $_SESSION['user_logged_in'] = true; 
-            $_SESSION['user'] = $user;
-
-            // Armazena informações do usuário na sessão
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            if (!empty($user['profile_photo'])) {
-               $_SESSION['profile_photo'] = ltrim($user['profile_photo'], '/');
-          } else {
-                   $_SESSION['profile_photo'] = null;
-               }
-            //RETORNA A MENSAGEM DE SUCESSO E OS DADOS DO USUARIO ,SEM INCLUIR A SENHA
-            echo json_encode([
-                "success" => true,
-                "message" => "Login realizado com sucesso",
-                "user" => [
-                    "id" => $user['id'],
-                    "nome" => $user['nome'],
-                    "username" => $user['username'],
-                    "email" => $user['email'],
-                    "profile_photo" => $user['profile_photo'] ?? null
-                ]
-            ]);
-            //SE DER ERRO RETORNA UMA RESPOSTA HTTP 400
-        } else {
-            http_response_code(401);
-            echo json_encode(["error" => "E-mail ou senha inválidos"]);
-        }
-    }
-
-
-
-
     public function register()
     {
         // DETECTA O TIPO DE DADO QUE RECEBEU
@@ -187,228 +118,89 @@ class UserController
         }
     }
 
-    public function forgotPassword()
+     public function getById($id)
     {
-        $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
-        if (stripos($contentType, "application/json") !== false) {
-            $data = json_decode(file_get_contents("php://input"), true);
-            $email = trim($data['email'] ?? '');
-        } else {
-            $email = trim($_POST['email'] ?? '');
-        }
-        $pdo = Database::connect();
-        $stmt = $pdo->prepare("SELECT id FROM `User` WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user) {
-            $token = bin2hex(random_bytes(32));
-            $stmt = $pdo->prepare("UPDATE `User` SET reset_token = ?, reset_token_expire = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = ?");
-            $stmt->execute([$token, $user['id']]);
-
-            $resetLink = "http://localhost/TimerBook/public/index.php?action=reset_password&token=$token";
-            $mail = new PHPMailer(true);
-
-            try {
-                $mail->isSMTP();
-                $mail->Host = $_ENV['MAIL_HOST'];
-                $mail->SMTPAuth = true;
-                $mail->Username = $_ENV['MAIL_USERNAME'];;
-                $mail->Password = $_ENV['MAIL_PASSWORD'];
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port = 587;
-                $mail->setFrom($_ENV['MAIL_FROM'], $_ENV['MAIL_FROM_NAME']);
-                $mail->addAddress($email);
-                $mail->Subject = 'Redefinir Senha';
-                $mail->Body = "Clique no link para redefinir sua senha: $resetLink";
-
-                // Força debug do PHPMailer na resposta
-                ob_start();
-                $mail->SMTPDebug = 2;
-                $mail->Debugoutput = function ($str, $level) {
-                    echo "Debug: $str\n";
-                };
-                $enviado = $mail->send();
-                $debugOutput = ob_get_clean();
-
-                if ($enviado) {
-                    echo json_encode(['success' => true, 'debug' => $debugOutput]);
-                } else {
-                    echo json_encode(['error' => $mail->ErrorInfo, 'debug' => $debugOutput]);
-                }
-            } catch (Exception $e) {
-                echo json_encode(['error' => $e->getMessage(), 'mail_error' => $mail->ErrorInfo ?? '', 'debug' => $debugOutput ?? '']);
-            }
-        } else {
-            echo json_encode(['error' => 'E-mail não encontrado.']);
-        }
-    }
-
-    public function resetPassword()
-    {
-        // Detecta o tipo de conteúdo recebido
-        $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
-        
-        // Pega os dados conforme o tipo enviado (JSON ou form data)
-        if (stripos($contentType, "application/json") !== false) {
-            $data = json_decode(file_get_contents("php://input"), true);
-            $token = $data['token'] ?? '';
-            $novaSenha = $data['nova_senha'] ?? '';
-            $confirmaSenha = $data['confirma_senha'] ?? '';
-        } else {
-            $token = $_POST['token'] ?? '';
-            $novaSenha = $_POST['nova_senha'] ?? '';
-            $confirmaSenha = $_POST['confirma_senha'] ?? '';
-        }
-
-        // Validação dos campos obrigatórios
-        if (!$token || !$novaSenha || !$confirmaSenha) {
-            http_response_code(400);
-            echo json_encode(["error" => "Preencha todos os campos."]);
-            return;
-        }
-
-        // Verifica se as senhas coincidem
-        if ($novaSenha !== $confirmaSenha) {
-            http_response_code(400);
-            echo json_encode(["error" => "As senhas não coincidem."]);
-            return;
-        }
-
-        try {
-            $pdo = Database::connect();
-
-            // Busca o usuário pelo token e verifica no banco se o token ainda é válido (evita problemas de fuso/hora no PHP)
-            $stmt = $pdo->prepare("SELECT id FROM `User` WHERE reset_token = ? AND reset_token_expire > NOW()");
-            $stmt->execute([$token]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$user) {
-                // Se não encontrou com validade, verificar se o token existe (então é expirado) ou é inválido
-                $stmt2 = $pdo->prepare("SELECT id FROM `User` WHERE reset_token = ?");
-                $stmt2->execute([$token]);
-                $exists = $stmt2->fetch(PDO::FETCH_ASSOC);
-
-                if ($exists) {
-                    http_response_code(400);
-                    echo json_encode(["error" => "Token expirado. Solicite uma nova redefinição."]); 
-                    return;
-                } else {
-                    http_response_code(400);
-                    echo json_encode(["error" => "Token inválido."]); 
-                    return;
-                }
-            }
-
-            // Atualiza a senha e limpa o token
-            $hash = password_hash($novaSenha, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare("UPDATE `User` SET senha = ?, reset_token = NULL, reset_token_expire = NULL WHERE id = ?");
-            $stmt->execute([$hash, $user['id']]);
-
-            // Se a requisição foi JSON (API), retorna JSON. Caso contrário (form HTML), redireciona para a página de redefinir que já mostra a mensagem de sucesso.
-            if (stripos($contentType, "application/json") !== false) {
-                echo json_encode(["success" => true, "message" => "Senha redefinida com sucesso!"]);
-            } else {
-                header('Location: /TimerBook/public/index.php?action=reset_password&success=1');
-                exit;
-            }
-
-        } catch (PDOException $e) {
-            http_response_code(500);
-            echo json_encode(["error" => "Erro ao redefinir senha: " . $e->getMessage()]);
-        }
-    }
-
-    public static function checkLogin() {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
-            header('Location: /TimerBook/public/index.php?action=login');
-            exit;
-        }
-    }
-
-    public static function logout() {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        $_SESSION = [];
-        session_destroy();
-        header('Location: /TimerBook/public/index.php?action=login');
-        exit;
-    }
-
-      public function googleLogin()
-    {
-        $client = new GoogleClient();
-        $client->setClientId($_ENV['GOOGLE_CLIENT_ID']);
-        $client->setClientSecret($_ENV['GOOGLE_CLIENT_SECRET']);
-        $client->setRedirectUri('http://localhost/TimerBook/public/google-callback');
-        $client->addScope('email');
-        $client->addScope('profile');
-
-        // Redireciona o usuário para o login do Google
-        $authUrl = $client->createAuthUrl();
-        header('Location: ' . filter_var($authUrl, FILTER_SANITIZE_URL));
-        exit;
-    }
-
-    public function googleCallback()
-    {
-        $client = new GoogleClient();
-        $client->setClientId($_ENV['GOOGLE_CLIENT_ID']);
-        $client->setClientSecret($_ENV['GOOGLE_CLIENT_SECRET']);
-        $client->setRedirectUri('http://localhost/TimerBook/public/google-callback');
-
-        if (!isset($_GET['code'])) {
-            echo json_encode(['error' => 'Código de autenticação ausente']);
-            return;
-        }
-
-        // Troca o "code" pelo token
-        $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
-
-        if (isset($token['error'])) {
-            echo json_encode(['error' => $token['error_description']]);
-            return;
-        }
-
-        $client->setAccessToken($token['access_token']);
-        $google_service = new Oauth2($client);
-        $google_user = $google_service->userinfo->get();
-
-        // Dados do Google
-        $email = $google_user->email;
-        $nome = $google_user->name;
-        $profilePhoto = $google_user->picture;
-        $username = explode('@', $email)[0]; // simples username padrão
-
-        // Verifica se o usuário já existe
-        $user = User::findByEmail($email);
+        $user = User::getById($id);
         if (!$user) {
-            // Cria usuário automaticamente
-            $result = User::create($email, bin2hex(random_bytes(8)), $nome, $username, $profilePhoto);
-            if (isset($result['error'])) {
-                echo json_encode($result);
-                return;
-            }
-            $user = User::getById($result['user_id']);
+            http_response_code(404);
+            echo json_encode(["error" => "Usuário não encontrado"]);
+        } else {
+            echo json_encode($user);
+        }
+    }
+
+    public function findWithBooks($id)
+    {
+        $result = User::findWithBooks($id);
+        if (!$result) {
+            http_response_code(404);
+            echo json_encode(["error" => "Usuário não encontrado ou sem livros"]);
+        } else {
+            echo json_encode($result);
+        }
+}
+         public function update($id)
+    {
+        $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+
+        if (stripos($contentType, "application/json") !== false) {
+            $data = json_decode(file_get_contents("php://input"), true);
+            $nome = $data['nome'] ?? null;
+            $username = $data['username'] ?? null;
+            $email = $data['email'] ?? null;
+            $senha = $data['senha'] ?? null;
+        } else {
+            $nome = $_POST['nome'] ?? null;
+            $username = $_POST['username'] ?? null;
+            $email = $_POST['email'] ?? null;
+            $senha = $_POST['senha'] ?? null;
         }
 
-        // Inicia sessão
-        session_start();
-        $_SESSION['user_logged_in'] = true;
-        $_SESSION['user'] = $user;
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
-            if (!empty($user['profile_photo'])) {
-               $_SESSION['profile_photo'] = ltrim($user['profile_photo'], '/');
-          } else {
-                   $_SESSION['profile_photo'] = null;
-               }
+        $profilePhoto = null;
 
-        header('Location: /TimerBook/public/index.php?action=home');
-        exit;
+        // Se enviou nova foto
+        if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+            $file = $_FILES['photo'];
+            $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+
+            if (in_array(strtolower($ext), $allowed)) {
+                try {
+                    $s3Client = new S3Client([
+                        'version' => 'latest',
+                        'region' => $_ENV['AWS_DEFAULT_REGION'],
+                        'credentials' => [
+                            'key' => $_ENV['AWS_ACCESS_KEY_ID'],
+                            'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
+                        ]
+                    ]);
+
+                    $bucketName = $_ENV['S3_BUCKET_NAME'];
+                    $newName = 'profile_photos/' . uniqid() . "." . $ext;
+
+                    $s3Client->putObject([
+                        'Bucket' => $bucketName,
+                        'Key' => $newName,
+                        'SourceFile' => $file['tmp_name'],
+                    ]);
+
+                    $profilePhoto = "https://{$bucketName}.s3.{$_ENV['AWS_DEFAULT_REGION']}.amazonaws.com/{$newName}";
+
+                } catch (S3Exception $e) {
+                    echo json_encode(["error" => "Erro ao enviar imagem: " . $e->getMessage()]);
+                    return;
+                }
+            }
+        }
+
+        $result = User::update($id, $nome, $username, $email, $senha, false, $profilePhoto);
+        echo json_encode($result);
     }
+
+       public function delete($id)
+    {
+        $result = User::delete($id);
+        echo json_encode($result);
+    }
+
 }

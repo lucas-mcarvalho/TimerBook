@@ -9,6 +9,9 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Livro</title>
     <link rel="stylesheet" href="style/adicionarLivro.css">
+
+    <script src="/TimerBook/App/views/javascript/livros_api.js"></script>
+
 </head>
 <body>
 
@@ -61,6 +64,6 @@ session_start();
         </form>
     </main>
 
-    <script src="/TimerBook/App/views/javascript/cadastrar_livro.js"></script>
+    <script>cadastrarLivro()</script>
 </body>
 </html>
