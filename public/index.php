@@ -23,6 +23,9 @@ switch ($action) {
     case 'login':
         require_once __DIR__ . '/../App/views/html/login.php';
         break;
+    case 'perfil_usuario':
+        require_once __DIR__ . '/../App/views/html/perfilUsuario.php';
+        break;
     case 'forgot_password':
         require_once __DIR__ . '/../App/views/html/recuperar.php';
         break;
