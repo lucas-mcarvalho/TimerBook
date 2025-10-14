@@ -139,68 +139,70 @@ class UserController
             echo json_encode($result);
         }
 }
-         public function update($id)
-    {
-        $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+    public function update($id)
+{
+    header("Content-Type: application/json");
 
-        if (stripos($contentType, "application/json") !== false) {
-            $data = json_decode(file_get_contents("php://input"), true);
-            $nome = $data['nome'] ?? null;
-            $username = $data['username'] ?? null;
-            $email = $data['email'] ?? null;
-            $senha = $data['senha'] ?? null;
-        } else {
-            $nome = $_POST['nome'] ?? null;
-            $username = $_POST['username'] ?? null;
-            $email = $_POST['email'] ?? null;
-            $senha = $_POST['senha'] ?? null;
-        }
+    $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
 
-        $profilePhoto = null;
+    if (stripos($contentType, "application/json") !== false) {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $nome = $data['nome'] ?? null;
+        $username = $data['username'] ?? null;
+        $email = $data['email'] ?? null;
+        $senha = $data['senha'] ?? null;
+    } else {
+        $nome = $_POST['nome'] ?? null;
+        $username = $_POST['username'] ?? null;
+        $email = $_POST['email'] ?? null;
+        $senha = $_POST['senha'] ?? null;
+    }
 
-        // Se enviou nova foto
-        if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
-            $file = $_FILES['photo'];
-            $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-            $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+    $profilePhoto = null;
 
-            if (in_array(strtolower($ext), $allowed)) {
-                try {
-                    $s3Client = new S3Client([
-                        'version' => 'latest',
-                        'region' => $_ENV['AWS_DEFAULT_REGION'],
-                        'credentials' => [
-                            'key' => $_ENV['AWS_ACCESS_KEY_ID'],
-                            'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
-                        ]
-                    ]);
+    // Upload da nova foto (se enviada)
+    if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+        $file = $_FILES['photo'];
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif'];
 
-                    $bucketName = $_ENV['S3_BUCKET_NAME'];
-                    $newName = 'profile_photos/' . uniqid() . "." . $ext;
+        if (in_array($ext, $allowed)) {
+            try {
+                $s3Client = new S3Client([
+                    'version' => 'latest',
+                    'region' => $_ENV['AWS_DEFAULT_REGION'],
+                    'credentials' => [
+                        'key' => $_ENV['AWS_ACCESS_KEY_ID'],
+                        'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
+                    ]
+                ]);
 
-                    $s3Client->putObject([
-                        'Bucket' => $bucketName,
-                        'Key' => $newName,
-                        'SourceFile' => $file['tmp_name'],
-                    ]);
+                $bucketName = $_ENV['S3_BUCKET_NAME'];
+                $newName = 'profile_photos/' . uniqid() . "." . $ext;
 
-                    $profilePhoto = "https://{$bucketName}.s3.{$_ENV['AWS_DEFAULT_REGION']}.amazonaws.com/{$newName}";
+                $s3Client->putObject([
+                    'Bucket' => $bucketName,
+                    'Key' => $newName,
+                    'SourceFile' => $file['tmp_name'],
+                    'ACL' => 'public-read' // opcional, garante acesso público
+                ]);
 
-                } catch (S3Exception $e) {
-                    echo json_encode(["error" => "Erro ao enviar imagem: " . $e->getMessage()]);
-                    return;
-                }
+                $profilePhoto = "https://{$bucketName}.s3.{$_ENV['AWS_DEFAULT_REGION']}.amazonaws.com/{$newName}";
+
+            } catch (S3Exception $e) {
+                echo json_encode(["error" => "Erro ao enviar imagem: " . $e->getMessage()]);
+                return;
             }
+        } else {
+            echo json_encode(["error" => "Formato de arquivo inválido"]);
+            return;
         }
-
-        $result = User::update($id, $nome, $username, $email, $senha, false, $profilePhoto);
-        echo json_encode($result);
     }
 
-       public function delete($id)
-    {
-        $result = User::delete($id);
-        echo json_encode($result);
-    }
+    // Chama o model (que já lida com a exclusão da antiga)
+    $result = User::update($id, $nome, $username, $email, $senha, false, $profilePhoto);
+
+    echo json_encode($result);
+}
 
 }
