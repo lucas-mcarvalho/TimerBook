@@ -305,7 +305,7 @@ public function update($id)
         $novaCapa = "https://{$bucketName}.s3.{$_ENV['AWS_DEFAULT_REGION']}.amazonaws.com/{$newName}";
     }
 
-    // Chama o model para atualizar
+   
     $result = Book::update($id, $titulo, $autor, $ano_publicacao, $novoArquivo, $novaCapa);
 
     if (isset($result['error'])) {
