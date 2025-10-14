@@ -4,6 +4,7 @@ require_once __DIR__ . '/../App/controllers/UserController.php';
 require_once __DIR__ . '/../App/controllers/AdminController.php';
 require_once __DIR__ . '/../App/controllers/AuthenticationController.php';
 require_once __DIR__ . '/../vendor/autoload.php';
+
 $action = $_GET['action'] ?? 'login';
 
 if (in_array($action, $protected_actions)) {
