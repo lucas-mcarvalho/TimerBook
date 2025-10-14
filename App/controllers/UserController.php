@@ -184,7 +184,7 @@ class UserController
                     'Bucket' => $bucketName,
                     'Key' => $newName,
                     'SourceFile' => $file['tmp_name'],
-                    'ACL' => 'public-read' // opcional, garante acesso público
+                    'ACL' => 'public-read' 
                 ]);
 
                 $profilePhoto = "https://{$bucketName}.s3.{$_ENV['AWS_DEFAULT_REGION']}.amazonaws.com/{$newName}";
@@ -199,7 +199,7 @@ class UserController
         }
     }
 
-    // Chama o model (que já lida com a exclusão da antiga)
+    
     $result = User::update($id, $nome, $username, $email, $senha, false, $profilePhoto);
 
     echo json_encode($result);
