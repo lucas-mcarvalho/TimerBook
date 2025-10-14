@@ -139,7 +139,7 @@ class UserController
             echo json_encode($result);
         }
 }
-    public function update($id)
+  public function update($id)
 {
     header("Content-Type: application/json");
 
@@ -204,5 +204,12 @@ class UserController
 
     echo json_encode($result);
 }
+
+
+       public function delete($id)
+    {
+        $result = User::delete($id);
+        echo json_encode($result);
+    }
 
 }
