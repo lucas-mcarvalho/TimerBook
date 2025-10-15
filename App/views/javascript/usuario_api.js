@@ -46,7 +46,7 @@ async function cadastrarUsuario() {
     
     try{
     // Inicia a requisição para a API usando fetch e aguarda a resposta.
-    const res = await fetch("http://localhost/TimerBook/public/register", {
+    const res = await fetch("http://15.228.179.50/TimerBook/public/register", {
         method: 'POST',
         body: formData
     });
@@ -105,7 +105,7 @@ async function loginUsuario() {
 
         try {
             // 1) Tenta login como ADMIN
-            const adminRes = await fetch("http://localhost/TimerBook/public/admin/login", {
+            const adminRes = await fetch("http://15.228.179.50/TimerBook/public/admin/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
@@ -121,7 +121,7 @@ async function loginUsuario() {
             }
 
             // 2) Se não for admin (ex.: 401), tenta login como USUÁRIO comum
-            const userRes = await fetch("http://localhost/TimerBook/public/login", {
+            const userRes = await fetch("http://15.228.179.50/TimerBook/public/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
@@ -156,7 +156,7 @@ async function redefinirSenha(){
             const email = document.getElementById("email").value;
 
             try {
-                const res = await fetch("http://localhost/TimerBook/public/forgot-password", {
+                const res = await fetch("http://15.228.179.50/TimerBook/public/forgot-password", {
                     method: "POST",
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
                     body: "email=" + encodeURIComponent(email)
