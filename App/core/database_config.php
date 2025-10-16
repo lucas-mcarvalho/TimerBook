@@ -1,26 +1,18 @@
 <?php
 
-require __DIR__ . '/../../vendor/autoload.php'; // carrega o autoload do Composer
-
-// Carrega o .env da raiz do projeto
-
-// Carrega o .env da raiz do projeto
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../');
-$dotenv->load();
-
-// CONEXAO DO BANCO DE DADOS MYSQL
-define('DB_HOST', $_ENV['DB_HOST']);
-define('DB_USER', $_ENV['DB_USER']);
-define('DB_PASS', $_ENV['DB_PASS']);
-define('DB_NAME', $_ENV['DB_NAME']);
-
 class Database {
     public static function connect() {
+        // Dados de conexão local (ajuste conforme seu phpMyAdmin)
+        $host = 'localhost';
+        $dbname = 'Users';
+        $user = 'root';
+        $pass = ''; // normalmente vazio no phpMyAdmin local
+
         try {
             $pdo = new PDO(
-                "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8",
-                DB_USER,
-                DB_PASS
+                "mysql:host=$host;dbname=$dbname;charset=utf8",
+                $user,
+                $pass
             );
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $pdo;
