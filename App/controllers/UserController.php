@@ -100,11 +100,12 @@ class UserController
     } else {
         $result['photo_error'] = "Formato de arquivo não permitido";
     }
-      //RETORNA OS DADOS EM JSON
-        echo json_encode($result);
 }
-      
+        // Lógica de resposta final: sempre retorna JSON
+        // Se houver um erro de foto, ele já estará em $result. Caso contrário, assume sucesso.
+        echo json_encode($result);
     }
+
 
     public function getAll()
     {
