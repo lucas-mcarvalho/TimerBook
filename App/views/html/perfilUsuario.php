@@ -23,7 +23,7 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
 }
 
 // Dados do usuário da sessão
-$nomeCompleto = $_SESSION[' '] ?? '';
+$nomeCompleto = $_SESSION['nome'] ?? '';
 $nomeUsuario = $_SESSION['username'] ?? '';
 $email = $_SESSION['email'] ?? '';
 ?>
@@ -48,7 +48,7 @@ $email = $_SESSION['email'] ?? '';
         </div>
         <div class="header-profile">
             <img src="<?= htmlspecialchars($profilePhoto) ?>" alt="Foto de Perfil" class="profile-pic">
-            <a href="index.php?action=perfil" class="profile-button">Meu Perfil</a>
+            <a href="index.php?action=perfil_usuario" class="profile-button">Meu Perfil</a>
             <a href="index.php?action=sair" class="logout-button">Encerrar Sessão</a>
         </div>
     </header>
