@@ -250,17 +250,6 @@ a {
   border-radius: 8px;
   font-size: 16px;
   background-color: white;
-  transition: border-color 0.3s ease;
-}
-
-.input-container input:focus {
-  outline: none;
-  border-color: #2B4C8C;
-}
-
-.input-container input.editing {
-  border-color: #2B4C8C;
-  background-color: #ffffff;
 }
 
 .edit-btn {

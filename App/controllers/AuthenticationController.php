@@ -45,6 +45,8 @@ class AuthenticationController {
             // Armazena informações do usuário na sessão
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
+            $_SESSION["nome"] = $user["nome"];
+            $_SESSION["email"] = $user["email"];
             if (!empty($user['profile_photo'])) {
                $_SESSION['profile_photo'] = ltrim($user['profile_photo'], '/');
           } else {
