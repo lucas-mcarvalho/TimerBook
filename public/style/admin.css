@@ -5,9 +5,8 @@ body {
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    background-color: aliceblue;
+    background-color: #94D7F2; /* Fundo azul da sua página home */
 }
-
 
 label {
     display: block;
@@ -28,7 +27,6 @@ input {
     border: none;
     border-bottom: 1px solid #0A1A3A;
     background: transparent;
-
 }
 
 .header {
@@ -39,40 +37,66 @@ input {
     padding: 15px 40px;
     background-color: #F5F2ED; 
     box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-    
+    box-sizing: border-box;
 }
 
+/* Bloco da Esquerda: Logo e Título (CORRIGIDO) */
 .header-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 0px; /* Alterado de 15px */
 }
 
 .header-logo img {
-    height: 50px;
-    width: auto;
+  width: 50px;
+  height: 50px;
+  transform: scale(3);
+  margin-right: 10px;
 }
 
-
-.header-title {
-    font-size: 1.2rem;
+.header-h1 {
+    font-size: 24px; 
     font-weight: bold;
-    color: #0A1A3A; 
+    color: #2B4C8C; /* Alterado de #0A1A3A */
 }
 
-.title {
-    margin: 0;
+/* Bloco da Direita: Botões */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px; 
 }
 
-.logout-button {
+/* Botão "Adicionar Usuário" */
+.add-button {
     padding: 10px 20px;
-    background-color: #d9534f;
+    background-color: #2B4C8C;
     color: aliceblue;
-    border-radius: 5px;
-    cursor: pointer; 
+    cursor: pointer;
     text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600; 
 }
-
+.add-button:hover{
+    background-color: #3e6cc9;
+}
+/* Botão "Sair" */
+.logout-button {
+  background-color: white;
+  color: #333;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  border: 2px solid #ddd;
+}
+.logout-button:hover {
+  background-color: #c76360;
+  color: white;
+  border-color: #c76360;
+}
 .admin-container {
     width: 90%;
     max-width: 800px;
@@ -80,23 +104,12 @@ input {
     flex-direction: column;
     align-items: center;
     padding-bottom: 50px;
-}
-
-.user-actions {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 20px;
-}
-
-.add-button {
-    padding: 10px 20px;
-    background-color: #79bc75;
-    color: aliceblue;
-    cursor: pointer;
-    text-decoration: none;
-    border-radius: 5px;
-
+    margin-top: 30px; 
+    background-color: #F5F2ED; 
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    padding: 30px;
+    box-sizing: border-box;
 }
 
 .user-list-header {
@@ -115,6 +128,7 @@ input {
     
 }
 
+/* Caixa de cada item da lista */
 .user-item {
     display: flex;
     justify-content: space-between;
@@ -122,46 +136,74 @@ input {
     border: 1px solid #0A1A3A;
     padding: 10px;
     border-radius: 5px;
+    background: #FFF; 
 }
 
-.user-controls {
+/* Foto do usuário */
+.user-photo {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.user-photo.placeholder {
+    background: #eee;
+}
+
+/* Informações de texto */
+.user-email {
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* Ações (botões) */
+.user-actions {
     display: flex;
-    gap: 10px;
+    gap: 8px; 
+    margin-left: auto; 
 }
 
-.edit-button, .delete-button {
-    padding: 10px 20px;
-    cursor: pointer;
-    text-decoration: none;
-    color: rgb(255, 255, 255);
-
-}
-
-.btn{
-    background-color: #d9534f;
-    border-radius: 5px;
-}
-.btn2{
-    background-color:#79bc75;
-    border-radius: 5px;
-}
-.bnt3{
-    background-color: #071126;
-    border-radius: 5px;
-}
-
-.books-button {
-    background-color: #79bc75;
-    color: white;
+.user-actions button {
     padding: 8px 15px;
+    border: none;
     border-radius: 5px;
-    text-decoration: none;
+    cursor: pointer;
     font-size: 14px;
-    text-align: center;
-    display: inline-block;
-    margin: 0 5px;
+    font-weight: bold;
+    transition: background 0.2s, transform 0.1s;
 }
 
-.books-button:hover {
-    background-color: #79bc75; 
+.user-actions button:hover {
+    transform: scale(1.05);
+}
+
+/* Botão editar */
+.edit-btn {
+    background-color: #2B4C8C;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #3e6cc9;
+}
+
+/* Botão excluir */
+.delete-btn {
+    background-color: #d9534f;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #b52b27;
+}
+
+/* Botão editar livro */
+.edit-livro-btn {
+    background-color: #071126;
+    color: white;
+}
+
+.edit-livro-btn:hover {
+    background-color: #0a1a3a;
 }

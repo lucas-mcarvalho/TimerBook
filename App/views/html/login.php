@@ -9,7 +9,8 @@
 </head>
 <body>
   <div class="login-container">
-    <img src="uploads/main_logo.png" alt="Logo" class="logo">
+    <br>
+    <img src="uploads/logo.svg" alt="Logo" class="logo">
     <form action="" method="" id="loginForm">
       <input type="email" id="email" name="email" required placeholder="E-mail">
       <input type="password" id="password" name="password" required placeholder="Senha">

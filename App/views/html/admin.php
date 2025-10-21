@@ -11,9 +11,10 @@
 <body>
 
 <header class="header">
-    <div class="header-logo">
-        <img src="uploads/main_logo.png" alt="Logo TimerBook">
-        <span class="header-title">TimerBook</span>
+    <div class="header-logo ">
+        <img src="uploads/logo.svg" alt="Logo TimerBook">
+        <h1 class="header-title">TimerBook</h1>
+        
     </div>
     
     <div class="header-right">
