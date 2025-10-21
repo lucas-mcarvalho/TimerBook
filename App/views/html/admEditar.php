@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -49,7 +51,13 @@
 
                 <div class="form-buttons">
                     <button type="submit" id="save-button" class="save-button">Salvar Alterações</button>
-                    <a href="index.php?action=admin" id="back-button" class="back-button">Voltar</a>
+                    <a href="<?php echo ($_SESSION['user']['username'] === 'admin') 
+                     ? 'index.php?action=admin' 
+                     : 'index.php?action=perfil_usuario'; ?>" 
+                    id="back-button" 
+                    class="back-button">
+                     Voltar
+                    </a>
                 </div>
             </form>
         </div>

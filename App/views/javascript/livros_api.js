@@ -111,7 +111,7 @@ async function listarLivros() {
             </a>
             <button class="delete-button" onclick="deletarLivro(${livro.id})">Excluir</button>
 
-            <a href=""><button class="edit-button" data-id="${livro.id}">Editar</button></a>
+            <a href="index.php?action=adm_editar_book"><button class="edit-button" onclick ="editarLivro(${livro.id})">Editar</button></a>
         </div>
     `;
 });   
@@ -150,3 +150,37 @@ async function listarLivros() {
         });
     }
 });
+
+
+async function editarLivro(id) {
+    
+    const form = document.getElementById("cadastro-livro-form");
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        try {
+            const res = await fetch(`http://localhost/TimerBook/public/books/${id}`, {
+                method: "POST", 
+                body: formData,
+                credentials: "include"
+            });
+
+            if (!res.ok) {
+                throw new Error(`Erro na requisição: ${res.status}`);
+            }
+
+            const resultado = await res.json();
+            console.log("Livro atualizado com sucesso:", resultado);
+            alert("Livro atualizado com sucesso!");
+            form.reset(); // limpa o formulário
+
+            
+        } catch (error) {
+            console.error("Erro ao atualizar livro:", error);
+            alert("Erro ao atualizar o livro. Por favor, tente novamente.");
+        }
+    });
+}
