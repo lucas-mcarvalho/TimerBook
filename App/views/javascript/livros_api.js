@@ -152,65 +152,83 @@ async function listarLivros() {
             });
         });
     }
-});
+
+    // js/livros_api.js
+(async function () {
+  const API_BASE = "http://localhost/TimerBook/public";
+
+  // ==========================
+  // LISTAR LIVROS DO USUÁRIO
+  // ==========================
+async function listarLivrosAdmin() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get("userId");
+  const tabela = document.querySelector(".books-table tbody");
+
+  if (!userId) {
+    tabela.innerHTML = `<tr><td colspan="4">❌ ID do usuário não informado na URL.</td></tr>`;
+    return;
+  }
+
+  try {
+    const res = await fetch(`http://localhost/TimerBook/public/books?user_id=${userId}`, {
+      cache: "no-store"
+    });
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || "Erro ao buscar livros.");
+
+    if (!Array.isArray(data) || data.length === 0) {
+      tabela.innerHTML = `<tr><td colspan="4">Nenhum livro encontrado para este usuário.</td></tr>`;
+      return;
+    }
+
+    tabela.innerHTML = data.map(livro => `
+      <tr>
+        <td><img src="${livro.capa_arquivo || 'uploads/placeholder.png'}" alt="Capa" width="60"></td>
+        <td>${livro.titulo || '(Sem título)'}</td>
+        <td>${livro.autor || '(Desconhecido)'}</td>
+        <td>
+
+          <button onclick="editarLivro(${livro.id})">Editar</button>
+          <button onclick="deletarLivro(${livro.id})">Excluir</button>
+        </td>
+      </tr>
+    `).join("");
+  } catch (err) {
+    console.error("Erro ao listar livros:", err);
+    tabela.innerHTML = `<tr><td colspan="4"> Falha ao carregar livros: ${err.message}</td></tr>`;
+  }
+}
 
 
-async function editarLivro(id) {
-
-    const form = document.getElementById("cadastro-livro-form");
-
-    form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    
-    const formData = new FormData(form);
-    formData.append("_method", "PUT");
-    
-    console.log(formData); // Debug: Verifica os dados do formulário
+  // ==========================
+  // EXCLUIR LIVRO
+  // ==========================
+  async function deletarLivro(id) {
+    if (!confirm("Tem certeza que deseja excluir este livro?")) return;
 
     try {
-        const res = await fetch(`http://localhost/TimerBook/public/books/${id}`, {
-            method: "POST",
-            body: formData,
-            credentials: "include" // <- envia cookies de sessão
-        });
+      const res = await fetch(`${API_BASE}/livros/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Erro ao deletar livro");
+      alert("Livro excluído com sucesso!");
+      listarLivrosAdmin(); // recarrega a lista
+    } catch (err) {
+      alert("Erro ao excluir livro: " + err.message);
+    }
+  }
 
-        if (!res.ok) {
-            throw new Error(`Erro na requisição: ${res.status}`);
-        }
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
 
-        const resultado = await res.json();
-        console.log("Livro editado com sucesso:", resultado);
-        alert("Livro editado com sucesso!");
-        form.reset(); // limpa o formulário
-        } catch (error) {
-            console.error("Erro ao editar livro:", error);
-            alert("Erro ao editar livro. Por favor, tente novamente.");
-        }
-    });
+  // Exposição global
+  window.listarLivrosAdmin = listarLivrosAdmin;
+})();
 
-    const photoInput = document.getElementById('capa_arquivo');
-    const profilePicPreview = document.getElementById('capaPreview');
-
-    // Salva a imagem padrão
-    const defaultImage = profilePicPreview.src;
-
-    // Preview da imagem escolhida
-    photoInput.addEventListener('change', () => {
-    //Pega o primeiro arquivo selecionado   
-    const file = photoInput.files[0];
-    //Faz a verificação se o arquivo existe   
-    if (file) {
-        //Cria um objeto FileReader que ler o conteúdo do arquivo    
-        const reader = new FileReader();
-        //A foto recebe o conteúdo do reader    
-        reader.onload = e => {
-        profilePicPreview.src = e.target.result;
-    };
-    //Inicia a leitura e transforma em uma DataURL    
-        reader.readAsDataURL(file);
-    } else {
-    profilePicPreview.src = defaultImage;
-    }   
-    }); 
-}
+});
