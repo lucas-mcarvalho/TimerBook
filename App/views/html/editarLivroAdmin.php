@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style/editarLivroAdmin.css">
     <title>Admin - Gerenciar Livros</title>
+    <script src="/TimerBook/App/views/javascript/livros_api.js?v=<?php echo time(); ?>"></script>
 </head>
+    
 <body>
 
     <header class="main-header">
         <div class="header-logo">
             <a href="index.php?action=home" class="logo-link">
-                <img src="uploads/main_logo.png" alt="Logo Timerbook" class="logo-img">
+                <img src="uploads/logo.svg" alt="Logo Timerbook" class="logo-img">
                 <h1>TimerBook</h1>
             </a>
         </div>
@@ -35,7 +37,6 @@
             </thead>
             <tbody>
         
-                
             </tbody>
         </table>
 
@@ -45,6 +46,9 @@
             </a>
         </div>
     </main>
+   
+    <script>listarLivrosAdmin();</script>
+
 
 </body>
 </html>
