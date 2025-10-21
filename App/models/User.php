@@ -1,5 +1,5 @@
 <?php
-require_once '../App/core/database_config.php';
+require_once __DIR__ . '/../core/database_config.php';
 
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
@@ -80,9 +80,9 @@ class User {
                 b.titulo as book_title,
                 b.autor as book_author
             FROM
-                users u 
+                User u
             LEFT JOIN
-                books b ON u.id = b.user_id
+                Books b ON u.id = b.user_id
             WHERE
                 u.id = ?";
 
