@@ -87,21 +87,24 @@ async function deletarLivro(id) {
 
 
 
-async function listarLivros() {
+async function listarLivros(endpoint) {
     try {
-        const res = await fetch("http://localhost/TimerBook/public/my-books", {
+        const res = await fetch(`http://localhost/TimerBook/public/${endpoint}`, {
             method: "GET",
-            headers: { "Content-Type": "application/json" }
+            headers: { "Content-Type": "application/json" },
+            credentials: "include"
         });
+
         if (!res.ok) {
             throw new Error(`Erro na requisição: ${res.status}`);
         }
-        const livros = await res.json();
-        console.log(livros);
 
+        const livros = await res.json();
         const divLivros = document.getElementById("book-list");
+        divLivros.innerHTML = "";
 
         livros.forEach(livro => {
+
     divLivros.innerHTML += `
         <div class="livro-card" id="livro-${livro.id}">
             <p class="titulo">${livro.titulo}</p>
@@ -119,6 +122,20 @@ async function listarLivros() {
     `;
 });   
         
+
+            divLivros.innerHTML += `
+                <div class="livro-card" id="livro-${livro.id}">
+                    <p class="titulo">${livro.titulo}</p>
+                    <p class="autor">${livro.autor}</p>
+                    <a class="link_livro" href="${livro.caminho_arquivo}" target="_blank">
+                        <img src="${livro.capa_livro}" alt="Capa do livro">
+                    </a>
+                    <button class="delete-button" onclick="deletarLivro(${livro.id})">Excluir</button>
+                    <a href=""><button class="edit-button" data-id="${livro.id}">Editar</button></a>
+                </div>
+            `;
+        });
+
     } catch (error) {
         console.error("Erro ao buscar livros:", error);
     }
@@ -130,26 +147,28 @@ async function listarLivros() {
 
 // rologem da barra de visualisação de livro 
     document.addEventListener('DOMContentLoaded', () => {
-    const bookList = document.getElementById('book-list');
+    const divLivros = document.getElementById("book-list");
+
+    // Se tiver userId na query string (admin)
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('userId');
+
+    // Define endpoint
+    const endpoint = userId ? `books?user_id=${userId}` : `my-books`;
+
+    listarLivros(endpoint);
+
+    // Rolagem da barra
     const prevButton = document.getElementById('prev-button');
     const nextButton = document.getElementById('next-button');
 
-    // Verifica se os elementos existem para evitar erros
-    if (bookList && prevButton && nextButton) {
-        // Rola a lista para a esquerda quando o botão anterior é clicado
+    if (prevButton && nextButton) {
         prevButton.addEventListener('click', () => {
-            bookList.scrollBy({
-                left: -200, // Ajuste este valor para a distância de rolagem desejada
-                behavior: 'smooth'
-            });
+            divLivros.scrollBy({ left: -200, behavior: 'smooth' });
         });
 
-        // Rola a lista para a direita quando o botão próximo é clicado
         nextButton.addEventListener('click', () => {
-            bookList.scrollBy({
-                left: 200, // Ajuste este valor para a distância de rolagem desejada
-                behavior: 'smooth'
-            });
+            divLivros.scrollBy({ left: 200, behavior: 'smooth' });
         });
     }
 });
