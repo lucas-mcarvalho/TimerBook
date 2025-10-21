@@ -26,14 +26,14 @@ session_start();
             <label for="capa_arquivo" class="cover-placeholder">
                 <img src="https://us.123rf.com/450wm/oliviart/oliviart2004/oliviart200400338/144688847-cone-mais-isolado-no-fundo-branco-adicionar-ícone-mais-sinal-de-adição-cone-medical-plus.jpg?ver=6" alt="Prévia da foto" id="capaPreview">
             </label>
-                <input type="file" id="capa_arquivo" name="capa_arquivo" accept="image/*" required class="file-input">
+                <input type="file" id="capa_arquivo" name="capa" accept="image/*">
             </div>
 
             <!-- Upload do arquivo do livro -->
             <div class="form-group">
                 <label for="caminho_arquivo" class="btn_pdf">Arquivo do Livro (PDF):</label>
                 
-                <input type="file" id="caminho_arquivo" name="caminho_arquivo" accept=".pdf" required class="file-input01">
+                <input type="file" id="caminho_arquivo" name="file" accept=".pdf">
             </div>
             
             <!-- Nome do livro -->
@@ -64,6 +64,13 @@ session_start();
         </form>
     </main>
 
-    <script>editarLivro()</script>
+    <script>
+    const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+if (id) {
+  editarLivro(id);
+}
+</script>
 </body>
 </html>
