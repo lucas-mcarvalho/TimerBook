@@ -149,4 +149,83 @@ async function listarLivros() {
             });
         });
     }
+
+    // js/livros_api.js
+(async function () {
+  const API_BASE = "http://localhost/TimerBook/public";
+
+  // ==========================
+  // LISTAR LIVROS DO USUÁRIO
+  // ==========================
+async function listarLivrosAdmin() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get("userId");
+  const tabela = document.querySelector(".books-table tbody");
+
+  if (!userId) {
+    tabela.innerHTML = `<tr><td colspan="4">❌ ID do usuário não informado na URL.</td></tr>`;
+    return;
+  }
+
+  try {
+    const res = await fetch(`http://localhost/TimerBook/public/books?user_id=${userId}`, {
+      cache: "no-store"
+    });
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || "Erro ao buscar livros.");
+
+    if (!Array.isArray(data) || data.length === 0) {
+      tabela.innerHTML = `<tr><td colspan="4">Nenhum livro encontrado para este usuário.</td></tr>`;
+      return;
+    }
+
+    tabela.innerHTML = data.map(livro => `
+      <tr>
+        <td><img src="${livro.capa_arquivo || 'uploads/placeholder.png'}" alt="Capa" width="60"></td>
+        <td>${livro.titulo || '(Sem título)'}</td>
+        <td>${livro.autor || '(Desconhecido)'}</td>
+        <td>
+
+          <button onclick="editarLivro(${livro.id})">Editar</button>
+          <button onclick="deletarLivro(${livro.id})">Excluir</button>
+        </td>
+      </tr>
+    `).join("");
+  } catch (err) {
+    console.error("Erro ao listar livros:", err);
+    tabela.innerHTML = `<tr><td colspan="4"> Falha ao carregar livros: ${err.message}</td></tr>`;
+  }
+}
+
+
+  // ==========================
+  // EXCLUIR LIVRO
+  // ==========================
+  async function deletarLivro(id) {
+    if (!confirm("Tem certeza que deseja excluir este livro?")) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/livros/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Erro ao deletar livro");
+      alert("Livro excluído com sucesso!");
+      listarLivrosAdmin(); // recarrega a lista
+    } catch (err) {
+      alert("Erro ao excluir livro: " + err.message);
+    }
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  // Exposição global
+  window.listarLivrosAdmin = listarLivrosAdmin;
+})();
+
 });
