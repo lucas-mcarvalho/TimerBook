@@ -111,7 +111,10 @@ async function listarLivros() {
             </a>
             <button class="delete-button" onclick="deletarLivro(${livro.id})">Excluir</button>
 
-            <a href=""><button class="edit-button" data-id="${livro.id}">Editar</button></a>
+            <a href="index.php?action=adm_editar_book&id=${livro.id}">
+  <button class="edit-button">Editar</button>
+</a>
+            </a>
         </div>
     `;
 });   
