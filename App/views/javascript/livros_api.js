@@ -104,25 +104,6 @@ async function listarLivros(endpoint) {
         divLivros.innerHTML = "";
 
         livros.forEach(livro => {
-
-    divLivros.innerHTML += `
-        <div class="livro-card" id="livro-${livro.id}">
-            <p class="titulo">${livro.titulo}</p>
-            <p class="autor">${livro.autor}</p>
-            <a class="link_livro" href="${livro.caminho_arquivo}" target="_blank">
-                 <img src="${livro.capa_livro}" alt="Capa do livro">
-            </a>
-            <button class="delete-button" onclick="deletarLivro(${livro.id})">Excluir</button>
-
-            <a href="index.php?action=adm_editar_book&id=${livro.id}">
-  <button class="edit-button">Editar</button>
-</a>
-            </a>
-        </div>
-    `;
-});   
-        
-
             divLivros.innerHTML += `
                 <div class="livro-card" id="livro-${livro.id}">
                     <p class="titulo">${livro.titulo}</p>
@@ -135,7 +116,6 @@ async function listarLivros(endpoint) {
                 </div>
             `;
         });
-
     } catch (error) {
         console.error("Erro ao buscar livros:", error);
     }
@@ -172,64 +152,3 @@ async function listarLivros(endpoint) {
         });
     }
 });
-
-
-async function editarLivro(id) {
-
-    const form = document.getElementById("cadastro-livro-form");
-
-    form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    
-    const formData = new FormData(form);
-    formData.append("_method", "PUT");
-    
-    console.log(formData); // Debug: Verifica os dados do formulário
-
-    try {
-        const res = await fetch(`http://localhost/TimerBook/public/books/${id}`, {
-            method: "POST",
-            body: formData,
-            credentials: "include" // <- envia cookies de sessão
-        });
-
-        if (!res.ok) {
-            throw new Error(`Erro na requisição: ${res.status}`);
-        }
-
-        const resultado = await res.json();
-        console.log("Livro editado com sucesso:", resultado);
-        alert("Livro editado com sucesso!");
-        form.reset(); // limpa o formulário
-        } catch (error) {
-            console.error("Erro ao editar livro:", error);
-            alert("Erro ao editar livro. Por favor, tente novamente.");
-        }
-    });
-
-    const photoInput = document.getElementById('capa_arquivo');
-    const profilePicPreview = document.getElementById('capaPreview');
-
-    // Salva a imagem padrão
-    const defaultImage = profilePicPreview.src;
-
-    // Preview da imagem escolhida
-    photoInput.addEventListener('change', () => {
-    //Pega o primeiro arquivo selecionado   
-    const file = photoInput.files[0];
-    //Faz a verificação se o arquivo existe   
-    if (file) {
-        //Cria um objeto FileReader que ler o conteúdo do arquivo    
-        const reader = new FileReader();
-        //A foto recebe o conteúdo do reader    
-        reader.onload = e => {
-        profilePicPreview.src = e.target.result;
-    };
-    //Inicia a leitura e transforma em uma DataURL    
-        reader.readAsDataURL(file);
-    } else {
-    profilePicPreview.src = defaultImage;
-    }   
-    }); 
-}
