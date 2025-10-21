@@ -1,21 +1,24 @@
+/* Estilos gerais do corpo da página */
 body {
-    font-family: Helvetica, sans-serif;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #E6F2FF; 
+  font-family: helvetica, sans-serif;
+  background-color: #94D7F2;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center; 
+  align-items: center;
 }
 
+/* Contêiner principal do formulário */
 .cadastro-container {
     width: 90%;
     max-width: 500px;
     padding: 30px;
-    border: 1px solid #ddd; 
-    border-radius: 10px; 
+    border-radius: 10px;
     background-color: #fff;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -24,121 +27,89 @@ body {
 .title {
     margin-bottom: 30px;
     color: #333;
+    text-align: center; /* Garante o alinhamento central */
 }
 
+/* Formulário */
 .cadastro-form {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 25px; 
+    gap: 20px; /* Reduzi um pouco o espaçamento para ficar mais coeso */
     align-items: center;
 }
 
-/* Estilo para o placeholder da capa */
-.cover-placeholder {
-  width: 200px;
-  height: 250px; 
-  border: 2px dashed #ccc;
-  display: flex; 
-  justify-content: center;
-  align-items: center;
-  overflow: hidden; 
-  cursor: pointer;
-}
-
-/* Estilos para a imagem de pré-visualização dentro do retângulo */
-.cover-placeholder img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; 
-}
-
-.cover-placeholder:hover {
-    background-color: #f0f0f0;
-    color: #0A1A3A;
-}
-
-
-
-/* Esconde o input de arquivo */
-.file-input {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-    overflow: hidden;
-    z-index: -1;
-}
-/*
-.file-input01 {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-    overflow: hidden;
-    z-index: -1;
-}
-*/
+/* Grupo de formulário: engloba label e input */
 .form-group {
-    width: 100%;
+    width: 100%; /* ALTERAÇÃO: Força o grupo a ocupar toda a largura */
     display: flex;
     flex-direction: column;
     gap: 8px;
-    display: block;
-    font-weight: bold; 
-    display: block;
-    left: 5px;
-    top: 20px;
-    margin-top: 10px;
-    background: transparent;
 }
 
 .form-group label {
     font-weight: bold;
-    
-    
+    color: #333;
+}
+
+/* Placeholder da capa do livro */
+.cover-placeholder {
+  width: 200px;
+  height: 250px;
+  border: 2px dashed #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.cover-placeholder:hover {
+    background-color: #f0f0f0;
+}
+
+.cover-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* MELHORIA: Esconde os inputs de arquivo de forma genérica */
+.file-input, .file-input01 {
+    display: none;
 }
 
 /* Estilo para os inputs de texto e número */
 .form-group input[type="text"],
 .form-group input[type="number"] {
     font-size: 16px;
-    padding: 10px;
-    width: calc(100% - 20px);
-    box-sizing: border-box; 
-    outline: none;
-    border: 1px solid #ccc; 
+    padding: 12px;
+    width: 100%; /* ALTERAÇÃO: Simplificado graças ao box-sizing: border-box */
+    border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f9f9f9;
+    transition: border-color 0.3s;
 }
 
 .form-group input[type="text"]:focus,
 .form-group input[type="number"]:focus {
-    border-color: #0A1A3A; 
+    outline: none;
+    border-color: #2B4C8C; /* Usando uma cor do seu CSS base */
 }
 
+/* Botões de ação do formulário */
 .form-buttons {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    margin-top: 15px; 
+    margin-top: 15px;
 }
 
-/* Estilos dos botões de cadastrar e voltar */
-.register-button, .back-button {
-    padding: 12px 25px; 
-    cursor: pointer;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    border: none; 
-    outline: none; 
-}
-
-/* Estilo para o botão de PDF */
+/* Botão customizado para o upload do PDF */
 .btn_pdf {
     display: inline-block;
-    background-color: #79bc75;
+    background-color: #2B4C8C; /* Usando uma cor do seu CSS base */
     color: white;
     padding: 12px 20px;
     border-radius: 5px;
@@ -146,32 +117,44 @@ body {
     font-size: 16px;
     font-weight: bold;
     text-align: center;
-    outline: none; 
-}
-
-.back-button {
-    background-color: red;
-    color: white;
+    transition: background-color 0.3s;
 }
 
 .btn_pdf:hover {
-    background-color: #63a060;
-    color: white;
+    background-color: #3e6cc9;
+}
+
+
+/* Estilos genéricos para os botões de ação */
+.register-button, .back-button {
+    padding: 12px 25px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: none;
+    outline: none;
 }
 
 .register-button {
-    background-color: #79bc75;
+    background-color: #2B4C8C; /* Verde para sucesso */
     color: white;
 }
 
 .register-button:hover {
-    background-color: #63a060;
+    background-color: #3e6cc9;
+}
+
+.back-button {
+    background-color: #dc3545; /* Vermelho para ação de "cancelar/voltar" */
+    color: white;
 }
 
 .back-button:hover {
-    background-color: #cc0000;
+    background-color: #c82333;
 }
 
+/* Efeito de "pressionado" para os botões */
 .register-button:active, .back-button:active {
-    transform: translateY(1px); 
+    transform: translateY(1px);
 }

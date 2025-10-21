@@ -71,27 +71,31 @@
       : `<div class="user-photo placeholder" style="width:48px;height:48px;border-radius:4px;background:#eee;display:inline-block;"></div>`;
 
     userItem.innerHTML = `
-      <div class="user-row" style="display:flex;align-items:center;gap:12px;justify-content:space-between;padding:8px;border-bottom:1px solid #eee;">
-        <div style="display:flex;align-items:center;gap:12px;">
-          ${photoHtml}
-          <div>
-            <div><strong>${escapeHtml(user.nome || "(sem nome)")}</strong></div>
-            <div style="font-size:0.9em;color:#666;">${escapeHtml(user.email || "")}</div>
-          </div>
-        </div>
-        <div class="user-actions" style="display:flex;gap:8px;">
-          <button class="edit-btn" data-id="${user.id}">Editar</button>
-          <button class="delete-btn" data-id="${user.id}">Excluir</button>
+      
+      <div style="display:flex;gap:12px;">
+        ${photoHtml}
+        <div>
+          <div><strong>${escapeHtml(user.nome || "(sem nome)")}</strong></div>
+          <div style="font-size:0.9em;color:#666;">${escapeHtml(user.email || "")}</div>
         </div>
       </div>
+      <div class="user-actions" style="display:flex;gap:8px;">
+        <button class="edit-btn" data-id="${user.id}">Editar</button>
+        <button class="delete-btn" data-id="${user.id}">Excluir</button>
+        <button class="edit-livro-btn" data-id="${user.id}">Editar Livro</button>
+      </div>
+      
     `;
     return userItem;
   }
+
+// ... dentro do seu arquivo admin.js ...
 
   function attachUserActionListeners(container) {
     container.querySelectorAll(".delete-btn").forEach((btn) => {
       btn.onclick = () => deletarUsuario(btn.getAttribute("data-id"));
     });
+    
     container.querySelectorAll(".edit-btn").forEach((btn) => {
       btn.onclick = () => {
         const id = btn.getAttribute("data-id");
@@ -99,12 +103,29 @@
           alert("ID do usuário não encontrado!");
           return;
         }
-        // redireciona para a página de edição
+        // redireciona para a página de edição DO USUÁRIO
         window.location.href = `index.php?action=adm_editar&id=${encodeURIComponent(id)}`;
+      };
+    });
+
+    // ⬇️ ADICIONE ESTE BLOCO ⬇️
+    // Faz o botão "Editar Livro" redirecionar para a página 
+    // de gerenciamento de livros daquele usuário.
+    container.querySelectorAll(".edit-livro-btn").forEach((btn) => {
+      btn.onclick = () => {
+        const id = btn.getAttribute("data-id"); // Pega o ID do *usuário*
+        if (!id) {
+          alert("ID do usuário não encontrado!");
+          return;
+        }
+        // Redireciona para a sua página de gerenciar livros, passando o ID do usuário
+        // (Ajuste 'adm_livros' se o nome da sua 'action' for outro)
+        window.location.href = `index.php?action=adm_livros&userId=${encodeURIComponent(id)}`;
       };
     });
   }
 
+  // ... resto do seu admin.js ...
  async function deletarUsuario(id) {
   if (!confirm("Tem certeza que deseja excluir este usuário?")) return;
 
@@ -191,7 +212,7 @@
 
         if (useFormData) {
           body = new FormData();
-           body.append("_method", "PUT"); 
+          body.append("_method", "PUT"); 
           body.append("nome", nome);
           body.append("username", username);
           body.append("email", email);

@@ -1,172 +1,199 @@
 :root {
-    /* Defina suas variáveis de cor aqui */
-    --light-bg: #f4f7f9;
-    --white-bg: #ffffff;
-    --primary-color: #333333;
-    --secondary-color: #3498db;
-    --danger-color: #e74c3c;
-    --success-color: #2ecc71;
-    --border-color: #dddddd;
+  /* Variáveis de cor adaptadas para o novo tema 
+    (do seu formulário de cadastro)
+  */
+  --light-bg: #94D7F2;               /* Fundo da página (azul claro) */
+  --white-bg: #ffffff;               /* Fundo do container (branco) */
+  --primary-color: #333333;           /* Cor do texto principal (preto/cinza) */
+  --border-color: #ccc;                /* Cor da borda (do input) */
+  
+  /* Cores de Ação (Botões) */
+  --primary-action-bg: #2B4C8C;         /* Azul primário (Salvar, Adicionar) */
+  --primary-action-hover: #3e6cc9;     /* Hover do azul */
+  --danger-action-bg: #dc3545;         /* Vermelho (Excluir, Voltar) */
+  --danger-action-hover: #c82333;       /* Hover do vermelho */
+
+  /* Cor neutra para fundos (ex: header da tabela) */
+  --neutral-bg: #f9f9f9;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background-color: var(--light-bg);
-    color: var(--primary-color);
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: var(--light-bg); /* Aplicado */
+  color: var(--primary-color);
 }
 
 /* --- Cabeçalho --- */
 .main-header {
-    background-color: var(--white-bg);
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: var(--white-bg);
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .header-logo {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .logo-link {
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    align-items: center;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
 }
 
 .logo-img {
-    height: 50px;
-    margin-right: 15px;
+  width: 50px;
+  height: 50px;
+  transform: scale(3);
+  margin-right: 10px;
 }
 
 .header-logo h1 {
-    font-size: 24px;
-    margin: 0;
+  font-size: 24px;
+  margin: 0;
 }
 
 .header-buttons button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-left: 10px;
-    transition: background-color 0.3s;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px; /* Raio do botão do outro CSS */
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 10px;
+  transition: all 0.3s ease; /* Transição do outro CSS */
+  font-weight: bold; /* Adicionado para consistência */
 }
 
+/* Botão "Voltar" (Ação de perigo/secundária) */
 .nav1-button {
-    background-color: #bdc3c7;
-    color: var(--primary-color);
+  background-color: var(--danger-action-bg); /* Vermelho */
+  color: white;
 }
 .nav1-button:hover {
-    background-color: #95a5a6;
+  background-color: var(--danger-action-hover); /* Hover vermelho */
+  transform: translateY(-1px);
 }
 
+/* Botão "Tela Principal" (Ação primária) */
 .nav-button {
-    background-color: var(--secondary-color);
-    color: white;
+  background-color: var(--primary-action-bg); /* Azul */
+  color: white;
 }
 .nav-button:hover {
-    background-color: #2980b9;
+  background-color: var(--primary-action-hover); /* Hover azul */
+  transform: translateY(-1px);
 }
 
 /* --- Container Principal --- */
 .admin-container {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 30px;
-    background-color: var(--white-bg);
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: var(--white-bg); /* Branco */
+  border-radius: 10px; /* Raio do outro CSS */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra do outro CSS */
 }
 
 .admin-container .title {
-    text-align: center;
-    font-size: 28px;
-    margin-bottom: 30px;
-    color: var(--primary-color);
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 30px;
+  color: var(--primary-color);
 }
 
 /* --- Tabela de Livros --- */
 .books-table {
-    width: 100%;
-    border-collapse: collapse; /* Remove espaço entre bordas */
+  width: 100%;
+  border-collapse: collapse; 
 }
 
 .books-table th, .books-table td {
-    padding: 15px;
-    border: 1px solid var(--border-color);
-    text-align: left;
-    vertical-align: middle;
+  padding: 15px;
+  border: 1px solid var(--border-color); /* Borda cinza do outro CSS */
+  text-align: left;
+  vertical-align: middle;
 }
 
 .books-table thead {
-    background-color: #eef2f7;
+  background-color: var(--neutral-bg); /* Fundo neutro do outro CSS */
 }
 
 .books-table th {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .books-table tbody tr:hover {
-    background-color: #f8f9fa;
+  background-color: #f0f0f0; /* Hover levemente mais escuro */
 }
 
 .book-cover {
-    width: 50px;
-    height: auto;
-    border-radius: 4px;
+  width: 50px;
+  height: auto;
+  border-radius: 4px;
 }
 
 /* --- Botões de Ação na Tabela --- */
 .actions-cell {
-    text-align: center;
+  text-align: center;
 }
 
 .actions-cell button {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    margin: 0 5px;
-    transition: opacity 0.3s;
-}
-.actions-cell button:hover{
-    opacity: 0.8;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 0 5px;
+  transition: all 0.3s ease; /* Transição do outro CSS */
+  font-weight: bold; /* Adicionado para consistência */
 }
 
+/* Botão Editar (Ação primária) */
 .edit-btn {
-    background-color: var(--secondary-color);
-    color: white;
+  background-color: var(--primary-action-bg); /* Azul */
+  color: white;
+}
+.edit-btn:hover {
+  background-color: var(--primary-action-hover);
+  transform: translateY(-1px);
 }
 
+/* Botão Excluir (Ação de perigo) */
 .delete-btn {
-    background-color: var(--danger-color);
-    color: white;
+  background-color: var(--danger-action-bg); /* Vermelho */
+  color: white;
+}
+.delete-btn:hover {
+  background-color: var(--danger-action-hover);
+  transform: translateY(-1px);
 }
 
 /* --- Botão Adicionar Livro --- */
 .add-button-container {
-    text-align: center;
-    margin-top: 30px;
+  text-align: center;
+  margin-top: 30px;
 }
 
+/* Botão Adicionar (Ação primária) */
 .add-book-btn {
-    background-color: var(--success-color);
-    color: white;
-    padding: 12px 25px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
+  background-color: var(--primary-action-bg); /* Azul */
+  color: white;
+  padding: 12px 25px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease; /* Transição do outro CSS */
+  font-weight: bold; /* Adicionado para consistência */
 }
 .add-book-btn:hover {
-    background-color: #27ae60;
+  background-color: var(--primary-action-hover); /* Hover azul */
+  transform: translateY(-1px);
 }

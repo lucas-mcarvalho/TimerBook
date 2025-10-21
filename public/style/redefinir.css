@@ -1,79 +1,116 @@
+    /* --- Reset Básico e Configurações Globais --- */
+*, *::before, *::after {
+    box-sizing: border-box; 
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
 body {
-    font-family: helvetica;
-    background: #8ab696;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url(/public/uploads/68c5c0b3b920b.jpg);
-    margin-bottom: 20px;
-    height: 100vh;
-    background-size: cover; 
+    background: #1643E5;
+    background: linear-gradient(45deg, #1643E5, #94CEEF);
+    background-size: cover;
+    background-attachment: fixed;
+    padding: 20px; 
 }
 
+/* --- Card do Formulário --- */
 form {
     background: #F5F2ED;
-    padding: 20px;
+    padding: 30px; 
     border-radius: 20px;
-    box-shadow: 5px 5px 10px rgba(0,0,0,0.1);
-    width: 320px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+    width: 100%; 
+    max-width: 400px;
     text-align: left;
+  
 }
 
-h2 {
+/* --- Logo (Dentro do Form) --- */
+.logo {
+    display: block; 
+    margin: 0 auto 20px auto;
+    width: 100px; 
+    height: auto;  
+}
+
+/* --- Tipografia --- */
+h1 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px; 
     color: #0A1A3A;
+    font-size: 1.5rem; 
 }
 
+/* --- Elementos do Formulário --- */
 label {
     display: block;
     font-weight: bold; 
-    margin-top: 10px;
-    background: transparent;
+    margin-top: 20px;
+    margin-bottom: 8px; 
+    color: #0A1A3A;
+    font-size: 0.9rem; 
 }
 
-input {
-    font-size: 16px;
-    padding: 10px 10px 10px 5px;
+input[type="password"] {
+    font-size: 1rem; 
+    padding: 10px 5px;
     display: block;
     width: 100%;
     outline: none;
     border: none;
-    border-bottom: 1px solid #0A1A3A;
+    border-bottom: 2px solid #ccc; 
     background: transparent;
+    transition: border-color 0.3s ease; 
+    letter-spacing: 1px; 
 }
 
+input[type="password"]:focus {
+    border-bottom-color: #1643E5;
+}
+
+/* --- Botão --- */
 button {
-    margin-top: 15px;
+    margin-top: 30px;
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     border: none;
-    background: #79bc75;
+    background: #1643E5; 
     color: #F5F2ED;
-    font-size: 16px;
-    border-radius: 5px;
+    font-size: 1rem; 
+    font-weight: bold;
+    border-radius: 8px; 
     cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
 }
 
 button:hover {
-    background: #7FA77C;
+    background: #0A2F9C; 
 }
 
-.msg {
-    margin-top: 10px;
+button:active {
+    transform: scale(0.98);
+}
+
+/* --- Estilo para a Caixa de Sucesso --- */
+
+#successBox {
+    background: #e6ffe6;
+    border: 2px solid #4CAF50;
+    color: #256029;
+    padding: 25px;
+    border-radius: 12px;
+    font-size: 1.1em;
     text-align: center;
-    font-size: 14px;
-    color: #333;
-}
-
-input[type="password"] {
-    letter-spacing: 1px;
-}
-
-.logo {
-    position: absolute;
-    top: 20px;     
-    left: 20px;    
-    width: 120px;  
-    height: auto;  
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 450px; /* Responsivo */
+    line-height: 1.5;
 }
