@@ -1,0 +1,1 @@
+{"version":1,"defects":[],"times":{"UserTest::testCreateAndFindByEmail":0.52,"UserTest::testDuplicateEmailFails":0.481,"UserTest::testGetAllAndGetByIdAndUpdate":0.67,"UserTest::testFindWithBooks":0.479,"UserTest::testDuplicateUsernameFails":0.485,"UserTest::testPasswordIsHashedAndUpdatePassword":1.941,"UserTest::testFindWithBooksWhenNoBooks":0.481}}
