@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/Books.php';
-require_once __DIR__ . '/../core/database_config.php';
+
 
 require __DIR__ . '/../../vendor/autoload.php';
 
@@ -245,6 +245,81 @@ public function findByTitle()
     $result = Book::findByTitle($titulo);
     echo json_encode($result);
 }
+
+public function update($id)
+{
+    header("Content-Type: application/json");
+
+    $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+
+    // Captura dados JSON ou form-data
+    if (stripos($contentType, "application/json") !== false) {
+        $data = json_decode(file_get_contents("php://input"), true);
+    } else {
+        $data = $_POST;
+    }
+
+    $titulo = $data['titulo'] ?? null;
+    $autor = $data['autor'] ?? null;
+    $ano_publicacao = $data['ano_publicacao'] ?? null;
+
+    $novoArquivo = null;
+    $novaCapa = null;
+
+    $s3Client = new S3Client([
+        'version' => 'latest',
+        'region' => $_ENV['AWS_DEFAULT_REGION'],
+        'credentials' => [
+            'key' => $_ENV['AWS_ACCESS_KEY_ID'],
+            'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
+        ]
+    ]);
+
+    $bucketName = $_ENV['S3_BUCKET_NAME'];
+
+    // Upload do novo arquivo, se enviado
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        $file = $_FILES['file'];
+        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $newName = 'books_files/' . uniqid() . "." . $ext;
+
+        $s3Client->putObject([
+            'Bucket' => $bucketName,
+            'Key' => $newName,
+            'SourceFile' => $file['tmp_name'],
+        ]);
+
+        $novoArquivo = "https://{$bucketName}.s3.{$_ENV['AWS_DEFAULT_REGION']}.amazonaws.com/{$newName}";
+    }
+
+    // Upload da nova capa, se enviada
+    if (isset($_FILES['capa']) && $_FILES['capa']['error'] === UPLOAD_ERR_OK) {
+        $file = $_FILES['capa'];
+        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $newName = 'books_covers/' . uniqid() . "." . $ext;
+
+        $s3Client->putObject([
+            'Bucket' => $bucketName,
+            'Key' => $newName,
+            'SourceFile' => $file['tmp_name'],
+        ]);
+
+        $novaCapa = "https://{$bucketName}.s3.{$_ENV['AWS_DEFAULT_REGION']}.amazonaws.com/{$newName}";
+    }
+
+   
+    $result = Book::update($id, $titulo, $autor, $ano_publicacao, $novoArquivo, $novaCapa);
+
+    if (isset($result['error'])) {
+        http_response_code($result['error'] === "Livro não encontrado" ? 404 : 400);
+    } else {
+        http_response_code(200);
+    }
+
+    echo json_encode($result);
+}
+
+
 
 
 }
