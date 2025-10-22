@@ -1,7 +1,3 @@
-<?php
-session_start();
-?>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -17,9 +13,9 @@ session_start();
 
     <main class="cadastro-container">
         <h2 class="title">CADASTRAR NOVO LIVRO</h2>
-        
+       
         <form id="cadastro-livro-form" class="cadastro-form" enctype="multipart/form-data">
-            
+           
             <!-- Upload da capa -->
             <div class="form-group">
             <label for="capa_arquivo">Capa do Livro:</label>
@@ -32,10 +28,10 @@ session_start();
             <!-- Upload do arquivo do livro -->
             <div class="form-group">
                 <label for="caminho_arquivo" class="btn_pdf">Arquivo do Livro (PDF):</label>
-                
+               
                 <input type="file" id="caminho_arquivo" name="caminho_arquivo" accept=".pdf" required class="file-input01">
             </div>
-            
+           
             <!-- Nome do livro -->
             <div class="form-group">
                 <label for="titulo">Nome do Livro:</label>
@@ -67,3 +63,4 @@ session_start();
     <script>cadastrarLivro()</script>
 </body>
 </html>
+

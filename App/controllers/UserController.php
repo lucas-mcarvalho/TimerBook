@@ -14,6 +14,75 @@ use Aws\S3\Exception\S3Exception;
 
 class UserController
 {
+
+
+
+    //FUNCAO DE LOGIN
+    public function login()
+    {
+        //VERIFICA O TIPO QUE FOI RECEBIDO
+        $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
+        //SE FOI JSON
+        if (stripos($contentType, "application/json") !== false) {
+            $data = json_decode(file_get_contents("php://input"), true);
+            $email = $data['email'] ?? null;
+            $password = $data['password'] ?? null;
+        } else {
+            //OU SE FOI FORM DATA , DO TIPO HTML
+            $email = $_POST['email'] ?? null;
+            $password = $_POST['password'] ?? null;
+        }
+
+        //VERIFICA SE OS CAMPOS EMAIL E SENHA FORAM PREENCHIDOS
+        if (!$email || !$password) {
+            //RETORNA A RESPOSTA HTTP 400
+            http_response_code(400);
+            //RETORNA NO FORMATO JSON
+            echo json_encode(["error" => "E-mail e senha são obrigatórios"]);
+            return;
+        }
+        //CHAMA A FUNCAO DA MODEL PRA BUSCAR EMAIL
+        $user = User::findByEmail($email);
+        //VERIFICA SE O USUARIO E VALIDO E VERIFICA A SENHA COM O PASSWORD_VERIFY QUE E PARA VERIFICAR SENHAS CRIPTOGRAFADAS
+        if ($user && isset($user['senha']) && password_verify($password, $user['senha'])) {
+           
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+            $_SESSION['user_logged_in'] = true;
+            $_SESSION['user'] = $user;
+
+            // Armazena informações do usuário na sessão
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            if (!empty($user['profile_photo'])) {
+               $_SESSION['profile_photo'] = ltrim($user['profile_photo'], '/');
+          } else {
+                   $_SESSION['profile_photo'] = null;
+               }
+            //RETORNA A MENSAGEM DE SUCESSO E OS DADOS DO USUARIO ,SEM INCLUIR A SENHA
+            echo json_encode([
+                "success" => true,
+                "message" => "Login realizado com sucesso",
+                "user" => [
+                    "id" => $user['id'],
+                    "nome" => $user['nome'],
+                    "username" => $user['username'],
+                    "email" => $user['email'],
+                    "profile_photo" => $user['profile_photo'] ?? null
+                ]
+            ]);
+            //SE DER ERRO RETORNA UMA RESPOSTA HTTP 400
+        } else {
+            http_response_code(401);
+            echo json_encode(["error" => "E-mail ou senha inválidos"]);
+        }
+    }
+
+
+
+
+
     public function register()
     {
         // DETECTA O TIPO DE DADO QUE RECEBEU
@@ -46,7 +115,7 @@ class UserController
             echo json_encode($result);
             return;
         }
-//PEGA O ID DO USUARIO CRIADO   
+//PEGA O ID DO USUARIO CRIADO  
         $userId = $result['user_id'];
 
         //SE O USUARIO ENVIOU UMA FOTO, PROCESSA O UPLOAD·
@@ -72,7 +141,7 @@ class UserController
         ]);
 
         $bucketName = $_ENV['S3_BUCKET_NAME'];
-        
+       
         // Gera nome único para a foto
         $newName = 'profile_photos/' . uniqid() . "." . $ext;
 
@@ -101,9 +170,11 @@ class UserController
         $result['photo_error'] = "Formato de arquivo não permitido";
     }
 }
+
         // Lógica de resposta final: sempre retorna JSON
         // Se houver um erro de foto, ele já estará em $result. Caso contrário, assume sucesso.
         echo json_encode($result);
+
     }
 
 
@@ -214,3 +285,6 @@ class UserController
     }
 
 }
+
+}
+
