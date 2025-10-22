@@ -142,4 +142,5 @@ class Admin {
             return ["error" => "Erro no banco: " . $e->getMessage()];
         }   
     }
+
 }

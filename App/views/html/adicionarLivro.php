@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Livro</title>
     <link rel="stylesheet" href="style/adicionarLivro.css">
+
+    <script src="/TimerBook/App/views/javascript/livros_api.js"></script>
+
 </head>
 <body>
 
@@ -17,7 +20,7 @@
             <div class="form-group">
             <label for="capa_arquivo">Capa do Livro:</label>
             <label for="capa_arquivo" class="cover-placeholder">
-                <img src="https://us.123rf.com/450wm/oliviart/oliviart2004/oliviart200400338/144688847-cone-mais-isolado-no-fundo-branco-adicionar-ícone-mais-sinal-de-adição-cone-medical-plus.jpg?ver=6" alt="Prévia da foto" id="capaPreview">
+                <img src="uploads/add.png" alt="Prévia da foto" id="capaPreview">
             </label>
                 <input type="file" id="capa_arquivo" name="capa_arquivo" accept="image/*" required class="file-input">
             </div>
@@ -57,7 +60,7 @@
         </form>
     </main>
 
-    <script src="/TimerBook/App/views/javascript/cadastrar_livro.js"></script>
+    <script>cadastrarLivro()</script>
 </body>
 </html>
 

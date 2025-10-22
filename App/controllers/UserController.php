@@ -3,9 +3,6 @@ require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../core/database_config.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -17,6 +14,8 @@ use Aws\S3\Exception\S3Exception;
 
 class UserController
 {
+
+
 
     //FUNCAO DE LOGIN
     public function login()
@@ -79,6 +78,7 @@ class UserController
             echo json_encode(["error" => "E-mail ou senha inválidos"]);
         }
     }
+
 
 
 
@@ -169,11 +169,14 @@ class UserController
     } else {
         $result['photo_error'] = "Formato de arquivo não permitido";
     }
-      //RETORNA OS DADOS EM JSON
-        echo json_encode($result);
 }
-     
+
+        // Lógica de resposta final: sempre retorna JSON
+        // Se houver um erro de foto, ele já estará em $result. Caso contrário, assume sucesso.
+        echo json_encode($result);
+
     }
+
 
     public function getAll()
     {
@@ -187,100 +190,101 @@ class UserController
         }
     }
 
-    public function forgotPassword()
+     public function getById($id)
     {
-        $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
-        if (stripos($contentType, "application/json") !== false) {
-            $data = json_decode(file_get_contents("php://input"), true);
-            $email = trim($data['email'] ?? '');
+        $user = User::getById($id);
+        if (!$user) {
+            http_response_code(404);
+            echo json_encode(["error" => "Usuário não encontrado"]);
         } else {
-            $email = trim($_POST['email'] ?? '');
+            echo json_encode($user);
         }
-        $pdo = Database::connect();
-        $stmt = $pdo->prepare("SELECT id FROM `User` WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
-        if ($user) {
-            $token = bin2hex(random_bytes(32));
-            $stmt = $pdo->prepare("UPDATE `User` SET reset_token = ?, reset_token_expire = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = ?");
-            $stmt->execute([$token, $user['id']]);
+    public function findWithBooks($id)
+    {
+        $result = User::findWithBooks($id);
+        if (!$result) {
+            http_response_code(404);
+            echo json_encode(["error" => "Usuário não encontrado ou sem livros"]);
+        } else {
+            echo json_encode($result);
+        }
+}
+  public function update($id)
+{
+    header("Content-Type: application/json");
 
-            $resetLink = "http://localhost/TimerBook/public/index.php?action=reset_password&token=$token";
-            $mail = new PHPMailer(true);
+    $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
 
+    if (stripos($contentType, "application/json") !== false) {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $nome = $data['nome'] ?? null;
+        $username = $data['username'] ?? null;
+        $email = $data['email'] ?? null;
+        $senha = $data['senha'] ?? null;
+    } else {
+        $nome = $_POST['nome'] ?? null;
+        $username = $_POST['username'] ?? null;
+        $email = $_POST['email'] ?? null;
+        $senha = $_POST['senha'] ?? null;
+    }
+
+    $profilePhoto = null;
+
+    // Upload da nova foto (se enviada)
+    if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+        $file = $_FILES['photo'];
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+
+        if (in_array($ext, $allowed)) {
             try {
-                $mail->isSMTP();
-                $mail->Host = $_ENV['MAIL_HOST'];
-                $mail->SMTPAuth = true;
-                $mail->Username = $_ENV['MAIL_USERNAME'];;
-                $mail->Password = $_ENV['MAIL_PASSWORD'];
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port = 587;
-                $mail->setFrom($_ENV['MAIL_FROM'], $_ENV['MAIL_FROM_NAME']);
-                $mail->addAddress($email);
-                $mail->Subject = 'Redefinir Senha';
-                $mail->Body = "Clique no link para redefinir sua senha: $resetLink";
+                $s3Client = new S3Client([
+                    'version' => 'latest',
+                    'region' => $_ENV['AWS_DEFAULT_REGION'],
+                    'credentials' => [
+                        'key' => $_ENV['AWS_ACCESS_KEY_ID'],
+                        'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
+                    ]
+                ]);
 
-                // Força debug do PHPMailer na resposta
-                ob_start();
-                $mail->SMTPDebug = 2;
-                $mail->Debugoutput = function ($str, $level) {
-                    echo "Debug: $str\n";
-                };
-                $enviado = $mail->send();
-                $debugOutput = ob_get_clean();
+                $bucketName = $_ENV['S3_BUCKET_NAME'];
+                $newName = 'profile_photos/' . uniqid() . "." . $ext;
 
-                if ($enviado) {
-                    echo json_encode(['success' => true, 'debug' => $debugOutput]);
-                } else {
-                    echo json_encode(['error' => $mail->ErrorInfo, 'debug' => $debugOutput]);
-                }
-            } catch (Exception $e) {
-                echo json_encode(['error' => $e->getMessage(), 'mail_error' => $mail->ErrorInfo ?? '', 'debug' => $debugOutput ?? '']);
+                $s3Client->putObject([
+                    'Bucket' => $bucketName,
+                    'Key' => $newName,
+                    'SourceFile' => $file['tmp_name'],
+                    'ACL' => 'public-read' 
+                ]);
+
+                $profilePhoto = "https://{$bucketName}.s3.{$_ENV['AWS_DEFAULT_REGION']}.amazonaws.com/{$newName}";
+
+            } catch (S3Exception $e) {
+                echo json_encode(["error" => "Erro ao enviar imagem: " . $e->getMessage()]);
+                return;
             }
         } else {
-            echo json_encode(['error' => 'E-mail não encontrado.']);
+            echo json_encode(["error" => "Formato de arquivo inválido"]);
+            return;
         }
     }
 
-    public function resetPassword()
+    
+    $result = User::update($id, $nome, $username, $email, $senha, false, $profilePhoto);
+
+    echo json_encode($result);
+}
+
+
+       public function delete($id)
     {
-        $token = $_POST['token'] ?? '';
-        $newPassword = $_POST['new_password'] ?? '';
-        $pdo = Database::connect();
-        $stmt = $pdo->prepare("SELECT id FROM `User` WHERE reset_token = ? AND reset_token_expire > NOW()");
-        $stmt->execute([$token]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user) {
-            $hash = password_hash($newPassword, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare("UPDATE `User` SET senha = ?, reset_token = NULL, reset_token_expire = NULL WHERE id = ?");
-            $stmt->execute([$hash, $user['id']]);
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['error' => 'Token inválido ou expirado.']);
-        }
+        $result = User::delete($id);
+        echo json_encode($result);
     }
 
-    public static function checkLogin() {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
-            header('Location: /TimerBook/public/index.php?action=login');
-            exit;
-        }
-    }
+}
 
-    public static function logout() {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        $_SESSION = [];
-        session_destroy();
-        header('Location: /TimerBook/public/index.php?action=login');
-        exit;
-    }
 }
 

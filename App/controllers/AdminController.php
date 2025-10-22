@@ -1,10 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/Admin.php';
-require_once __DIR__ . '/../core/database_config.php';
-require_once __DIR__ . '/../../vendor/autoload.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -240,7 +236,12 @@ class AdminController
         }
         $_SESSION = [];
         session_destroy();
-        header('Location: /TimerBook/public/index.php?action=admin_login');
+
+        // Garanta que o navegador receba um redirect HTML
+        header('Content-Type: text/html; charset=utf-8');
+
+        // Redireciona para a página de login do projeto (ajuste o path se necessário)
+        header('Location: /TimerBook/public/');
         exit;
     }
 
@@ -251,7 +252,6 @@ class AdminController
             session_start();
         }
         if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-            header('Location: /TimerBook/public/index.php?action=admin_login');
             exit;
         }
     }

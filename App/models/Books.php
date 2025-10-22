@@ -123,4 +123,95 @@ public static function delete($id)
         return ["error" => "Erro no banco: " . $e->getMessage()];
     }
 }
+
+public static function update($id, $titulo = null, $autor = null, $ano_publicacao = null, $novoArquivo = null, $novaCapa = null)
+{
+    try {
+        $pdo = Database::connect();
+
+        $livroExistente = self::findById($id);
+        if (!$livroExistente) {
+            return ["error" => "Livro não encontrado"];
+        }
+
+        $s3Client = new S3Client([
+            'version'     => 'latest',
+            'region'      => $_ENV['AWS_DEFAULT_REGION'],
+            'credentials' => [
+                'key'    => $_ENV['AWS_ACCESS_KEY_ID'],
+                'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
+            ]
+        ]);
+
+        // Se houver novo arquivo, deleta o antigo no S3
+        if ($novoArquivo !== null && !empty($livroExistente['caminho_arquivo'])) {
+            $path = parse_url($livroExistente['caminho_arquivo'], PHP_URL_PATH);
+            $key = ltrim($path, '/');
+            if ($key) {
+                $s3Client->deleteObject([
+                    'Bucket' => $_ENV['S3_BUCKET_NAME'],
+                    'Key'    => $key,
+                ]);
+            }
+        }
+
+        // Se houver nova capa, deleta a antiga no S3
+        if ($novaCapa !== null && !empty($livroExistente['capa_livro'])) {
+            $path = parse_url($livroExistente['capa_livro'], PHP_URL_PATH);
+            $key = ltrim($path, '/');
+            if ($key) {
+                $s3Client->deleteObject([
+                    'Bucket' => $_ENV['S3_BUCKET_NAME'],
+                    'Key'    => $key,
+                ]);
+            }
+        }
+
+        // Monta o SQL dinamicamente
+        $campos = [];
+        $valores = [];
+
+        if ($titulo !== null) {
+            $campos[] = "titulo = ?";
+            $valores[] = $titulo;
+        }
+
+        if ($autor !== null) {
+            $campos[] = "autor = ?";
+            $valores[] = $autor;
+        }
+
+        if ($ano_publicacao !== null) {
+            $campos[] = "ano_publicacao = ?";
+            $valores[] = $ano_publicacao;
+        }
+
+        if ($novoArquivo !== null) {
+            $campos[] = "caminho_arquivo = ?";
+            $valores[] = $novoArquivo;
+        }
+
+        if ($novaCapa !== null) {
+            $campos[] = "capa_livro = ?";
+            $valores[] = $novaCapa;
+        }
+
+        if (empty($campos)) {
+            return ["error" => "Nenhum campo para atualizar"];
+        }
+
+        $valores[] = $id;
+        $sql = "UPDATE Books SET " . implode(", ", $campos) . " WHERE id = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($valores);
+
+        return ["message" => "Livro atualizado com sucesso"];
+    } catch (AwsException $e) {
+        return ["error" => "Erro AWS: " . $e->getMessage()];
+    } catch (PDOException $e) {
+        return ["error" => "Erro no banco: " . $e->getMessage()];
+    }
+}
+
+
 }

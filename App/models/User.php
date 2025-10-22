@@ -1,5 +1,9 @@
 <?php
-require_once '../App/core/database_config.php';
+require_once __DIR__ . '/../core/database_config.php';
+
+use Aws\S3\S3Client;
+use Aws\Exception\AwsException;
+
 
 class User {
     public static function findByEmail($email) {
@@ -76,9 +80,9 @@ class User {
                 b.titulo as book_title,
                 b.autor as book_author
             FROM
-                users u 
+                User u
             LEFT JOIN
-                books b ON u.id = b.user_id
+                Books b ON u.id = b.user_id
             WHERE
                 u.id = ?";
 
@@ -113,89 +117,132 @@ class User {
     } catch (PDOException $e) {
         return null;
     }
-}
+}       public static function delete($id)
+    {
+        // 1. Primeiro, busca os dados do usuário para obter o caminho da foto
+        $user = self::getById($id);
+        if (!$user) {
+            return ["error" => "Usuário não encontrado"];
+        }
 
-    public static function delete($id) {
+        // 2. Verifica se o usuário tem uma foto de perfil para deletar no S3
+        if (!empty($user['profile_photo'])) {
+            // Inicializa o cliente S3
+            $s3Client = new S3Client([
+                'version'     => 'latest',
+                'region'      => $_ENV['AWS_DEFAULT_REGION'],
+                'credentials' => [
+                    'key'    => $_ENV['AWS_ACCESS_KEY_ID'],
+                    'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
+                ]
+            ]);
+
+            try {
+                // Extrai a 'key' (caminho do arquivo no bucket) da URL completa
+                $path = parse_url($user['profile_photo'], PHP_URL_PATH);
+                $key = ltrim($path, '/');
+
+                // Deleta o objeto (a foto) do bucket S3
+                $s3Client->deleteObject([
+                    'Bucket' => $_ENV['S3_BUCKET_NAME'],
+                    'Key'    => $key,
+                ]);
+
+            } catch (AwsException $e) {
+                // Se falhar a exclusão no S3, retorna o erro e não deleta do banco
+                return [
+                    "error" => "Falha ao deletar a foto de perfil no S3",
+                    "aws_message" => $e->getMessage()
+                ];
+            }
+        }
+
+        // 3. Se a exclusão no S3 deu certo (ou não havia foto), deleta o usuário do banco
         try {
             $pdo = Database::connect();
             $stmt = $pdo->prepare("DELETE FROM User WHERE id = ?");
             $stmt->execute([$id]);
-            return ["message" => "Usuário deletado com sucesso"];
+            return ["message" => "Usuário e foto de perfil excluídos com sucesso"];
         } catch (PDOException $e) {
-            return ["error" => "Erro no banco: " . $e->getMessage()];
+            // Este erro ocorreria se, por exemplo, houvesse uma restrição de chave estrangeira
+            return ["error" => "Erro no banco ao deletar usuário: " . $e->getMessage()];
         }
     }
 
-    public static function update($id, $nome = null, $username = null, $email = null, $senha = null, $isAlreadyHashed = false, $profilePhoto = null) {
-        try {
-            $pdo = Database::connect();
+  public static function update($id, $nome = null, $username = null, $email = null, $senha = null, $isAlreadyHashed = false, $profilePhoto = null)
+{
+    try {
+        $pdo = Database::connect();
 
-            // Verifica se o usuário existe
-            $stmt = $pdo->prepare("SELECT * FROM User WHERE id = ?");
-            $stmt->execute([$id]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!$user) {
-                return ["error" => "Usuário não encontrado"];
+        $stmt = $pdo->prepare("SELECT * FROM User WHERE id = ?");
+        $stmt->execute([$id]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$user) {
+            return ["error" => "Usuário não encontrado"];
+        }
+
+        // Configura o S3
+        $s3Client = new S3Client([
+            'version'     => 'latest',
+            'region'      => $_ENV['AWS_DEFAULT_REGION'],
+            'credentials' => [
+                'key'    => $_ENV['AWS_ACCESS_KEY_ID'],
+                'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
+            ]
+        ]);
+
+        // Se tiver nova foto, apaga a antiga no S3
+        if ($profilePhoto !== null && !empty($user['profile_photo'])) {
+            $path = parse_url($user['profile_photo'], PHP_URL_PATH);
+            $key = ltrim($path, '/');
+            if ($key) {
+                $s3Client->deleteObject([
+                    'Bucket' => $_ENV['S3_BUCKET_NAME'],
+                    'Key'    => $key,
+                ]);
             }
+        }
 
-            // Verifica se email já existe para outro usuário
-            if ($email && $email !== $user['email']) {
-                $stmt = $pdo->prepare("SELECT id FROM User WHERE email = ? AND id != ?");
-                $stmt->execute([$email, $id]);
-                if ($stmt->fetch()) {
-                    return ["error" => "E-mail já cadastrado"];
-                }
-            }
+        // Campos dinâmicos
+        $fields = [];
+        $values = [];
 
-            // Verifica se username já existe para outro user
-            if ($username && $username !== $user['username']) {
-                $stmt = $pdo->prepare("SELECT id FROM User WHERE username = ? AND id != ?");
-                $stmt->execute([$username, $id]);
-                if ($stmt->fetch()) {
-                    return ["error" => "Username já está em uso"];
-                }
-            }
+        if ($nome !== null) {
+            $fields[] = "nome = ?";
+            $values[] = $nome;
+        }
+        if ($username !== null) {
+            $fields[] = "username = ?";
+            $values[] = $username;
+        }
+        if ($email !== null) {
+            $fields[] = "email = ?";
+            $values[] = $email;
+        }
+        if ($senha !== null && $senha !== '') {
+            $fields[] = "senha = ?";
+            $values[] = $isAlreadyHashed ? $senha : password_hash($senha, PASSWORD_DEFAULT);
+        }
+        if ($profilePhoto !== null) {
+            $fields[] = "profile_photo = ?";
+            $values[] = $profilePhoto;
+        }
 
-            // Atualiza os campos fornecidos
-            $fields = [];
-            $values = [];
+        if (empty($fields)) {
+            return ["error" => "Nenhum campo para atualizar"];
+        }
 
-            if ($nome !== null) {
-                $fields[] = "nome = ?";
-                $values[] = $nome;
-            }
-            if ($username !== null) {
-                $fields[] = "username = ?";
-                $values[] = $username;
-            }
-            if ($email !== null) {
-                $fields[] = "email = ?";
-                $values[] = $email;
-            }
-            // Atualiza senha somente se fornecida (não nula e não vazia)
-            if ($senha !== null && $senha !== '') {
-                $fields[] = "senha = ?";
-                $values[] = $isAlreadyHashed ? $senha : password_hash($senha, PASSWORD_DEFAULT);
-            }
-            if ($profilePhoto !== null) {
-                $fields[] = "profile_photo = ?";
-                $values[] = $profilePhoto;
-            }
+        $values[] = $id;
+        $sql = "UPDATE User SET " . implode(", ", $fields) . " WHERE id = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($values);
 
-            if (empty($fields)) {
-                return ["error" => "Nenhum campo para atualizar"];
-            }
-
-            $values[] = $id; // Para a cláusula WHERE
-
-            $sql = "UPDATE User SET " . implode(", ", $fields) . " WHERE id = ?";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute($values);
-
-            return ["message" => "Usuário atualizado com sucesso"];
-
-        } catch (PDOException $e) {
-            return ["error" => "Erro no banco: " . $e->getMessage()];
-        }   
+        return ["message" => "Usuário atualizado com sucesso"];
+    } catch (AwsException $e) {
+        return ["error" => "Erro AWS: " . $e->getMessage()];
+    } catch (PDOException $e) {
+        return ["error" => "Erro no banco: " . $e->getMessage()];
     }
+}
+
 }
