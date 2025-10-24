@@ -1,0 +1,209 @@
+body {
+    font-family:Helvetica;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #94D7F2; /* Fundo azul da sua página home */
+}
+
+label {
+    display: block;
+    font-weight: bold; 
+    display: block;
+    left: 5px;
+    top: 20px;
+    margin-top: 10px;
+    background: transparent;
+}
+
+input {
+    font-size: 16px;
+    padding: 10px 10px 10px 5px;
+    display: block;
+    width: 200px;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #0A1A3A;
+    background: transparent;
+}
+
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background-color: #F5F2ED; 
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+
+/* Bloco da Esquerda: Logo e Título (CORRIGIDO) */
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 0px; /* Alterado de 15px */
+}
+
+.header-logo img {
+  width: 50px;
+  height: 50px;
+  transform: scale(3);
+  margin-right: 10px;
+}
+
+.header-h1 {
+    font-size: 24px; 
+    font-weight: bold;
+    color: #2B4C8C; /* Alterado de #0A1A3A */
+}
+
+/* Bloco da Direita: Botões */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+}
+
+/* Botão "Adicionar Usuário" */
+.add-button {
+    padding: 10px 20px;
+    background-color: #2B4C8C;
+    color: aliceblue;
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600; 
+}
+.add-button:hover{
+    background-color: #3e6cc9;
+}
+/* Botão "Sair" */
+.logout-button {
+  background-color: white;
+  color: #333;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  border: 2px solid #ddd;
+}
+.logout-button:hover {
+  background-color: #c76360;
+  color: white;
+  border-color: #c76360;
+}
+.admin-container {
+    width: 90%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 50px;
+    margin-top: 30px; 
+    background-color: #F5F2ED; 
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.user-list-header {
+    width: 100%;
+    border-bottom: 1px solid black;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.user-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    
+}
+
+/* Caixa de cada item da lista */
+.user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #0A1A3A;
+    padding: 10px;
+    border-radius: 5px;
+    background: #FFF; 
+}
+
+/* Foto do usuário */
+.user-photo {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.user-photo.placeholder {
+    background: #eee;
+}
+
+/* Informações de texto */
+.user-email {
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* Ações (botões) */
+.user-actions {
+    display: flex;
+    gap: 8px; 
+    margin-left: auto; 
+}
+
+.user-actions button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.user-actions button:hover {
+    transform: scale(1.05);
+}
+
+/* Botão editar */
+.edit-btn {
+    background-color: #2B4C8C;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #3e6cc9;
+}
+
+/* Botão excluir */
+.delete-btn {
+    background-color: #d9534f;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #b52b27;
+}
+
+/* Botão editar livro */
+.edit-livro-btn {
+    background-color: #071126;
+    color: white;
+}
+
+.edit-livro-btn:hover {
+    background-color: #0a1a3a;
+}

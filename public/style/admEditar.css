@@ -1,0 +1,167 @@
+/* Estilos globais */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Estilo do body pego do segundo arquivo 
+  para centralizar o contêiner na tela 
+*/
+body {
+  font-family: helvetica, sans-serif;
+  background-color: #94D7F2;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+}
+
+/* Container principal (antigo .edit-container) 
+  com os estilos do .cadastro-container (card branco) 
+*/
+.edit-container {
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    border-radius: 10px;
+    background-color: #fff; /* Fundo sólido branco */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra do segundo arquivo */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    margin-bottom: 30px;
+    color: #333;
+    text-align: center;
+}
+
+/* Formulário */
+.edit-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+/* Grupo de formulário (label + input) */
+.form-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left; /* Mantém o alinhamento original do label */
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0; /* Remove a margem antiga */
+}
+
+/* Inputs de texto com o estilo "caixa" 
+  do segundo arquivo 
+*/
+.form-group input {
+    font-size: 16px;
+    padding: 12px;
+    width: 100%;
+    border: 1px solid #ccc; /* Borda em caixa */
+    border-radius: 5px; /* Cantos arredondados */
+    background-color: #f9f9f9; /* Fundo levemente cinza */
+    transition: border-color 0.3s;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: #2B4C8C; /* Cor de foco azul do segundo arquivo */
+}
+
+/* Botões com estilos do segundo arquivo 
+  (sem flex: 1, cores azul e vermelho) 
+*/
+.form-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    gap: 20px;
+}
+
+.save-button, .back-button {
+    flex: 0 1 auto; /* Remove o 'flex: 1' para os botões terem largura automática */
+    padding: 12px 25px;
+    border: none;
+    text-decoration: none;
+    border-radius: 5px; /* Raio do segundo arquivo */
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+/* Botão de salvar com o estilo azul do .register-button */
+.save-button {
+    color: white;
+    background-color: #2B4C8C;
+}
+
+/* Botão de voltar com o estilo vermelho do .back-button */
+.back-button {
+    color: white;
+    background-color: #dc3545;
+}
+
+.back-button:hover {
+    background-color: #c82333;
+    transform: none; /* Remove o transform antigo */
+}
+
+.save-button:hover {
+    background-color: #3e6cc9;
+    transform: none; /* Remove o transform antigo */
+}
+
+.save-button:active, .back-button:active {
+    transform: translateY(1px);
+}
+
+/* Classes para a foto de perfil, adaptadas para 
+  parecerem com o .cover-placeholder (circular)
+*/
+.form-group.foto-perfil {
+    align-items: center; 
+}
+
+.current-photo {
+    width: 150px;
+    height: 150px;
+    border: 3px dashed #ccc; 
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 10px; 
+    box-shadow: none; 
+}
+
+.current-photo:hover {
+    background-color: #f0f0f0;
+}
+
+.current-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: none; 
+    box-shadow: none; 
+}

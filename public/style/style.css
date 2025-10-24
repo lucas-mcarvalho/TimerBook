@@ -1,0 +1,255 @@
+body {
+    font-family: helvetica, sans-serif;
+    background: #1643E5;
+    background: linear-gradient(45deg, #1643E5, #94CEEF);
+    background-size: cover; 
+    background-position: center;
+    background-attachment: fixed; 
+    margin: 0;
+    min-height: 100vh;
+}
+.logo img{
+    width: 100px;
+    height: 100px;
+    transform: scale(3); 
+    margin-right: 10px; 
+    margin-left: 10px;
+}
+/* --- CONTAINER PRINCIPAL (FORM + SLIDER) --- */
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; 
+    gap: 40px;
+    padding: 40px; 
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* --- FORMULÁRIO DE CADASTRO --- */
+form {
+    background: #F5F2ED;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 10px rgba(0,0,0,0.1);
+    width: 100%; 
+    max-width: 340px; 
+    box-sizing: border-box;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: bold; 
+    left: 5px;
+    top: 20px;
+    margin-top: 10px;
+    background: transparent;
+}
+
+input {
+    font-size: 16px;
+    padding: 10px 10px 10px 5px;
+    display: block;
+    width: 100%; 
+    box-sizing: border-box; 
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #2B4C8C; 
+    background: transparent;
+}
+
+/* --- BOTÃO PRINCIPAL --- */
+button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background:  #2B4C8C;
+    color: #F5F2ED;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #3e6cc9;
+}
+
+.msg {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* --- FOTO DO PERFIL (AJUSTADO PARA A LIXEIRA ABAIXO) --- */
+.foto-perfil{
+    position: relative; 
+    width: 120px; 
+    height: 120px; 
+    margin: 0 auto 50px auto; /* Adicionado mais margem para a lixeira */
+    z-index: 2; /* Garante que a foto fique acima da lixeira */
+}
+
+.file-input {
+    display: none; 
+}
+
+.profile-pic-label {
+    display: inline-block;
+    width: 100%; 
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-pic-label img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* --- BOTÃO RESET --- */
+.reset-btn {
+    position: absolute; 
+    bottom: -35px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background-color: #d9534f;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease-in-out;
+    z-index: 1; /* Garante que a lixeira fique abaixo da foto se houver overlap */
+}
+.reset-btn svg{
+    width: 10px; 
+}
+
+.reset-btn:hover {
+    transform: translateX(-50%) scale(1.1); /* Só escala, sem translate extra */
+}
+
+/* --- CARROSSEL DE IMAGEM --- */
+section.slider {
+    position: relative;
+    width: 100%;
+    max-width: 850px; 
+    height: 600px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #F5F2ED;
+    padding: 0;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.362);
+}
+
+.slides {
+    width: 400%;
+    height: 100%;
+    display: flex;
+}
+
+section.slider input[type="radio"] {
+    display: none;
+}
+
+.slide{
+   width: 25%; 
+   position: relative; 
+}
+
+.slide.first {
+    transition: margin-left 0.5s ease-in-out; 
+}
+
+.slide img {
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+}
+
+.manual-navigation {
+    position: absolute;
+    bottom: 15px;      
+    left: 50%;
+    transform: translateX(-50%);  
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: auto;
+}
+
+.manual-btn{
+    border: 2px solid #F5F2ED;
+    padding: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 1s;   
+}
+
+.manual-btn:not(:last-child){
+    margin-right: 30px; 
+}
+
+.manual-btn:hover{
+    background: #2B4C8C;
+}
+
+/* --- LÓGICA DO SLIDER --- */
+#radio1:checked ~ .slides .first {
+    margin-left: 0%;
+}
+#radio2:checked ~ .slides .first {
+    margin-left: -25%;
+}
+#radio3:checked ~ .slides .first {
+    margin-left: -50%;
+}
+#radio4:checked ~ .slides .first {
+    margin-left: -75%;
+}
+
+/* --- NAVEGAÇÃO AUTOMÁTICA (Bolinhas) --- */
+.navigation-auto {
+    position: absolute;
+    bottom: 15px;
+    left: 50%; 
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+}
+
+.navigation-auto div{
+    border: 2px solid transparent;
+    padding: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 1s;
+}
+
+.navigation-auto div:not(:last-child){
+    margin-right: 40px;
+}
+
+#radio1:checked ~ .navigation-auto .auto-btn1,
+#radio2:checked ~ .navigation-auto .auto-btn2,
+#radio3:checked ~ .navigation-auto .auto-btn3,
+#radio4:checked ~ .navigation-auto .auto-btn4 {
+    background-color: #2B4C8C;
+}

@@ -1,0 +1,160 @@
+/* Estilos gerais do corpo da página */
+body {
+  font-family: helvetica, sans-serif;
+  background-color: #94D7F2;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+}
+
+/* Contêiner principal do formulário */
+.cadastro-container {
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    margin-bottom: 30px;
+    color: #333;
+    text-align: center; /* Garante o alinhamento central */
+}
+
+/* Formulário */
+.cadastro-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Reduzi um pouco o espaçamento para ficar mais coeso */
+    align-items: center;
+}
+
+/* Grupo de formulário: engloba label e input */
+.form-group {
+    width: 100%; /* ALTERAÇÃO: Força o grupo a ocupar toda a largura */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Placeholder da capa do livro */
+.cover-placeholder {
+  width: 200px;
+  height: 250px;
+  border: 2px dashed #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.cover-placeholder:hover {
+    background-color: #f0f0f0;
+}
+
+.cover-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* MELHORIA: Esconde os inputs de arquivo de forma genérica */
+.file-input, .file-input01 {
+    display: none;
+}
+
+/* Estilo para os inputs de texto e número */
+.form-group input[type="text"],
+.form-group input[type="number"] {
+    font-size: 16px;
+    padding: 12px;
+    width: 100%; /* ALTERAÇÃO: Simplificado graças ao box-sizing: border-box */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="number"]:focus {
+    outline: none;
+    border-color: #2B4C8C; /* Usando uma cor do seu CSS base */
+}
+
+/* Botões de ação do formulário */
+.form-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+/* Botão customizado para o upload do PDF */
+.btn_pdf {
+    display: inline-block;
+    background-color: #2B4C8C; /* Usando uma cor do seu CSS base */
+    color: white;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.btn_pdf:hover {
+    background-color: #3e6cc9;
+}
+
+
+/* Estilos genéricos para os botões de ação */
+.register-button, .back-button {
+    padding: 12px 25px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: none;
+    outline: none;
+}
+
+.register-button {
+    background-color: #2B4C8C; /* Verde para sucesso */
+    color: white;
+}
+
+.register-button:hover {
+    background-color: #3e6cc9;
+}
+
+.back-button {
+    background-color: #dc3545; /* Vermelho para ação de "cancelar/voltar" */
+    color: white;
+}
+
+.back-button:hover {
+    background-color: #c82333;
+}
+
+/* Efeito de "pressionado" para os botões */
+.register-button:active, .back-button:active {
+    transform: translateY(1px);
+}

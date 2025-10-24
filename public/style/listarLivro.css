@@ -1,0 +1,330 @@
+/* --- ESTILOS GERAIS (BODY) --- */
+
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #94D7F2; 
+    color: #333; 
+}
+
+/* --- HEADER / NAVBAR --- */
+
+.navbar, .main-header {
+    width: 100%;
+    padding: 15px 40px;
+    background-color: #F5F2ED;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo e Título do Header (CORRIGIDO) */
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-link {
+    display: flex;
+    align-items: center;
+    gap: 0px; /* Alterado */
+    text-decoration: none;
+    color: inherit;
+}
+
+.logo-img {
+    width: 50px;
+    height: 50px;
+    transform: scale(3); /* Adicionado */
+    margin-right: 10px; /* Adicionado */
+}
+
+.header-logo h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2B4C8C; /* Alterado */
+}
+
+/* Botões do Header */
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+}
+.header-buttons {
+    display: flex;
+    gap: 15px;   
+}
+
+.nav1-button {
+    width: 120px; 
+    height: 40px;
+    background-color: #3e6cc9;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.nav-button {
+  background-color: white;
+  color: #333;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  border: 2px solid #ddd;
+}
+
+.nav-button:hover {
+  background-color: #c76360;
+  color: white;
+  border-color: #c76360;
+}
+
+.nav1-button:hover {
+    background-color: #2B4C8C;
+}
+
+/* --- CONTAINER PRINCIPAL E TÍTULO --- */
+
+.books-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 1000px;
+}
+
+.title {
+    margin-bottom: 40px;
+    text-align: center;
+    width: 100%;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #333;
+}
+
+/* --- ESTRUTURA DO CARROSSEL --- */
+
+.carousel-container {
+    position: relative;
+    width: 100%;
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+}
+
+/* Lista de livros (scroll) */
+#book-list {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: hidden; 
+    scroll-behavior: smooth;
+    gap: 20px;
+    width: calc(100% - 100px); 
+    padding: 10px; /* Adiciona padding lateral */
+    box-sizing: border-box; /* Garante que o padding não afete a largura */
+}
+
+/* --- CARD INDIVIDUAL DO LIVRO (CÉLULA) --- */
+
+.livro-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc((100% / 5) - 16px); 
+    flex-shrink: 0; 
+    background-color: #fff; 
+    padding: 10px; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+    box-sizing: border-box; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
+/* Efeito de hover no card inteiro */
+.livro-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+}
+
+/* Imagem da capa */
+.livro-card img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 150 / 220;
+    object-fit: cover;
+    border-radius: 8px; 
+}
+
+/* Textos do card */
+.livro-card .titulo {
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.livro-card .autor {
+    font-size: 0.8em;
+    color: #666;
+    margin: 2px 0 0 0; 
+    text-align: center;
+}
+
+/* --- SETAS DO CARROSSEL (NOVAS) --- */
+
+/* Estilo base do botão da seta */
+.carousel-button {
+    background-color: #fff; /* Fundo branco */
+    color: #333; 
+    border: 1px solid #ccc; 
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    
+    position: relative; /* Necessário para posicionar a seta */
+    font-size: 0; /* Esconde o texto antigo (<, >) */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0; 
+}
+
+.carousel-button:hover {
+    background-color: #f0f0f0; 
+    border-color: #999; 
+}
+
+/* Cria o "chevron" (a forma da seta) com CSS */
+.carousel-button::after {
+    content: '';
+    display: block;
+    width: 8px; 
+    height: 8px; 
+    border-top: 2px solid #555;  /* Cor da seta */
+    border-right: 2px solid #555; /* Cor da seta */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg); /* Seta para DIREITA (>) */
+    margin-left: -2px; /* Ajuste fino */
+    transition: border-color 0.2s ease;
+}
+
+/* Seta para ESQUERDA (<) */
+.prev-button {
+    order: -1; 
+}
+
+.prev-button::after {
+    transform: translate(-50%, -50%) rotate(-135deg);
+    margin-left: 2px; /* Ajuste fino */
+}
+
+/* Efeito hover na seta */
+.carousel-button:hover::after {
+    border-color: #000;
+}
+
+
+/* --- BOTÕES DE AÇÃO (Adicionar, Editar, Excluir) --- */
+
+/* Botão "Adicionar Livro" (o grande) */
+.add-button {
+    margin-top: 50px;
+    padding: 15px 30px;
+    background-color: #2B4C8C;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.add-button:hover {
+    background-color: #3e6cc9;
+}
+
+/* Ícone de + no botão de adicionar */
+.plus-icon {
+    background-color: white;
+    color: #2c2c2c;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 22px;
+    line-height: 30px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Container dos botões de ação do card (Editar/Excluir) */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* Botão Editar */
+.edit-button {
+    background-color:  #2B4C8C; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-top: 10px; 
+    cursor: pointer;
+    font-size: 0.8em; 
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.edit-button:hover {
+    background-color: #3e6cc9; 
+}
+
+/* Botão Excluir */
+.delete-button {
+    background-color: white;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-top: 10px; 
+    cursor: pointer;
+    font-size: 0.8em; 
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: 2px solid #ddd;
+}
+
+.delete-button:hover {
+  background-color: #c76360;
+  color: white;
+  border-color: #c76360;
+}
