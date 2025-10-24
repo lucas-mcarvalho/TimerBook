@@ -73,7 +73,7 @@ $userId = $_SESSION["user_id"] ?? $_SESSION["id"];
                             </div>
                         </div>
                         <div class="photo-buttons">
-                            <a href="index.php?action=adm_editar&id=<?= htmlspecialchars($userId) ?>" class="action-btn edit-profile-btn">Editar Perfil</a>
+                            <a href="index.php?action=usuario_editar&id=<?= htmlspecialchars($userId) ?>" class="action-btn edit-profile-btn">Editar Perfil</a>
                         </div>
                     </div>
 
