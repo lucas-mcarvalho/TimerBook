@@ -7,7 +7,6 @@
     <title>Timer Book</title>
 
     <script src="/TimerBook/App/views/javascript/admin.js"></script>
-    <script src="/TimerBook/App/views/javascript/livros_api.js"></script>
 </head>
 <body>
 

@@ -286,5 +286,5 @@ class UserController
 
 }
 
-}
+
 
