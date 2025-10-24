@@ -50,7 +50,7 @@ switch ($action) {
     case 'adm_editar_book':
         require_once __DIR__ . '/../App/views/html/editarLivro.php';
         break;  
-    
+  
     case 'usuario_editar':
         require_once __DIR__ . '/../App/views/html/UsuarioEditarPerfil.php';
         break;
