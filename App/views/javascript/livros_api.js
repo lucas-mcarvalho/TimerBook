@@ -89,7 +89,7 @@ async function deletarLivro(id) {
 
 async function listarLivros(endpoint) {
     try {
-        const res = await fetch("http://localhost/TimerBook/public/my-books", {
+        const res = await fetch(`http://localhost/TimerBook/public/${endpoint}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
             credentials: "include"
@@ -103,6 +103,8 @@ async function listarLivros(endpoint) {
         const divLivros = document.getElementById("book-list");
         divLivros.innerHTML = "";
 
+        console.log(livros); // Debug: Verifica os livros recebidos
+
         livros.forEach(livro => {
             divLivros.innerHTML += `
                 <div class="livro-card" id="livro-${livro.id}">
@@ -112,7 +114,10 @@ async function listarLivros(endpoint) {
                         <img src="${livro.capa_livro}" alt="Capa do livro">
                     </a>
                     <button class="delete-button" onclick="deletarLivro(${livro.id})">Excluir</button style="display:none;">
-                    <a href=""><button class="edit-button" data-id="${livro.id}">Editar</button></a>
+                    <form action="index.php?action=editar_livro" method="POST">
+                        <input type="hidden" name="id_livro" value="${livro.id}">
+                        <button class="edit-button">Editar</button>
+                    </form>
                 </div>
             `;
         });
@@ -152,3 +157,36 @@ async function listarLivros(endpoint) {
         });
     }
 });
+
+async function editarLivro(id_livro) {
+    const form = document.getElementById("editUserForm");
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault(); // previne reload
+
+        // Cria o FormData somente **quando o usuário clica em submit**
+        const formData = new FormData(form);
+
+        // Debug: verifica os dados preenchidos
+        console.log(formData);
+
+        try {
+            const res = await fetch(`http://localhost/TimerBook/public/books/${id_livro}`, {
+                method: "POST",
+                body: formData,
+                credentials: "include"
+            });
+
+            if (!res.ok) {
+                throw new Error(`Erro na requisição: ${res.status}`);
+            }
+
+            const resultado = await res.json();
+            console.log("Livro atualizado com sucesso:", resultado);
+            alert("Livro atualizado com sucesso!");
+        } catch (error) {
+            console.error("Erro ao atualizar livro:", error);
+            alert("Erro ao atualizar livro. Por favor, tente novamente.");
+        }
+    });
+}

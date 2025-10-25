@@ -1,3 +1,8 @@
+<?php 
+session_start();
+$id = $_SESSION['user_id'] ?? null;
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -50,12 +55,12 @@
                 <input type="number" id="ano_publicacao" name="ano_publicacao" placeholder="Digite o ano de publicação" required>
             </div>
 
-            <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
+            <input type="hidden" name="user_id" value="<?php echo $id; ?>">
 
             <!-- Botões -->
             <div class="form-buttons">
                 <button type="submit" id="register-button" class="register-button">Cadastrar</button>
-                <button type="button" id="back-button" class="back-button" onclick="window.location.href='index.php?action=home'">Voltar</button>
+                <button type="button" id="back-button" class="back-button" onclick="window.location.href='index.php?action=listar_livros'">Voltar</button>
             </div>
         </form>
     </main>

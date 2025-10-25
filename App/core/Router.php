@@ -59,12 +59,6 @@ switch ("$method $endpoint") {
         $controller->getById($userId);
         break;
 
-    // Buscar usuário com seus livros  GET /users/{id}/books
-    case (preg_match('#^GET /users/(\d+)/books$#', "$method $endpoint", $matches) ? true : false):
-        $controller = new UserController();
-        $userId = (int)$matches[1];
-        $controller->findWithBooks($userId);
-        break;
     // Atualizar usuário PUT /users/{id}
     case (preg_match('#^POST /users/(\d+)$#', "$method $endpoint", $matches) ? true : false):
         $controller = new UserController();
@@ -119,8 +113,9 @@ switch ("$method $endpoint") {
     $controller->getMyBooks();
     break;
 
+
     //UPDATE DO LIVRO
-    case (preg_match('#^PUT /books/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    case (preg_match('#^POST /books/(\d+)$#', "$method $endpoint", $matches) ? true : false):
     $bookId = (int)$matches[1];
     $controller = new BookController();
     $controller->update($bookId);
@@ -144,6 +139,7 @@ switch ("$method $endpoint") {
     
     // GET /books/user/{user_id}
     case (preg_match('#^GET /books/user/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $user_id = (int)$matches[1];
         $controller = new BookController();
         $controller->getByUser($user_id);
         break;

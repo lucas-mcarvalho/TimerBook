@@ -1,5 +1,6 @@
 <?php 
-$id = $_SESSION['id'] ?? null;
+
+$id = $_GET['userId'] ?? null;
 ?>
 
 <!DOCTYPE html>
@@ -7,7 +8,7 @@ $id = $_SESSION['id'] ?? null;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timer Book</title>
+    <title>TimerBook-ADMIN</title>
     <link rel="stylesheet" href="style/listarLivro.css?v=<?php echo time(); ?>">
 
     <script src="/TimerBook/App/views/javascript/livros_api.js"></script>
@@ -25,7 +26,6 @@ $id = $_SESSION['id'] ?? null;
         </div>
         <div class="header-buttons">
             <button class="nav1-button" onclick="window.history.back()">Voltar</button> 
-            <button class="nav-button" onclick="window.location.href='index.php?action=home'">Tela Principal</button> 
         </div>
     </header>
 
@@ -43,17 +43,13 @@ $id = $_SESSION['id'] ?? null;
             >
         </button>
     </div>
-    
-    <button id="add-button" class="add-button" onclick="window.location.href='index.php?action=Adicionar_Livro'">
-        <span class="plus-icon btn_cad">+</span> Cadastrar Livro
-    </button>
 </main>
 
 <script>
-const userId = <?= json_encode($id) ?>;
+const userId = "<?php echo $id; ?>";
 
 
-//listarLivros("/books/user/{user_id}".replace("{user_id}", userId));
+listarLivros("books/user/{id}".replace("{id}", userId));
 
 </script>
 
