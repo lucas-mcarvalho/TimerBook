@@ -47,9 +47,14 @@ switch ($action) {
     case 'adm_editar':
         require_once __DIR__ . '/../App/views/html/admEditar.php';
         break;
-    case 'adm_editar_book':
-        require_once __DIR__ . '/../App/views/html/editarLivro.php';
-        break;  
+   
+    case 'editar_livro':
+        require_once __DIR__ . '/../App/views/html/Editar_Livro.php';
+        break;
+
+    case 'adm_ver_livros':
+        require_once __DIR__ . '/../App/views/html/ListarLivrosAdmin.php';
+        break;
   
     case 'usuario_editar':
         require_once __DIR__ . '/../App/views/html/UsuarioEditarPerfil.php';

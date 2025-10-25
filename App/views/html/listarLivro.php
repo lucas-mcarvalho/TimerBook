@@ -1,7 +1,3 @@
-<?php 
-$id = $_SESSION['id'] ?? "uploads/default.png";
-?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -9,8 +5,7 @@ $id = $_SESSION['id'] ?? "uploads/default.png";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Timer Book</title>
     <link rel="stylesheet" href="style/listarLivro.css?v=<?php echo time(); ?>">
-
-    <script src="/TimerBook/App/views/javascript/livros_api.js"></script>
+    <script src="/TimerBook/App/views/javascript/livros_api.js?v=<?= time() ?>"></script>
 
     
 </head>
