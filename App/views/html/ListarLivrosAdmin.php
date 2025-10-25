@@ -1,5 +1,5 @@
 <?php 
-$id = $_SESSION['id'] ?? "uploads/default.png";
+$id = $_SESSION['id'] ?? null;
 ?>
 
 <!DOCTYPE html>
@@ -9,7 +9,8 @@ $id = $_SESSION['id'] ?? "uploads/default.png";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Timer Book</title>
     <link rel="stylesheet" href="style/listarLivro.css?v=<?php echo time(); ?>">
-    <script src="/TimerBook/App/views/javascript/livros_api.js?v=<?= time() ?>"></script>
+
+    <script src="/TimerBook/App/views/javascript/livros_api.js"></script>
 
     
 </head>
@@ -29,7 +30,7 @@ $id = $_SESSION['id'] ?? "uploads/default.png";
     </header>
 
 <main class="books-container">
-    <h2 class="title">MEUS LIVROS</h2>
+    <h2 class="title">Livros do Usuário</h2>
     
     <div class="carousel-container">
         <button id="prev-button" class="carousel-button prev-button">
@@ -48,7 +49,13 @@ $id = $_SESSION['id'] ?? "uploads/default.png";
     </button>
 </main>
 
-<script>listarLivros("my-books");</script>
+<script>
+const userId = <?= json_encode($id) ?>;
+
+
+//listarLivros("/books/user/{user_id}".replace("{user_id}", userId));
+
+</script>
 
 </body>
 </html>

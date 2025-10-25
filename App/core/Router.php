@@ -141,7 +141,12 @@ switch ("$method $endpoint") {
         $controller = new AdminController();
         $controller->getById($id);
         break;
-
+    
+    // GET /books/user/{user_id}
+    case (preg_match('#^GET /books/user/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new BookController();
+        $controller->getByUser($user_id);
+        break;
 
     case 'POST /admin/login':
         $controller = new AdminController();

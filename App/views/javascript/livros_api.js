@@ -89,7 +89,7 @@ async function deletarLivro(id) {
 
 async function listarLivros(endpoint) {
     try {
-        const res = await fetch(`http://localhost/TimerBook/public/${endpoint}`, {
+        const res = await fetch("http://localhost/TimerBook/public/my-books", {
             method: "GET",
             headers: { "Content-Type": "application/json" },
             credentials: "include"
@@ -112,7 +112,7 @@ async function listarLivros(endpoint) {
                         <img src="${livro.capa_livro}" alt="Capa do livro">
                     </a>
                     <button class="delete-button" onclick="deletarLivro(${livro.id})">Excluir</button style="display:none;">
-                    <a style="display:none;" href=""><button class="edit-button" data-id="${livro.id}">Editar</button></a>
+                    <a href=""><button class="edit-button" data-id="${livro.id}">Editar</button></a>
                 </div>
             `;
         });
@@ -134,9 +134,9 @@ async function listarLivros(endpoint) {
     const userId = urlParams.get('userId');
 
     // Define endpoint
-    const endpoint = userId ? `books?user_id=${userId}` : `my-books`;
+    //const endpoint = userId ? `books?user_id=${userId}` : `my-books`;
 
-    listarLivros(endpoint);
+    //listarLivros(endpoint);
 
     // Rolagem da barra
     const prevButton = document.getElementById('prev-button');
