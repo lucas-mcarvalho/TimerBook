@@ -3,7 +3,7 @@ require_once __DIR__ . '/../core/database_config.php';
 
 class Reading
 {
-    // 🔹 Cria um novo registro de Reading
+    //  Cria um novo registro de Reading
     public static function create($user_id, $book_id, $status = 'Em andamento', $tempo_gasto = 0, $paginas_lidas = 0, $data_inicio = null, $data_fim = null)
     {
         try {
@@ -26,7 +26,7 @@ class Reading
         }
     }
 
-    // 🔹 Retorna todas as Readings
+    // Retorna todas as Readings
     public static function getAll()
     {
         try {
@@ -43,7 +43,7 @@ class Reading
         }
     }
 
-    // 🔹 Busca Reading por ID
+    //  Busca Reading por ID
     public static function getById($id)
     {
         try {
@@ -62,7 +62,7 @@ class Reading
         }
     }
 
-    // 🔹 Atualiza o progresso de uma Reading
+    //  Atualiza o progresso de uma Reading
     public static function update($id, $status = null, $tempo_gasto = null, $paginas_lidas = null, $data_fim = null)
     {
         try {
@@ -104,7 +104,7 @@ class Reading
         }
     }
 
-    // 🔹 Deleta uma Reading
+    // Deleta uma Reading
     public static function delete($id)
     {
         try {
@@ -117,7 +117,7 @@ class Reading
         }
     }
 
-    // 🔹 Busca todas as Readings de um usuário específico
+    //  Busca todas as Readings de um usuário específico
     public static function getByUser($user_id)
     {
         try {
