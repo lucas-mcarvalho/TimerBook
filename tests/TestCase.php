@@ -35,6 +35,17 @@ class TestCase extends BaseTestCase
         );";
         self::$pdo->exec($sqlBooks);
 
+        // Cria tabela Admin mínima necessária para testes das funcionalidades de admin
+        $sqlAdmin = "CREATE TABLE IF NOT EXISTS Admin (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT,
+            username TEXT,
+            email TEXT UNIQUE,
+            senha TEXT,
+            profile_photo TEXT
+        );";
+        self::$pdo->exec($sqlAdmin);
+
         // Substitui a conexão usada pela classe Database
         // A Database::connect usará DB_DSN quando estiver setado no .env; como fallback
         // nós injetamos via PDO estático em DatabaseTestHelper
