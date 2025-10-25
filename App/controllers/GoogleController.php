@@ -68,6 +68,8 @@ class GoogleController
         $_SESSION['user_logged_in'] = true;
         $_SESSION['user'] = $user;
         $_SESSION['user_id'] = $user['id'];
+        $_SESSION['nome'] = $user['nome'];
+        $_SESSION['email'] = $user['email'];
         $_SESSION['username'] = $user['username'];
             if (!empty($user['profile_photo'])) {
                $_SESSION['profile_photo'] = ltrim($user['profile_photo'], '/');
