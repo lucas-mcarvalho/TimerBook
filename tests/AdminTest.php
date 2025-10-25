@@ -130,7 +130,6 @@ class AdminTest extends TestCase {
         $password = 'original123';
         $res = Admin::create($nome, $username, $email, $password);
 
-        // usa 'admin_id' (correto) em vez de 'user_id'
         $this->assertArrayHasKey('admin_id', $res);
         $id = $res['admin_id'];
 
@@ -138,7 +137,7 @@ class AdminTest extends TestCase {
         $this->assertNotEmpty($found);
         $this->assertArrayHasKey('senha', $found);
         $this->assertTrue(password_verify($password, $found['senha']));
-        $this->assertNotEquals($password, $found['senha']); // opcional: garante que não está salvando em texto
+        $this->assertNotEquals($password, $found['senha']);
 
         // cleanup
         Admin::delete($id);
