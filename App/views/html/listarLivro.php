@@ -49,7 +49,7 @@ $id = $_SESSION['id'] ?? "uploads/default.png";
     </button>
 </main>
 
-<script>listarLivros();</script>
+<script>listarLivros("my-books");</script>
 
 </body>
 </html>

@@ -111,8 +111,8 @@ async function listarLivros(endpoint) {
                     <a class="link_livro" href="${livro.caminho_arquivo}" target="_blank">
                         <img src="${livro.capa_livro}" alt="Capa do livro">
                     </a>
-                    <button class="delete-button" onclick="deletarLivro(${livro.id})">Excluir</button>
-                    <a href=""><button class="edit-button" data-id="${livro.id}">Editar</button></a>
+                    <button class="delete-button" onclick="deletarLivro(${livro.id})">Excluir</button style="display:none;">
+                    <a style="display:none;" href=""><button class="edit-button" data-id="${livro.id}">Editar</button></a>
                 </div>
             `;
         });

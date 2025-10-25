@@ -82,7 +82,6 @@
       <div class="user-actions" style="display:flex;gap:8px;">
         <button class="edit-btn" data-id="${user.id}">Editar</button>
         <button class="delete-btn" data-id="${user.id}">Excluir</button>
-        <button class="edit-livro-btn" data-id="${user.id}">Editar Livro</button>
       </div>
       
     `;
@@ -108,9 +107,9 @@
       };
     });
 
-    // ⬇️ ADICIONE ESTE BLOCO ⬇️
-    // Faz o botão "Editar Livro" redirecionar para a página 
-    // de gerenciamento de livros daquele usuário.
+    
+    // Faz o botão "Editar Livro" redirecionar para a página (não entrará na release)
+    /*** 
     container.querySelectorAll(".edit-livro-btn").forEach((btn) => {
       btn.onclick = () => {
         const id = btn.getAttribute("data-id"); // Pega o ID do *usuário*
@@ -123,6 +122,7 @@
         window.location.href = `index.php?action=adm_livros&userId=${encodeURIComponent(id)}`;
       };
     });
+    ***/
   }
 
   // ... resto do seu admin.js ...
@@ -234,7 +234,7 @@
           if (!res.ok) throw new Error(data.error || data.message || "Erro ao atualizar");
 
           alert("✅ Usuário atualizado com sucesso!");
-          window.location.href = "index.php?action=admin";
+          //window.location.href = "index.php?action=admin";
         } catch (err) {
           console.error(err);
           alert("Erro ao salvar alterações: " + err.message);
