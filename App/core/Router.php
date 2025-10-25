@@ -5,6 +5,7 @@ require_once '../App/controllers/BookController.php';
 require_once '../App/controllers/AdminController.php';
 require_once '../App/controllers/AuthenticationController.php';
 require_once '../App/controllers/GoogleController.php';
+require_once '../App/controllers/ReadingController.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -182,6 +183,44 @@ switch ("$method $endpoint") {
         $controller->googleCallback();
         break;
 
+    // Criar leitura
+case 'POST /reading':
+    $controller = new ReadingController();
+    $controller->create();
+    break;
+
+// Buscar todas as leituras
+case 'GET /reading':
+    $controller = new ReadingController();
+    $controller->getAll();
+    break;
+
+// Buscar leitura por ID
+case (preg_match('#^GET /reading/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $controller = new ReadingController();
+    $controller->getById((int)$matches[1]);
+    break;
+
+// Buscar leituras por usuário
+    case (preg_match('#^GET /reading/user/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $controller = new ReadingController();
+    $controller->getByUser((int)$matches[1]);
+    break;
+
+// Atualizar leitura
+    case (preg_match('#^PUT /reading/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $controller = new ReadingController();
+    $controller->update((int)$matches[1]);
+    break;
+
+// Deletar leitura
+    case (preg_match('#^DELETE /reading/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $controller = new ReadingController();
+    $controller->delete((int)$matches[1]);
+    break;
+
+
+    
     default:
         http_response_code(404);
         echo json_encode(["error" => "Endpoint não encontrado"]);
