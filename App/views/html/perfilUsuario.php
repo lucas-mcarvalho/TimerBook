@@ -28,7 +28,6 @@ $username = $_SESSION['username'] ?? '';
 $email = $_SESSION['email'] ?? '';
 $userId = $_SESSION["user_id"] ?? $_SESSION["id"];
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -37,6 +36,7 @@ $userId = $_SESSION["user_id"] ?? $_SESSION["id"];
     <title>Timerbook - Meu Perfil</title>
     <link rel="stylesheet" href="style/perfilUsuario.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="/TimerBook/App/views/javascript/usuario_api.js?v=<?= time() ?>"></script>
 </head>
 <body>
 
@@ -142,12 +142,13 @@ $userId = $_SESSION["user_id"] ?? $_SESSION["id"];
             <p>Tem certeza que deseja deletar sua conta? Esta ação não pode ser desfeita.</p>
             <div class="modal-buttons">
                 <button onclick="closeDeleteModal(); return false;" class="btn-cancel">Cancelar</button>
-                <button onclick="deleteAccount(); return false;" class="delete-confirm-btn">Deletar</button>
+                <button onclick="deletarContaUsuario(); return false;" class="delete-confirm-btn">Deletar</button>
             </div>
         </div>
     </div>
+</body>
 
-    <script>
+<script>
         // Variável global com o ID do usuário
         const currentUserId = <?= json_encode($userId) ?>;
 
@@ -179,31 +180,8 @@ $userId = $_SESSION["user_id"] ?? $_SESSION["id"];
         }
 
         // Função para deletar conta
-        async function deleteAccount() {
-            try {
-                closeDeleteModal();
-                
-                const response = await fetch(`/TimerBook/public/users/${currentUserId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    showNotification('Conta deletada com sucesso', 'success');
-                    setTimeout(() => {
-                        window.location.href = 'index.php?action=login';
-                    }, 1500);
-                } else {
-                    showNotification(data.error || data.message || 'Erro ao deletar conta', 'error');
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                showNotification('Erro ao conectar com o servidor', 'error');
-            }
+        async function deletarContaUsuario() {
+            deletarConta(currentUserId);
         }
 
         // Fechar modais ao clicar fora
@@ -215,6 +193,4 @@ $userId = $_SESSION["user_id"] ?? $_SESSION["id"];
             }
         }
     </script>
-
-</body>
 </html>
