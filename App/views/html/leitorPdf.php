@@ -47,51 +47,63 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <script>
-    // Caminho do seu arquivo PDF (deixe na mesma pasta deste HTML para testes apenas)
-    const url = 'https://imgusrs.s3.sa-east-1.amazonaws.com/books/68e3c59d0251f-SprintES.PDF';
+    // ID do livro que você quer abrir (exemplo: 97)
+    const bookId = 97;
 
-    // Configurações do PDF.js
-    pdfjsLib.getDocument(url).promise.then(pdf => {
-      console.log('PDF carregado:', pdf.numPages, 'páginas');
-      const pdfContainer = document.getElementById('pdfContainer');
+    // Endpoint da sua API
+    const apiUrl = `http://localhost/TimerBook/public/books/${bookId}`;
 
-      // Para cada página, renderiza e adiciona um botão
-      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-        pdf.getPage(pageNum).then(page => {
-          const scale = 1.2;
-          const viewport = page.getViewport({ scale });
+    // Busca o livro na API
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        if (!data.caminho_arquivo) {
+          throw new Error("Campo 'caminho_arquivo' não encontrado no retorno da API!");
+        }
 
-          // Cria o container de página
-          const pageDiv = document.createElement('div');
-          pageDiv.classList.add('page-container');
+        const pdfUrl = data.caminho_arquivo;
+        console.log("📘 PDF URL:", pdfUrl);
 
-          // Cria o canvas para desenhar a página
-          const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d');
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
+        // Agora carrega o PDF do S3
+        return pdfjsLib.getDocument(pdfUrl).promise;
+      })
+      .then(pdf => {
+        console.log('PDF carregado:', pdf.numPages, 'páginas');
+        const pdfContainer = document.getElementById('pdfContainer');
 
-          // Cria o botão de progresso
-          const button = document.createElement('button');
-          button.textContent = 'Ver progresso';
-          button.onclick = () => {
-            const porcentagem = ((pageNum / pdf.numPages) * 100).toFixed(1);
-            alert(`Você está na página ${pageNum} de ${pdf.numPages}.\nProgresso: ${porcentagem}% lido.`);
-          };
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          pdf.getPage(pageNum).then(page => {
+            const scale = 1.2;
+            const viewport = page.getViewport({ scale });
 
-          // Adiciona o canvas e o botão na tela
-          pageDiv.appendChild(canvas);
-          pageDiv.appendChild(button);
-          pdfContainer.appendChild(pageDiv);
+            const pageDiv = document.createElement('div');
+            pageDiv.classList.add('page-container');
 
-          // Renderiza a página no canvas
-          const renderContext = { canvasContext: context, viewport: viewport };
-          page.render(renderContext);
-        });
-      }
-    }).catch(err => {
-      console.error('Erro ao carregar PDF:', err);
-    });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            const button = document.createElement('button');
+            button.textContent = 'Ver progresso';
+            button.onclick = () => {
+              const porcentagem = ((pageNum / pdf.numPages) * 100).toFixed(1);
+              alert(`Você está na página ${pageNum} de ${pdf.numPages}.\nProgresso: ${porcentagem}% lido.`);
+            };
+
+            pageDiv.appendChild(canvas);
+            pageDiv.appendChild(button);
+            pdfContainer.appendChild(pageDiv);
+
+            const renderContext = { canvasContext: context, viewport: viewport };
+            page.render(renderContext);
+          });
+        }
+      })
+      .catch(err => {
+        console.error('Erro ao carregar PDF:', err);
+        alert("Erro ao abrir o livro: " + err.message);
+      });
   </script>
 </body>
 </html>
