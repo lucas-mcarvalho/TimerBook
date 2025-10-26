@@ -104,23 +104,7 @@
           return;
         }
         // redireciona para a página de edição DO USUÁRIO
-        //window.location.href = `index.php?action=adm_editar&id=${encodeURIComponent(id)}`;
-      };
-    });
-
-    
-    // Faz o botão "Editar Livro" redirecionar para a página (não entrará na release)
-    
-    container.querySelectorAll(".edit-livro-btn").forEach((btn) => {
-      btn.onclick = () => {
-        const id = btn.getAttribute("data-id"); // Pega o ID do *usuário*
-        if (!id) {
-          alert("ID do usuário não encontrado!");
-          return;
-        }
-        // Redireciona para a sua página de gerenciar livros, passando o ID do usuário
-        // (Ajuste 'adm_livros' se o nome da sua 'action' for outro)
-        window.location.href = `index.php?action=adm_ver_livros&userId=${encodeURIComponent(id)}`;
+        window.location.href = `index.php?action=adm_editar&id=${encodeURIComponent(id)}`;
       };
     });
   }

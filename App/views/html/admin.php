@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style/admin.css">
     <title>Timer Book</title>
 
-    <script src="/TimerBook/App/views/javascript/admin.js"></script>
+    <script src="/TimerBook/App/views/javascript/admin.js?v=<?= time() ?>"></script>
 </head>
 <body>
 
@@ -18,10 +18,6 @@
     </div>
     
     <div class="header-right">
-        
-        <!-- Cria rota para adicionar usuários(via admin)-->
-        <a href="" id="add-user-button" class="add-button">Adicionar Usuário +</a>
-        
         <!-- Cria rota para saida do admin-->
         <a href="/TimerBook/public/admin/logout" class="logout-button">sair</a>
     </div>
