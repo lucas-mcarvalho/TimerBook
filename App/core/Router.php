@@ -113,7 +113,12 @@ switch ("$method $endpoint") {
     $controller->getMyBooks();
     break;
 
-
+    // Buscar livro por ID → GET /books/{id}
+    case (preg_match('#^GET /books/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $bookId = (int)$matches[1];
+    $controller = new BookController();
+    $controller->findById($bookId);
+    break;
     //UPDATE DO LIVRO
     case (preg_match('#^POST /books/(\d+)$#', "$method $endpoint", $matches) ? true : false):
     $bookId = (int)$matches[1];
