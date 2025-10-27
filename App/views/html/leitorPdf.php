@@ -47,8 +47,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
   <script>
-    // ID do livro que você quer abrir (exemplo: 97)
-    const bookId = 97;
+    // Obtém o ID do livro a partir da query string: ?id=123
+    const urlParams = new URLSearchParams(window.location.search);
+    const bookId = urlParams.get('id');
+
+    if (!bookId) {
+      alert('ID do livro não informado.');
+      throw new Error('ID do livro não informado na query string.');
+    }
 
     // Endpoint da sua API
     const apiUrl = `http://localhost/TimerBook/public/books/${bookId}`;
