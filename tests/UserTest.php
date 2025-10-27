@@ -4,15 +4,32 @@ require_once __DIR__ . '/TestCase.php';
 require_once __DIR__ . '/DatabaseTestHelper.php';
 require_once __DIR__ . '/../App/models/User.php';
 
-class UserTest extends TestCase
-{
-    public function testCreateAndFindByEmail()
+class UserTest extends TestCase {
+
+    // Testando criação de usuário
+    public function testCreateUser()
     {
-        // Cria usuário
-        $email = 'test@example.com';
+        $email = 'test_create@example.com';
         $password = 'secret123';
-        $nome = 'Teste';
-        $username = 'testuser';
+        $nome = 'Teste Create';
+        $username = 'testcreate';
+
+        $result = User::create($email, $password, $nome, $username);
+        $this->assertArrayHasKey('user_id', $result);
+
+        // cleanup
+        $delete = User::delete($result['user_id']);
+        $this->assertArrayHasKey('message', $delete);
+    }
+
+    // Testando busca por email
+    public function testFindByEmail()
+    {
+        // Cria usuário para busca
+        $email = 'test_find@example.com';
+        $password = 'secret123';
+        $nome = 'Teste Find';
+        $username = 'testfind';
 
         $result = User::create($email, $password, $nome, $username);
         $this->assertArrayHasKey('user_id', $result);
@@ -28,6 +45,7 @@ class UserTest extends TestCase
         $this->assertArrayHasKey('message', $delete);
     }
 
+    // Testando falha ao criar usuário com email duplicado
     public function testDuplicateEmailFails()
     {
         $email = 'dup@example.com';
@@ -44,7 +62,8 @@ class UserTest extends TestCase
         User::delete($res1['user_id']);
     }
 
-    public function testGetAllAndGetByIdAndUpdate()
+    // Testando getAll e getById
+    public function testGetAllAndGetById()
     {
         $email = 'alltest@example.com';
         $password = 'secret';
@@ -61,14 +80,33 @@ class UserTest extends TestCase
         $this->assertNotEmpty($byId);
         $this->assertEquals($email, $byId['email']);
 
+        // cleanup
+        User::delete($id);
+    }
+
+    // Testando update
+    public function testUpdateUser()
+    {
+        $email = 'update_test@example.com';
+        $password = 'secret';
+        $username = 'updateuser';
+
+        $res = User::create($email, $password, 'NomeBefore', $username);
+        $this->assertArrayHasKey('user_id', $res);
+        $id = $res['user_id'];
+
         // update
         $upd = User::update($id, 'NomeAtualizado', null, null, null, false, null);
         $this->assertArrayHasKey('message', $upd);
+
+        $after = User::getById($id);
+        $this->assertEquals('NomeAtualizado', $after['nome']);
 
         // cleanup
         User::delete($id);
     }
 
+    // Testando se a busca por livros funciona
     public function testFindWithBooks()
     {
         // cria usuário e livro relacionado
@@ -91,6 +129,7 @@ class UserTest extends TestCase
         User::delete($uid);
     }
 
+    // Testando falha ao criar usuário com username duplicado
     public function testDuplicateUsernameFails()
     {
         $email1 = 'u1@example.com';
@@ -108,7 +147,8 @@ class UserTest extends TestCase
         User::delete($r1['user_id']);
     }
 
-    public function testPasswordIsHashedAndUpdatePassword()
+    // Testando se a senha é armazenada como hash
+    public function testPasswordIsHashed()
     {
         $email = 'hash@example.com';
         $password = 'original123';
@@ -121,6 +161,19 @@ class UserTest extends TestCase
         $this->assertArrayHasKey('senha', $found);
         $this->assertTrue(password_verify($password, $found['senha']));
 
+        // cleanup
+        User::delete($id);
+    }
+
+    // Testando atualização de senha
+    public function testUpdatePassword()
+    {
+        $email = 'hash_update@example.com';
+        $password = 'original123';
+        $res = User::create($email, $password, 'HashUser2', 'hashuser2');
+        $this->assertArrayHasKey('user_id', $res);
+        $id = $res['user_id'];
+
         // atualiza senha
         $upd = User::update($id, null, null, null, 'newpass123', false, null);
         $this->assertArrayHasKey('message', $upd);
@@ -132,6 +185,7 @@ class UserTest extends TestCase
         User::delete($id);
     }
 
+    // Testando busca por livros quando não há livros
     public function testFindWithBooksWhenNoBooks()
     {
         $email = 'nobook@example.com';
