@@ -5,12 +5,31 @@ require_once __DIR__ .'/DatabaseTestHelper.php';
 require_once __DIR__ .'/../App/models/Admin.php';
 
 class AdminTest extends TestCase {
-    public function testCreateAndFindByEmail()
+
+    // Testando criar admin
+    public function testCreateAdmin()
     {
-        $email = 'admtest@example.com';
+        $email = 'admtest_create@example.com';
         $password = 'admsecret';
-        $nome = 'Admin Teste';
-        $username = 'admtest';
+        $nome = 'Admin Teste Create';
+        $username = 'admtestcreate';
+
+        $res = Admin::create($nome, $username, $email, $password);
+        $this->assertArrayHasKey('admin_id', $res);
+        $id = $res['admin_id'];
+
+        // cleanup
+        $del = Admin::delete($id);
+        $this->assertArrayHasKey('message', $del);
+    }
+
+    // Testando se a busca por email funciona
+    public function testFindByEmail()
+    {
+        $email = 'admtest_find@example.com';
+        $password = 'admsecret';
+        $nome = 'Admin Teste Find';
+        $username = 'admtestfind';
 
         $res = Admin::create($nome, $username, $email, $password);
         $this->assertArrayHasKey('admin_id', $res);
@@ -28,6 +47,7 @@ class AdminTest extends TestCase {
         $this->assertArrayHasKey('message', $del);
     }
 
+    // Testando falha ao criar admin com email duplicado 
     public function testDuplicateEmailFails()
     {
         $email = 'admdup@example.com';
@@ -44,7 +64,8 @@ class AdminTest extends TestCase {
         Admin::delete($r1['admin_id']);
     }
 
-    public function testGetAllAndGetByIdAndUpdate()
+    // Testando getAll e getById
+    public function testGetAllAndGetById()
     {
         $email = 'admall@example.com';
         $password = 'passall';
@@ -61,6 +82,21 @@ class AdminTest extends TestCase {
         $this->assertNotEmpty($byId);
         $this->assertEquals($email, $byId['email']);
 
+        // cleanup
+        Admin::delete($id);
+    }
+
+    // Testando update
+    public function testUpdateAdmin()
+    {
+        $email = 'admin_update@example.com';
+        $password = 'passupdate';
+        $username = 'updateadmin';
+
+        $res = Admin::create('NomeBefore', $username, $email, $password);
+        $this->assertArrayHasKey('admin_id', $res);
+        $id = $res['admin_id'];
+
         // update nome and username
         $upd = Admin::update($id, 'NomeAtualizado', 'newusername', 'newemail@example.com', null, false);
         $this->assertArrayHasKey('message', $upd);
@@ -74,6 +110,7 @@ class AdminTest extends TestCase {
         Admin::delete($id);
     }
 
+    // Testando exclusão de admin inexistente
     public function testDeleteNonexistentReturnsMessage()
     {
         // Deleting non-existente deve retornar message (DELETE SQL não falha)
@@ -81,6 +118,7 @@ class AdminTest extends TestCase {
         $this->assertArrayHasKey('message', $res);
     }
 
+    // Testando atualização de senha
     public function testUpdatePassword() {
         $email = 'adm_pwd@example.com';
         $password = 'oldpass';
@@ -102,6 +140,7 @@ class AdminTest extends TestCase {
         Admin::delete($id);
     }
 
+    // Testando se a senha permanece a mesma quando null
     public function testUpdateKeepsPasswordWhenNull() {
         $email = 'adm_keep@example.com';
         $password = 'keepme';
@@ -122,6 +161,7 @@ class AdminTest extends TestCase {
         Admin::delete($id);
     }
 
+    // Testando se a senha é armazenada como hash
     public function testPasswordHashed()
     {
         $nome = 'Hash Test';
