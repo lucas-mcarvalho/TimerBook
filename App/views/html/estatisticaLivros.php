@@ -1,9 +1,4 @@
 <?php
-// Inicia a sessão se ainda não estiver iniciada
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
 $user_id = $_GET['id'] ?? null;
 $user_name = $_GET['user_name'] ?? 'Usuário'; 
 
@@ -35,7 +30,7 @@ if (!$user_id) {
     
     <div class="header-right">
         <!-- Volta para a tela de administração -->
-        <a href="index.php?action=admin" class="back-button">Voltar para Admin</a>
+        <a href="#" onclick="history.back();" class="back-button">Voltar</a>
         <!-- Rota para saida do admin -->
         <a href="index.php?action=sair" class="logout-button">sair</a>
     </div>
