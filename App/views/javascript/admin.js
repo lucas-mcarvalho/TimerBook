@@ -107,6 +107,19 @@
         window.location.href = `index.php?action=adm_editar&id=${encodeURIComponent(id)}`;
       };
     });
+
+    // Listener para o botão "ver livros"
+	  container.querySelectorAll(".edit-livro-btn").forEach((btn) => {
+	    btn.onclick = () => {
+	      const id = btn.getAttribute("data-id");
+	      if (!id) {
+	        alert("ID do usuário não encontrado!");
+	        return;
+	      }
+	      // redireciona para a nova página de estatísticas de livros
+	      window.location.href = `index.php?action=estatistica_livros&id=${encodeURIComponent(id)}`;
+	    };
+	  });
   }
 
   // ... resto do seu admin.js ...

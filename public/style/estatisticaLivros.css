@@ -1,0 +1,137 @@
+/* Estilos para estatisticaLivros.css */
+
+/* Estilos para o container principal */
+.stats-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stats-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* Estilos para a lista de livros */
+.books-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Estilos para cada item de livro (que terá duas colunas) */
+.book-item {
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Coluna da Capa (Esquerda) */
+.book-cover-col {
+    flex: 0 0 150px; /* Largura fixa para a capa */
+    margin-right: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.book-cover {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Coluna dos Detalhes (Direita) */
+.book-details-col {
+    flex-grow: 1;
+}
+
+.book-title {
+    color: #007bff;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.5em;
+}
+
+.book-details-col p {
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+.book-details-col strong {
+    font-weight: 600;
+    color: #555;
+}
+
+/* Estilos para o badge de Status */
+.status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #fff;
+    text-transform: capitalize;
+}
+
+.status-badge.status-em-andamento {
+    background-color: #ffc107; /* Amarelo */
+}
+
+.status-badge.status-concluido {
+    background-color: #28a745; /* Verde */
+}
+
+.status-badge.status-nao-iniciado {
+    background-color: #413c3c; /* Marrom */
+}
+
+/* Botão "Voltar para Admin" */
+.back-button {
+  background-color: #2B4C8C;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #3e6cc9;
+}
+
+/* Responsividade básica */
+@media (max-width: 768px) {
+    .book-item {
+        flex-direction: column;
+    }
+
+    .book-cover-col {
+        flex: 0 0 auto;
+        margin-right: 0;
+        margin-bottom: 15px;
+        max-width: 150px;
+        align-self: center;
+    }
+}
+
+/* Estilos de erro e carregamento */
+.error {
+    color: #dc3545;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+}

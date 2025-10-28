@@ -59,6 +59,10 @@ switch ($action) {
     case 'usuario_editar':
         require_once __DIR__ . '/../App/views/html/UsuarioEditarPerfil.php';
         break;
+
+    case 'estatistica_livros':
+        require_once __DIR__ . '/../App/views/html/estatisticaLivros.php';
+        break;    
     default:
         echo "Ação não reconhecida.";
         break;
