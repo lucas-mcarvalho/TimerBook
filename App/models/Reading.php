@@ -117,6 +117,36 @@ class Reading
         }
     }
 
+    //  Busca os livros do usuário com as estatísticas de leitura
+    public static function getBookStatisticsWithDetails($user_id)
+    {
+        try {
+            $pdo = Database::connect();
+            // A consulta começa na tabela Books (b) e usa LEFT JOIN para incluir dados da Reading (r)
+            // A condição de JOIN é feita pelo ID do livro (b.id) e pelo campo 'livro' da tabela Reading (r.livro)
+            // A filtragem pelo usuário deve ser feita na tabela Books (b.user_id)
+            $stmt = $pdo->prepare("
+                SELECT
+                    b.titulo,
+                    b.autor,
+                    b.ano_publicacao,
+                    b.capa_livro,
+                    COALESCE(r.status, 'Não iniciado') AS status,
+                    COALESCE(r.tempo_gasto, 0) AS tempo_gasto,
+                    COALESCE(r.paginas_lidas, 0) AS paginas_lidas,
+                    r.data_inicio,
+                    r.data_fim
+                FROM Books b
+                LEFT JOIN Reading r ON b.id = r.livro AND r.pk_usuario = b.user_id
+                WHERE b.user_id = ?
+            ");
+            $stmt->execute([$user_id]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return ["error" => "Erro ao buscar estatísticas de livros: " . $e->getMessage()];
+        }
+    }
+
     //  Busca todas as Readings de um usuário específico
     public static function getByUser($user_id)
     {

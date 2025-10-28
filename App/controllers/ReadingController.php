@@ -85,6 +85,33 @@ class ReadingController
     }
 
     // Buscar Readings de um usuário específico
+    public function getStatisticsByUserId($user_id)
+    {
+        header("Content-Type: application/json");
+
+        if (!$user_id) {
+            http_response_code(400);
+            echo json_encode(["error" => "user_id é obrigatório"]);
+            return;
+        }
+
+        $statistics = Reading::getBookStatisticsWithDetails($user_id);
+
+        if (isset($statistics['error'])) {
+            http_response_code(500);
+            echo json_encode($statistics);
+            return;
+        }
+
+        if (!empty($statistics)) {
+            echo json_encode($statistics);
+        } else {
+            http_response_code(404);
+            echo json_encode(["error" => "Nenhuma estatística encontrada para este usuário"]);
+        }
+    }
+
+    // Buscar Readings de um usuário específico
     public function getByUser($user_id)
     {
         header("Content-Type: application/json");

@@ -220,15 +220,21 @@ case (preg_match('#^GET /reading/(\d+)$#', "$method $endpoint", $matches) ? true
     break;
 
 // Deletar leitura
-    case (preg_match('#^DELETE /reading/(\d+)$#', "$method $endpoint", $matches) ? true : false):
-    $controller = new ReadingController();
-    $controller->delete((int)$matches[1]);
-    break;
+	    case (preg_match('#^DELETE /reading/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+	    $controller = new ReadingController();
+	    $controller->delete((int)$matches[1]);
+	    break;
+	
+// Estatísticas de Livros por Usuário
+	case (preg_match('#^GET /reading/statistics/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+	    $controller = new ReadingController();
+	    $controller->getStatisticsByUserId((int)$matches[1]);
+	    break;
 
 
     
-    default:
-        http_response_code(404);
-        echo json_encode(["error" => "Endpoint não encontrado"]);
-        break; 
+default:
+    http_response_code(404);
+    echo json_encode(["error" => "Endpoint não encontrado"]);
+    break; 
 }
