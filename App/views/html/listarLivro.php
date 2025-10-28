@@ -1,3 +1,18 @@
+<?php
+// Inicia a sessão se ainda não estiver iniciada
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+$user_id = $_SESSION['user_id'] ?? null;
+$user_name = $_SESSION['username'] ?? 'Usuário'; 
+
+if (!$user_id) {
+    echo "<h1>Erro: ID do usuário não fornecido.</h1>";
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -41,6 +56,9 @@
     
     <button id="add-button" class="add-button" onclick="window.location.href='index.php?action=Adicionar_Livro'">
         <span class="plus-icon btn_cad">+</span> Cadastrar Livro
+    </button>
+    <button id="add-button" class="add-button" onclick="window.location.href='index.php?action=estatistica_livros&id=<?php echo $user_id ?>&user_name=<?php echo $user_name ?>' ">
+        Ver Estatisticas
     </button>
 </main>
 

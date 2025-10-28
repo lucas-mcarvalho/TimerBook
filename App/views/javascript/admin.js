@@ -89,7 +89,6 @@
     return userItem;
   }
 
-// ... dentro do seu arquivo admin.js ...
 
   function attachUserActionListeners(container) {
     container.querySelectorAll(".delete-btn").forEach((btn) => {
@@ -116,8 +115,8 @@
 	        alert("ID do usuário não encontrado!");
 	        return;
 	      }
-	      // redireciona para a nova página de estatísticas de livros
-	      window.location.href = `index.php?action=estatistica_livros&id=${encodeURIComponent(id)}`;
+	      console.log("ID do usuário para ver livros:", id);
+	      window.location.href = `index.php?action=adm_ver_livros&UserId=${encodeURIComponent(id)}`;
 	    };
 	  });
   }

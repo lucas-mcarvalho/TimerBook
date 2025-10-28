@@ -1,6 +1,6 @@
 <?php 
 
-$id = $_GET['userId'] ?? null;
+$id = $_GET['UserId'] ?? null;;
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +11,7 @@ $id = $_GET['userId'] ?? null;
     <title>TimerBook-ADMIN</title>
     <link rel="stylesheet" href="style/listarLivro.css?v=<?php echo time(); ?>">
 
-    <script src="/TimerBook/App/views/javascript/livros_api.js"></script>
+    <script src="/TimerBook/App/views/javascript/livros_api.js?v=<?= time() ?>"></script>
 
     
 </head>
@@ -47,7 +47,7 @@ $id = $_GET['userId'] ?? null;
 
 <script>
 const userId = "<?php echo $id; ?>";
-
+console.log("User ID:", userId);
 
 listarLivros("books/user/{id}".replace("{id}", userId));
 

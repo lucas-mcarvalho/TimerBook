@@ -95,6 +95,7 @@ async function listarLivros(endpoint) {
             credentials: "include"
         });
 
+        console.log(endpoint);
         if (!res.ok) {
             throw new Error(`Erro na requisição: ${res.status}`);
         }
