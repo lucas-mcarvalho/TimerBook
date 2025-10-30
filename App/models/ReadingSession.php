@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../core/database_config.php';
-//
+//Consertar aqui
 class ReadingSession
 {
     // Criar nova sessão de leitura
@@ -64,7 +64,7 @@ class ReadingSession
                 $values[] = $tempo_sessao;
             }
             if ($paginas_lidas !== null) {
-                $fields[] = "paginas_lida = ?";
+                $fields[] = "paginas_lidas = ?";
                 $values[] = $paginas_lidas;
             }
             if (empty($fields)) {
