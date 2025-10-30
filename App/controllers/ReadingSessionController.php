@@ -17,11 +17,11 @@ class ReadingSessionController
             return;
         }
 
-        $reading_id   = $input['reading_id'];
-        $data_inicio  = $input['data_inicio'] ?? null;
-        $data_fim     = $input['data_fim'] ?? null;
-        $tempo_sessao = $input['tempo_sessao'] ?? 0;
-        $paginas_lidas = $input['paginas_lidas'] ?? null;
+        $reading_id     = $input['reading_id'];
+        $data_inicio    = $input['data_inicio'] ?? null;
+        $data_fim       = $input['data_fim'] ?? null;
+        $tempo_sessao   = $input['tempo_sessao'] ?? 0;
+        $paginas_lidas  = $input['paginas_lidas'] ?? null;
 
         // Cria a sessão de leitura
         $result = ReadingSession::create($reading_id, $data_inicio, $data_fim, $tempo_sessao, $paginas_lidas);
@@ -54,10 +54,10 @@ class ReadingSessionController
             return;
         }
 
-        $data_inicio  = $input['data_inicio'] ?? null;
-        $data_fim     = $input['data_fim'] ?? null;
-        $tempo_sessao = $input['tempo_sessao'] ?? null;
-        $paginas_lidas = $input['paginas_lidas'] ?? null;
+        $data_inicio    = $input['data_inicio'] ?? null;
+        $data_fim       = $input['data_fim'] ?? null;
+        $tempo_sessao   = $input['tempo_sessao'] ?? null;
+        $paginas_lidas  = $input['paginas_lidas'] ?? null;
 
         $result = ReadingSession::update($id, $data_inicio, $data_fim, $tempo_sessao, $paginas_lidas);
 
@@ -74,37 +74,6 @@ class ReadingSessionController
 
         http_response_code(isset($result['error']) ? 500 : 200);
         echo json_encode($result);
-    }
-
-
-     public function iniciar() {
-        $data = json_decode(file_get_contents("php://input"), true);
-        $user_id = $_SESSION['user_id'];
-        $book_id = $data['book_id'];
-
-        $leitura_id = Leitura::iniciarLeitura($user_id, $book_id);
-        $sessao_id = SessaoLeitura::iniciarSessao($leitura_id);
-
-        echo json_encode([
-            "leitura_id" => $leitura_id,
-            "sessao_id" => $sessao_id,
-            "status" => "sessão iniciada"
-        ]);
-    }
-
-    public function finalizar() {
-        $data = json_decode(file_get_contents("php://input"), true);
-
-        SessaoLeitura::finalizarSessao($data['sessao_id'], $data['paginas_lidas']);
-        Leitura::finalizarLeitura($data['leitura_id']);
-
-        echo json_encode(["status" => "sessão finalizada"]);
-    }
-
-    public function estatisticas() {
-        $user_id = $_SESSION['user_id'];
-        $stats = Leitura::estatisticasUsuario($user_id);
-        echo json_encode($stats);
     }
 }
 ?>

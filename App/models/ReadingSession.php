@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../core/database_config.php';
-//Consertar aqui
+
+// O comentário "//Consertar aqui" foi resolvido.
 class ReadingSession
 {
     // Criar nova sessão de leitura
@@ -95,31 +96,54 @@ class ReadingSession
             return ["error" => "Erro ao excluir sessão: " . $e->getMessage()];
         }
     }
-  // Iniciar sessão
-    public static function StartSession($leitura_id)
-    {
-        $pdo = Database::connect();
-        $stmt = $pdo->prepare("
-            INSERT INTO SessaoLeitura (pk_leitura, data_inicio, tempo_sessao)
-            VALUES (?, NOW(), 0)
-        ");
-        $stmt->execute([$leitura_id]);
-        return $pdo->lastInsertId();
-    }
 
-    // Finalizar sessão
-    public static function StopSession($sessao_id, $paginas_lidas)
-    {
-        $pdo = Database::connect();
-        $stmt = $pdo->prepare("
-            UPDATE SessaoLeitura
-            SET data_fim = NOW(),
-                tempo_sessao = TIMESTAMPDIFF(SECOND, data_inicio, NOW()),
-                paginas_lidas = ?
-            WHERE id = ?
-        ");
-        return $stmt->execute([$paginas_lidas, $sessao_id]);
-    }
+  // --- CORREÇÃO ABAIXO ---
+
+  /**
+   * Inicia uma NOVA sessão de leitura (cronômetro).
+   * Ela deve receber o ID da leitura (Reading) principal.
+   */
+  public static function StartSession($leitura_id)
+  {
+      try {
+          $pdo = Database::connect();
+          $stmt = $pdo->prepare("
+              INSERT INTO SessaoLeitura (pk_leitura, data_inicio, tempo_sessao)
+              VALUES (?, NOW(), 0)
+          ");
+          $stmt->execute([$leitura_id]);
+          return $pdo->lastInsertId(); // Retorna o ID da *nova sessão*
+      
+      } catch (PDOException $e) {
+           return ["error" => "Erro em ReadingSession::StartSession: " . $e->getMessage()];
+      }
+  }
+
+  /**
+   * Para uma sessão de leitura (cronômetro).
+   * Ela deve receber o ID da sessão que está parando e as páginas lidas.
+   */
+  public static function StopSession($sessao_id, $paginas_lidas)
+  {
+      try {
+           $pdo = Database::connect();
+           $stmt = $pdo->prepare("
+               UPDATE SessaoLeitura
+               SET data_fim = NOW(),
+                   tempo_sessao = TIMESTAMPDIFF(SECOND, data_inicio, NOW()),
+                   paginas_lidas = ?
+               WHERE id = ?
+           ");
+           $stmt->execute([$paginas_lidas, $sessao_id]);
+           return true; // Sucesso
+      
+       } catch (PDOException $e) {
+           return ["error" => "Erro em ReadingSession::StopSession: " . $e->getMessage()];
+       }
+  }
+
+  // --- FIM DA CORREÇÃO ---
+
 
     // Média de páginas por usuário
     public static function getAveragePagesByUser($user_id)
@@ -174,12 +198,21 @@ class ReadingSession
         }
     }
 
-    private static function formatSeconds($seconds)
+   private static function formatSeconds($seconds)
     {
         if (!$seconds) return "00:00:00";
+
+        
+        $seconds = (int)$seconds;
+        if ($seconds < 0) {
+            $seconds = 0;
+        }
+       
+
         $hours = floor($seconds / 3600);
         $minutes = floor(($seconds % 3600) / 60);
         $seconds = $seconds % 60;
+        
         return sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
     }
 }

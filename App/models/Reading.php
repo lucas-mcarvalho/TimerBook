@@ -173,7 +173,7 @@ class Reading
         $pdo = Database::connect();
 
         // Verifica se já existe leitura em andamento para este livro e usuário
-        $stmt = $pdo->prepare("SELECT id FROM leitura WHERE pk_usuario = ? AND livro = ? AND status = 'em andamento'");
+        $stmt = $pdo->prepare("SELECT id FROM Reading WHERE pk_usuario = ? AND livro = ? AND status = 'em andamento'");
         $stmt->execute([$user_id, $book_id]);
         $leitura = $stmt->fetch();
 
@@ -196,7 +196,7 @@ class Reading
         // Soma todos os tempos das sessões e páginas
         $stmt = $pdo->prepare("
             SELECT SUM(tempo_sessao) AS tempo_total, SUM(paginas_lidas) AS paginas_total
-            FROM sessao_leitura WHERE pk_leitura = ?
+            FROM SessaoLeitura WHERE pk_leitura = ?
         ");
         $stmt->execute([$leitura_id]);
         $resumo = $stmt->fetch();

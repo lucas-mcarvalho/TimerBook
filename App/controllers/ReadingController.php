@@ -134,8 +134,16 @@ class ReadingController
 
  public function iniciar() {
         $data = json_decode(file_get_contents("php://input"), true);
-        $user_id = $_SESSION['user_id'];
-        $book_id = $data['book_id'];
+        
+
+        $user_id = $data['user_id'] ?? null;
+        $book_id = $data['book_id'] ?? null;
+
+        if (!$user_id || !$book_id) {
+            http_response_code(400); // Bad Request
+            echo json_encode(["error" => "user_id e book_id são obrigatórios"]);
+            return;
+        }
 
         $leitura_id = Reading::iniciarLeitura($user_id, $book_id);
         $sessao_id = ReadingSession::StartSession($leitura_id);
