@@ -163,7 +163,6 @@ class ReadingSession
         }
     }
 
-    // Estatísticas de tempo de leitura
     public static function getReadingTimeStats($user_id = null)
     {
         try {
@@ -188,32 +187,30 @@ class ReadingSession
                 ");
             }
 
+        
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            $result['tempo_total_formatado'] = self::formatSeconds($result['tempo_total_segundos']);
-            $result['tempo_medio_formatado'] = self::formatSeconds($result['tempo_medio_segundos']);
+            
+            return $result ? $result : [
+                "tempo_total_segundos" => 0,
+                "tempo_medio_segundos" => 0
+            ];
+            // --- FIM DA SIMPLIFICAÇÃO ---
 
-            return $result;
         } catch (PDOException $e) {
             return ["error" => "Erro ao calcular tempo de leitura: " . $e->getMessage()];
         }
     }
 
-   private static function formatSeconds($seconds)
+    private static function formatSeconds($seconds)
     {
         if (!$seconds) return "00:00:00";
-
-        
         $seconds = (int)$seconds;
-        if ($seconds < 0) {
-            $seconds = 0;
-        }
-       
+        if ($seconds < 0) $seconds = 0;
 
         $hours = floor($seconds / 3600);
         $minutes = floor(($seconds % 3600) / 60);
         $seconds = $seconds % 60;
-        
         return sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
     }
-}
+  }
 ?>

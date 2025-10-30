@@ -190,44 +190,62 @@ class Reading
         return $pdo->lastInsertId();
     }
 
-    public static function finalizarLeitura($leitura_id) {
-        $pdo = Database::connect();
+   public static function finalizarLeitura($leitura_id) {
+        try { 
+            $pdo = Database::connect();
 
-        // Soma todos os tempos das sessões e páginas
-        $stmt = $pdo->prepare("
-            SELECT SUM(tempo_sessao) AS tempo_total, SUM(paginas_lidas) AS paginas_total
-            FROM SessaoLeitura WHERE pk_leitura = ?
-        ");
-        $stmt->execute([$leitura_id]);
-        $resumo = $stmt->fetch();
+            // 1. Soma todos os tempos das sessões e páginas
+            $stmt = $pdo->prepare("
+                SELECT SUM(tempo_sessao) AS tempo_total, SUM(paginas_lidas) AS paginas_total
+                FROM SessaoLeitura WHERE pk_leitura = ?
+            "); 
+            $stmt->execute([$leitura_id]);
+            $resumo = $stmt->fetch();
+            
+           
+            $tempo_total = $resumo['tempo_total'] ?? 0;
+            $paginas_total = $resumo['paginas_total'] ?? 0;
 
-        $stmt = $pdo->prepare("
-            UPDATE Reading 
-            SET status = 'concluída', 
-                tempo_gasto = ?, 
-                paginas_lidas = ?, 
-                data_fim = NOW() 
-            WHERE id = ?
-        ");
-        return $stmt->execute([$resumo['tempo_total'], $resumo['paginas_total'], $leitura_id]);
+          
+            $stmt = $pdo->prepare("
+                UPDATE Reading 
+                SET status = 'concluída', 
+                    tempo_gasto = ?, 
+                    paginas_lidas = ?, 
+                    data_fim = NOW() 
+                WHERE id = ?
+            ");
+            
+            $stmt->execute([$tempo_total, $paginas_total, $leitura_id]);
+
+            
+            return $stmt->rowCount(); 
+        
+        } catch (PDOException $e) {
+            return ["error" => "Erro em Reading::finalizarLeitura: " . $e->getMessage()];
+        }
     }
 
-    public static function estatisticasUsuario($user_id) {
-        $pdo = Database::connect();
+  public static function estatisticasUsuario($user_id) {
+        try {
+            $pdo = Database::connect();
 
-        $stmt = $pdo->prepare("
-            SELECT 
-                COUNT(*) AS total_livros,
-                SUM(tempo_gasto) AS tempo_total,
-                SUM(paginas_lidas) AS paginas_total,
-                ROUND(AVG(paginas_lidas), 2) AS media_paginas_por_livro
-            FROM Reading 
-            WHERE pk_usuario = ?
-        ");
-        $stmt->execute([$user_id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt = $pdo->prepare("
+                SELECT 
+                    COUNT(*) AS total_livros,
+                    SUM(tempo_gasto) AS tempo_total,
+                    SUM(paginas_lidas) AS paginas_total,
+                    ROUND(AVG(paginas_lidas), 2) AS media_paginas_por_livro
+                FROM Reading 
+                WHERE pk_usuario = ?
+            ");
+            $stmt->execute([$user_id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            return ["error" => "Erro ao buscar estatísticas do usuário: " . $e->getMessage()];
+        }
     }
-
 
 
 }
