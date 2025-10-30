@@ -164,4 +164,88 @@ class Reading
             return ["error" => "Erro ao buscar Readings do usuário: " . $e->getMessage()];
         }
     }
+
+
+
+
+
+      public static function iniciarLeitura($user_id, $book_id) {
+        $pdo = Database::connect();
+
+        // Verifica se já existe leitura em andamento para este livro e usuário
+        $stmt = $pdo->prepare("SELECT id FROM Reading WHERE pk_usuario = ? AND livro = ? AND status = 'em andamento'");
+        $stmt->execute([$user_id, $book_id]);
+        $leitura = $stmt->fetch();
+
+        if ($leitura) {
+            return $leitura['id']; // Retorna a leitura existente
+        }
+
+        // Cria nova leitura
+        $stmt = $pdo->prepare("
+            INSERT INTO Reading (pk_usuario, livro, status, data_inicio) 
+            VALUES (?, ?, 'em andamento', NOW())
+        ");
+        $stmt->execute([$user_id, $book_id]);
+        return $pdo->lastInsertId();
+    }
+
+   public static function finalizarLeitura($leitura_id) {
+        try { 
+            $pdo = Database::connect();
+
+            // 1. Soma todos os tempos das sessões e páginas
+            $stmt = $pdo->prepare("
+                SELECT SUM(tempo_sessao) AS tempo_total, SUM(paginas_lidas) AS paginas_total
+                FROM SessaoLeitura WHERE pk_leitura = ?
+            "); 
+            $stmt->execute([$leitura_id]);
+            $resumo = $stmt->fetch();
+            
+           
+            $tempo_total = $resumo['tempo_total'] ?? 0;
+            $paginas_total = $resumo['paginas_total'] ?? 0;
+
+          
+            $stmt = $pdo->prepare("
+                UPDATE Reading 
+                SET status = 'concluída', 
+                    tempo_gasto = ?, 
+                    paginas_lidas = ?, 
+                    data_fim = NOW() 
+                WHERE id = ?
+            ");
+            
+            $stmt->execute([$tempo_total, $paginas_total, $leitura_id]);
+
+            
+            return $stmt->rowCount(); 
+        
+        } catch (PDOException $e) {
+            return ["error" => "Erro em Reading::finalizarLeitura: " . $e->getMessage()];
+        }
+    }
+
+  public static function estatisticasUsuario($user_id) {
+        try {
+            $pdo = Database::connect();
+
+            $stmt = $pdo->prepare("
+                SELECT 
+                    COUNT(*) AS total_livros,
+                    SUM(tempo_gasto) AS tempo_total,
+                    SUM(paginas_lidas) AS paginas_total,
+                    ROUND(AVG(paginas_lidas), 2) AS media_paginas_por_livro
+                FROM Reading 
+                WHERE pk_usuario = ?
+            ");
+            $stmt->execute([$user_id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            return ["error" => "Erro ao buscar estatísticas do usuário: " . $e->getMessage()];
+        }
+    }
+
+
 }
