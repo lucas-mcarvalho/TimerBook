@@ -158,6 +158,16 @@ class ReadingController
     public function finalizar() {
         $data = json_decode(file_get_contents("php://input"), true);
 
+
+
+        if (!$data || !isset($data['sessao_id']) || !isset($data['leitura_id']) || !isset($data['paginas_lidas'])) {
+             http_response_code(400); // 400 Bad Request
+             echo json_encode([
+                 "error" => "Payload JSON inválido. Campos 'sessao_id', 'leitura_id', e 'paginas_lidas' são obrigatórios."
+             ]);
+             return;
+        }
+
         ReadingSession::StopSession($data['sessao_id'], $data['paginas_lidas']);
         Reading::finalizarLeitura($data['leitura_id']);
 
