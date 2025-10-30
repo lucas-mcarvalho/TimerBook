@@ -164,4 +164,70 @@ class Reading
             return ["error" => "Erro ao buscar Readings do usuário: " . $e->getMessage()];
         }
     }
+
+
+
+
+
+      public static function iniciarLeitura($user_id, $book_id) {
+        $pdo = Database::connect();
+
+        // Verifica se já existe leitura em andamento para este livro e usuário
+        $stmt = $pdo->prepare("SELECT id FROM leitura WHERE pk_usuario = ? AND livro = ? AND status = 'em andamento'");
+        $stmt->execute([$user_id, $book_id]);
+        $leitura = $stmt->fetch();
+
+        if ($leitura) {
+            return $leitura['id']; // Retorna a leitura existente
+        }
+
+        // Cria nova leitura
+        $stmt = $pdo->prepare("
+            INSERT INTO leitura (pk_usuario, livro, status, data_inicio) 
+            VALUES (?, ?, 'em andamento', NOW())
+        ");
+        $stmt->execute([$user_id, $book_id]);
+        return $pdo->lastInsertId();
+    }
+
+    public static function finalizarLeitura($leitura_id) {
+        $pdo = Database::connect();
+
+        // Soma todos os tempos das sessões e páginas
+        $stmt = $pdo->prepare("
+            SELECT SUM(tempo_sessao) AS tempo_total, SUM(paginas_lidas) AS paginas_total
+            FROM sessao_leitura WHERE pk_leitura = ?
+        ");
+        $stmt->execute([$leitura_id]);
+        $resumo = $stmt->fetch();
+
+        $stmt = $pdo->prepare("
+            UPDATE leitura 
+            SET status = 'concluída', 
+                tempo_gasto = ?, 
+                paginas_lidas = ?, 
+                data_fim = NOW() 
+            WHERE id = ?
+        ");
+        return $stmt->execute([$resumo['tempo_total'], $resumo['paginas_total'], $leitura_id]);
+    }
+
+    public static function estatisticasUsuario($user_id) {
+        $pdo = Database::connect();
+
+        $stmt = $pdo->prepare("
+            SELECT 
+                COUNT(*) AS total_livros,
+                SUM(tempo_gasto) AS tempo_total,
+                SUM(paginas_lidas) AS paginas_total,
+                ROUND(AVG(paginas_lidas), 2) AS media_paginas_por_livro
+            FROM leitura 
+            WHERE pk_usuario = ?
+        ");
+        $stmt->execute([$user_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
+
 }

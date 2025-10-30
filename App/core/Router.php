@@ -191,73 +191,66 @@ switch ("$method $endpoint") {
         $controller->googleCallback();
         break;
 
-    // Criar leitura
-case 'POST /reading':
-    $controller = new ReadingController();
-    $controller->create();
-    break;
+        // ---------------- LEITURAS ----------------
+    case 'POST /reading': // Criar nova leitura
+        $controller = new ReadingController();
+        $controller->create();
+        break;
 
-// Buscar todas as leituras
-case 'GET /reading':
-    $controller = new ReadingController();
-    $controller->getAll();
-    break;
+    case 'GET /reading': // Buscar todas as leituras
+        $controller = new ReadingController();
+        $controller->getAll();
+        break;
 
-// Buscar leitura por ID
-case (preg_match('#^GET /reading/(\d+)$#', "$method $endpoint", $matches) ? true : false):
-    $controller = new ReadingController();
-    $controller->getById((int)$matches[1]);
-    break;
+    case (preg_match('#^GET /reading/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new ReadingController();
+        $controller->getById((int)$matches[1]);
+        break;
 
-// Buscar leituras por usuário
     case (preg_match('#^GET /reading/user/(\d+)$#', "$method $endpoint", $matches) ? true : false):
-    $controller = new ReadingController();
-    $controller->getByUser((int)$matches[1]);
-    break;
+        $controller = new ReadingController();
+        $controller->getByUser((int)$matches[1]);
+        break;
 
-// Atualizar leitura
     case (preg_match('#^PUT /reading/(\d+)$#', "$method $endpoint", $matches) ? true : false):
-    $controller = new ReadingController();
-    $controller->update((int)$matches[1]);
-    break;
+        $controller = new ReadingController();
+        $controller->update((int)$matches[1]);
+        break;
 
-// Deletar leitura
-	    case (preg_match('#^DELETE /reading/(\d+)$#', "$method $endpoint", $matches) ? true : false):
-	    $controller = new ReadingController();
-	    $controller->delete((int)$matches[1]);
-	    break;
-	
-// Estatísticas de Livros por Usuário
-	case (preg_match('#^GET /reading/statistics/(\d+)$#', "$method $endpoint", $matches) ? true : false):
-	    $controller = new ReadingController();
-	    $controller->getStatisticsByUserId((int)$matches[1]);
-	    break;
+    case (preg_match('#^DELETE /reading/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new ReadingController();
+        $controller->delete((int)$matches[1]);
+        break;
 
-    // ---------------- READING SESSION ROUTES ----------------
+    // Estatísticas gerais de leitura por usuário
+    case (preg_match('#^GET /reading/statistics/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new ReadingController();
+        $controller->getStatisticsByUserId((int)$matches[1]);
+        break;
 
-    // Criar sessão de leitura
-    case 'POST /reading-session':
+    // ---------------- SESSÕES DE LEITURA ----------------
+    case 'POST /reading-session': // Criar sessão
         $controller = new ReadingSessionController();
         $controller->createSession();
         break;
 
-    // Buscar todas as sessões
-    case 'GET /reading-session':
+    case 'GET /reading-session': // Todas as sessões
         $controller = new ReadingSessionController();
         $controller->getAllSessions();
         break;
 
-    // Atualizar sessão → PUT /reading-session/{id}
+
+
     case (preg_match('#^PUT /reading-session/(\d+)$#', "$method $endpoint", $matches) ? true : false):
         $controller = new ReadingSessionController();
         $controller->updateSession((int)$matches[1]);
         break;
 
-    // Deletar sessão → DELETE /reading-session/{id}
     case (preg_match('#^DELETE /reading-session/(\d+)$#', "$method $endpoint", $matches) ? true : false):
         $controller = new ReadingSessionController();
         $controller->deleteSession((int)$matches[1]);
         break;
+
 
     
 default:

@@ -95,5 +95,31 @@ class ReadingSession
             return ["error" => "Erro ao excluir sessão: " . $e->getMessage()];
         }
     }
+
+
+
+
+
+      public static function iniciarSessao($leitura_id) {
+        $pdo = Database::connect();
+        $stmt = $pdo->prepare("
+            INSERT INTO sessao_leitura (pk_leitura, data_inicio, tempo_sessao)
+            VALUES (?, NOW(), 0)
+        ");
+        $stmt->execute([$leitura_id]);
+        return $pdo->lastInsertId();
+    }
+
+    public static function finalizarSessao($sessao_id, $paginas_lidas) {
+        $pdo = Database::connect();
+        $stmt = $pdo->prepare("
+            UPDATE sessao_leitura 
+            SET data_fim = NOW(), 
+                tempo_sessao = TIMESTAMPDIFF(SECOND, data_inicio, NOW()), 
+                paginas_lidas = ?
+            WHERE id = ?
+        ");
+        return $stmt->execute([$paginas_lidas, $sessao_id]);
+    }
 }
 ?>

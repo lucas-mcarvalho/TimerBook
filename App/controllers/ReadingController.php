@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../models/Reading.php';
 require_once __DIR__ . '/../core/database_config.php';
-
+require_once __DIR__ . '/../models/ReadingSession.php';
 class ReadingController
 {
     // Criar uma nova Reading (POST)
@@ -131,4 +131,36 @@ class ReadingController
             echo json_encode(["error" => "Nenhuma Reading encontrada para este usuário"]);
         }
     }
+
+ public function iniciar() {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $user_id = $_SESSION['user_id'];
+        $book_id = $data['book_id'];
+
+        $leitura_id = Reading::iniciarLeitura($user_id, $book_id);
+        $sessao_id = ReadingSession::iniciarSessao($leitura_id);
+
+        echo json_encode([
+            "leitura_id" => $leitura_id,
+            "sessao_id" => $sessao_id,
+            "status" => "sessão iniciada"
+        ]);
+    }
+
+    public function finalizar() {
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        ReadingSession::finalizarSessao($data['sessao_id'], $data['paginas_lidas']);
+        Reading::finalizarLeitura($data['leitura_id']);
+
+        echo json_encode(["status" => "sessão finalizada"]);
+    }
+
+    public function estatisticas() {
+        $user_id = $_SESSION['user_id'];
+        $stats = Reading::estatisticasUsuario($user_id);
+        echo json_encode($stats);
+    }
+
+    
 }

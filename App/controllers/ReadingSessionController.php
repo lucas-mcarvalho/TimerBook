@@ -75,5 +75,36 @@ class ReadingSessionController
         http_response_code(isset($result['error']) ? 500 : 200);
         echo json_encode($result);
     }
+
+
+     public function iniciar() {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $user_id = $_SESSION['user_id'];
+        $book_id = $data['book_id'];
+
+        $leitura_id = Leitura::iniciarLeitura($user_id, $book_id);
+        $sessao_id = SessaoLeitura::iniciarSessao($leitura_id);
+
+        echo json_encode([
+            "leitura_id" => $leitura_id,
+            "sessao_id" => $sessao_id,
+            "status" => "sessão iniciada"
+        ]);
+    }
+
+    public function finalizar() {
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        SessaoLeitura::finalizarSessao($data['sessao_id'], $data['paginas_lidas']);
+        Leitura::finalizarLeitura($data['leitura_id']);
+
+        echo json_encode(["status" => "sessão finalizada"]);
+    }
+
+    public function estatisticas() {
+        $user_id = $_SESSION['user_id'];
+        $stats = Leitura::estatisticasUsuario($user_id);
+        echo json_encode($stats);
+    }
 }
 ?>
