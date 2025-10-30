@@ -11,7 +11,7 @@ class ReadingSession
             $data_inicio = $data_inicio ?? date('Y-m-d H:i:s');
 
             $stmt = $pdo->prepare("
-                INSERT INTO SessaoLeitura (pk_leitura, data_inicio, data_fim, tempo_sessao,paginas_lida)
+                INSERT INTO SessaoLeitura (pk_leitura, data_inicio, data_fim, tempo_sessao,paginas_lidas)
                 VALUES (?, ?, ?, ?, ?)
             ");
             $stmt->execute([$reading_id, $data_inicio, $data_fim, $tempo_sessao,$paginas_lidas]);
