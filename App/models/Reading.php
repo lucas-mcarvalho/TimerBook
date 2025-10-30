@@ -183,7 +183,7 @@ class Reading
 
         // Cria nova leitura
         $stmt = $pdo->prepare("
-            INSERT INTO leitura (pk_usuario, livro, status, data_inicio) 
+            INSERT INTO Reading (pk_usuario, livro, status, data_inicio) 
             VALUES (?, ?, 'em andamento', NOW())
         ");
         $stmt->execute([$user_id, $book_id]);
@@ -202,7 +202,7 @@ class Reading
         $resumo = $stmt->fetch();
 
         $stmt = $pdo->prepare("
-            UPDATE leitura 
+            UPDATE Reading 
             SET status = 'concluída', 
                 tempo_gasto = ?, 
                 paginas_lidas = ?, 
@@ -221,7 +221,7 @@ class Reading
                 SUM(tempo_gasto) AS tempo_total,
                 SUM(paginas_lidas) AS paginas_total,
                 ROUND(AVG(paginas_lidas), 2) AS media_paginas_por_livro
-            FROM leitura 
+            FROM Reading 
             WHERE pk_usuario = ?
         ");
         $stmt->execute([$user_id]);

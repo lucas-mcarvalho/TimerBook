@@ -95,31 +95,92 @@ class ReadingSession
             return ["error" => "Erro ao excluir sessão: " . $e->getMessage()];
         }
     }
-
-
-
-
-
-      public static function iniciarSessao($leitura_id) {
+  // Iniciar sessão
+    public static function StartSession($leitura_id)
+    {
         $pdo = Database::connect();
         $stmt = $pdo->prepare("
-            INSERT INTO sessao_leitura (pk_leitura, data_inicio, tempo_sessao)
+            INSERT INTO SessaoLeitura (pk_leitura, data_inicio, tempo_sessao)
             VALUES (?, NOW(), 0)
         ");
         $stmt->execute([$leitura_id]);
         return $pdo->lastInsertId();
     }
 
-    public static function finalizarSessao($sessao_id, $paginas_lidas) {
+    // Finalizar sessão
+    public static function StopSession($sessao_id, $paginas_lidas)
+    {
         $pdo = Database::connect();
         $stmt = $pdo->prepare("
-            UPDATE sessao_leitura 
-            SET data_fim = NOW(), 
-                tempo_sessao = TIMESTAMPDIFF(SECOND, data_inicio, NOW()), 
+            UPDATE SessaoLeitura
+            SET data_fim = NOW(),
+                tempo_sessao = TIMESTAMPDIFF(SECOND, data_inicio, NOW()),
                 paginas_lidas = ?
             WHERE id = ?
         ");
         return $stmt->execute([$paginas_lidas, $sessao_id]);
+    }
+
+    // Média de páginas por usuário
+    public static function getAveragePagesByUser($user_id)
+    {
+        try {
+            $pdo = Database::connect();
+            $stmt = $pdo->prepare("
+                SELECT ROUND(AVG(s.paginas_lidas), 2) AS media_paginas
+                FROM SessaoLeitura s
+                JOIN Reading l ON s.pk_leitura = l.id
+                WHERE l.pk_usuario = ? AND s.paginas_lidas IS NOT NULL
+            ");
+            $stmt->execute([$user_id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return ["error" => "Erro ao calcular média de páginas por usuário: " . $e->getMessage()];
+        }
+    }
+
+    // Estatísticas de tempo de leitura
+    public static function getReadingTimeStats($user_id = null)
+    {
+        try {
+            $pdo = Database::connect();
+
+            if ($user_id) {
+                $stmt = $pdo->prepare("
+                    SELECT
+                        SUM(s.tempo_sessao) AS tempo_total_segundos,
+                        ROUND(AVG(s.tempo_sessao), 2) AS tempo_medio_segundos
+                    FROM SessaoLeitura s
+                    JOIN Reading l ON s.pk_leitura = l.id
+                    WHERE l.pk_usuario = ?
+                ");
+                $stmt->execute([$user_id]);
+            } else {
+                $stmt = $pdo->query("
+                    SELECT
+                        SUM(tempo_sessao) AS tempo_total_segundos,
+                        ROUND(AVG(tempo_sessao), 2) AS tempo_medio_segundos
+                    FROM SessaoLeitura
+                ");
+            }
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $result['tempo_total_formatado'] = self::formatSeconds($result['tempo_total_segundos']);
+            $result['tempo_medio_formatado'] = self::formatSeconds($result['tempo_medio_segundos']);
+
+            return $result;
+        } catch (PDOException $e) {
+            return ["error" => "Erro ao calcular tempo de leitura: " . $e->getMessage()];
+        }
+    }
+
+    private static function formatSeconds($seconds)
+    {
+        if (!$seconds) return "00:00:00";
+        $hours = floor($seconds / 3600);
+        $minutes = floor(($seconds % 3600) / 60);
+        $seconds = $seconds % 60;
+        return sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
     }
 }
 ?>

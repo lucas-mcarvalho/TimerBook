@@ -138,7 +138,7 @@ class ReadingController
         $book_id = $data['book_id'];
 
         $leitura_id = Reading::iniciarLeitura($user_id, $book_id);
-        $sessao_id = ReadingSession::iniciarSessao($leitura_id);
+        $sessao_id = ReadingSession::StartSession($leitura_id);
 
         echo json_encode([
             "leitura_id" => $leitura_id,
@@ -150,7 +150,7 @@ class ReadingController
     public function finalizar() {
         $data = json_decode(file_get_contents("php://input"), true);
 
-        ReadingSession::finalizarSessao($data['sessao_id'], $data['paginas_lidas']);
+        ReadingSession::StopSession($data['sessao_id'], $data['paginas_lidas']);
         Reading::finalizarLeitura($data['leitura_id']);
 
         echo json_encode(["status" => "sessão finalizada"]);
@@ -162,5 +162,38 @@ class ReadingController
         echo json_encode($stats);
     }
 
-    
+    public function getAveragePagesByUser($user_id)
+{
+    header('Content-Type: application/json');
+
+    if (!$user_id) {
+        http_response_code(400);
+        echo json_encode(["error" => "user_id é obrigatório"]);
+        return;
+    }
+
+    $result = ReadingSession::getAveragePagesByUser($user_id);
+
+    http_response_code(isset($result['error']) ? 500 : 200);
+    echo json_encode($result);
+}
+
+
+
+public function getReadingTimeStats($user_id = null)
+{
+    header('Content-Type: application/json');
+
+    // Se vier via rota /sessions/time/{user_id}
+    if (isset($_GET['user_id'])) {
+        $user_id = $_GET['user_id'];
+    }
+
+    $result = ReadingSession::getReadingTimeStats($user_id);
+
+    http_response_code(isset($result['error']) ? 500 : 200);
+    echo json_encode($result);
+}
+
+
 }

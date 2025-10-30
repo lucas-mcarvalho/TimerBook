@@ -191,7 +191,7 @@ switch ("$method $endpoint") {
         $controller->googleCallback();
         break;
 
-        // ---------------- LEITURAS ----------------
+   // ---------------- LEITURAS ----------------
     case 'POST /reading': // Criar nova leitura
         $controller = new ReadingController();
         $controller->create();
@@ -239,8 +239,6 @@ switch ("$method $endpoint") {
         $controller->getAllSessions();
         break;
 
-
-
     case (preg_match('#^PUT /reading-session/(\d+)$#', "$method $endpoint", $matches) ? true : false):
         $controller = new ReadingSessionController();
         $controller->updateSession((int)$matches[1]);
@@ -250,6 +248,43 @@ switch ("$method $endpoint") {
         $controller = new ReadingSessionController();
         $controller->deleteSession((int)$matches[1]);
         break;
+
+
+        // Estatísticas gerais de leitura por usuário
+case (preg_match('#^GET /reading/statistics/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $controller = new ReadingController();
+    $controller->getStatisticsByUserId((int)$matches[1]);
+    break;
+
+// Média de páginas lidas por usuário
+case (preg_match('#^GET /reading/average-pages/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $controller = new ReadingController();
+    $controller->getAveragePagesByUser((int)$matches[1]);
+    break;
+
+// Tempo total de leitura por usuário
+case (preg_match('#^GET /reading/time/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $controller = new ReadingController();
+    $controller->getReadingTimeStats((int)$matches[1]);
+    break;
+
+// Iniciar leitura + sessão
+case 'POST /reading/start':
+    $controller = new ReadingController();
+    $controller->iniciar();
+    break;
+
+// Finalizar leitura + sessão
+case 'POST /reading/finish':
+    $controller = new ReadingController();
+    $controller->finalizar();
+    break;
+
+// Estatísticas do usuário logado (via sessão)
+case 'GET /reading/stats':
+    $controller = new ReadingController();
+    $controller->estatisticas();
+    break;
 
 
     
