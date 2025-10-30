@@ -231,6 +231,31 @@ case (preg_match('#^GET /reading/(\d+)$#', "$method $endpoint", $matches) ? true
 	    $controller->getStatisticsByUserId((int)$matches[1]);
 	    break;
 
+    // ---------------- READING SESSION ROUTES ----------------
+
+    // Criar sessão de leitura
+    case 'POST /reading-session':
+        $controller = new ReadingSessionController();
+        $controller->createSession();
+        break;
+
+    // Buscar todas as sessões
+    case 'GET /reading-session':
+        $controller = new ReadingSessionController();
+        $controller->getAllSessions();
+        break;
+
+    // Atualizar sessão → PUT /reading-session/{id}
+    case (preg_match('#^PUT /reading-session/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new ReadingSessionController();
+        $controller->updateSession((int)$matches[1]);
+        break;
+
+    // Deletar sessão → DELETE /reading-session/{id}
+    case (preg_match('#^DELETE /reading-session/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new ReadingSessionController();
+        $controller->deleteSession((int)$matches[1]);
+        break;
 
     
 default:
