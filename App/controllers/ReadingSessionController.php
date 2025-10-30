@@ -17,11 +17,11 @@ class ReadingSessionController
             return;
         }
 
-        $reading_id   = $input['reading_id'];
-        $data_inicio  = $input['data_inicio'] ?? null;
-        $data_fim     = $input['data_fim'] ?? null;
-        $tempo_sessao = $input['tempo_sessao'] ?? 0;
-        $paginas_lidas = $input['paginas_lidas'] ?? null;
+        $reading_id     = $input['reading_id'];
+        $data_inicio    = $input['data_inicio'] ?? null;
+        $data_fim       = $input['data_fim'] ?? null;
+        $tempo_sessao   = $input['tempo_sessao'] ?? 0;
+        $paginas_lidas  = $input['paginas_lidas'] ?? null;
 
         // Cria a sessão de leitura
         $result = ReadingSession::create($reading_id, $data_inicio, $data_fim, $tempo_sessao, $paginas_lidas);
@@ -54,10 +54,10 @@ class ReadingSessionController
             return;
         }
 
-        $data_inicio  = $input['data_inicio'] ?? null;
-        $data_fim     = $input['data_fim'] ?? null;
-        $tempo_sessao = $input['tempo_sessao'] ?? null;
-        $paginas_lidas = $input['paginas_lidas'] ?? null;
+        $data_inicio    = $input['data_inicio'] ?? null;
+        $data_fim       = $input['data_fim'] ?? null;
+        $tempo_sessao   = $input['tempo_sessao'] ?? null;
+        $paginas_lidas  = $input['paginas_lidas'] ?? null;
 
         $result = ReadingSession::update($id, $data_inicio, $data_fim, $tempo_sessao, $paginas_lidas);
 

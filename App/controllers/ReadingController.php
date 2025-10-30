@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../models/Reading.php';
 require_once __DIR__ . '/../core/database_config.php';
-
+require_once __DIR__ . '/../models/ReadingSession.php';
 class ReadingController
 {
     // Criar uma nova Reading (POST)
@@ -131,4 +131,77 @@ class ReadingController
             echo json_encode(["error" => "Nenhuma Reading encontrada para este usuário"]);
         }
     }
+
+ public function iniciar() {
+        $data = json_decode(file_get_contents("php://input"), true);
+        
+
+        $user_id = $data['user_id'] ?? null;
+        $book_id = $data['book_id'] ?? null;
+
+        if (!$user_id || !$book_id) {
+            http_response_code(400); // Bad Request
+            echo json_encode(["error" => "user_id e book_id são obrigatórios"]);
+            return;
+        }
+
+        $leitura_id = Reading::iniciarLeitura($user_id, $book_id);
+        $sessao_id = ReadingSession::StartSession($leitura_id);
+
+        echo json_encode([
+            "leitura_id" => $leitura_id,
+            "sessao_id" => $sessao_id,
+            "status" => "sessão iniciada"
+        ]);
+    }
+
+    public function finalizar() {
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        ReadingSession::StopSession($data['sessao_id'], $data['paginas_lidas']);
+        Reading::finalizarLeitura($data['leitura_id']);
+
+        echo json_encode(["status" => "sessão finalizada"]);
+    }
+
+    public function estatisticas() {
+        $user_id = $_SESSION['user_id'];
+        $stats = Reading::estatisticasUsuario($user_id);
+        echo json_encode($stats);
+    }
+
+    public function getAveragePagesByUser($user_id)
+{
+    header('Content-Type: application/json');
+
+    if (!$user_id) {
+        http_response_code(400);
+        echo json_encode(["error" => "user_id é obrigatório"]);
+        return;
+    }
+
+    $result = ReadingSession::getAveragePagesByUser($user_id);
+
+    http_response_code(isset($result['error']) ? 500 : 200);
+    echo json_encode($result);
+}
+
+
+
+public function getReadingTimeStats($user_id = null)
+{
+    header('Content-Type: application/json');
+
+    // Se vier via rota /sessions/time/{user_id}
+    if (isset($_GET['user_id'])) {
+        $user_id = $_GET['user_id'];
+    }
+
+    $result = ReadingSession::getReadingTimeStats($user_id);
+
+    http_response_code(isset($result['error']) ? 500 : 200);
+    echo json_encode($result);
+}
+
+
 }
