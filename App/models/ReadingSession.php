@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../core/database_config.php';
-
+//
 class ReadingSession
 {
     // Criar nova sessão de leitura
