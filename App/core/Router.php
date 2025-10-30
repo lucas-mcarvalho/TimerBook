@@ -281,9 +281,9 @@ case 'POST /reading/finish':
     break;
 
 // Estatísticas do usuário logado (via sessão)
-case 'GET /reading/stats':
+case (preg_match('#^GET /reading/totals/(\d+)$#', "$method $endpoint", $matches) ? true : false):
     $controller = new ReadingController();
-    $controller->estatisticas();
+    $controller->estatisticas((int)$matches[1]); // Passa o ID para a função
     break;
 
 
