@@ -94,7 +94,7 @@
 }
 
 .status-badge.status-nao-iniciado {
-    background-color: #413c3c; /* Marrom */
+    background-color: #D93025; /* Vermelho */
 }
 
 /* Botão "Voltar para Admin" */
@@ -134,4 +134,8 @@
     font-weight: bold;
     text-align: center;
     padding: 20px;
+}
+
+.status-badge.status-não-iniciado {
+    color: #D93025;
 }

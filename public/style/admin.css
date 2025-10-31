@@ -36,28 +36,28 @@ input {
     align-items: center;
     padding: 15px 40px;
     background-color: #F5F2ED; 
-    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    box-shadow: none; 
     box-sizing: border-box;
 }
 
-/* Bloco da Esquerda: Logo e Título (CORRIGIDO) */
+/* Bloco da Esquerda: Logo e Título */
 .header-logo {
   display: flex;
   align-items: center;
-  gap: 0px; /* Alterado de 15px */
+  gap: 0px; 
 }
 
 .header-logo img {
   width: 50px;
   height: 50px;
   transform: scale(3);
-  margin-right: 10px;
+  margin-right: 10px; 
 }
 
-.header-h1 {
+.header-title {
     font-size: 24px; 
     font-weight: bold;
-    color: #2B4C8C; /* Alterado de #0A1A3A */
+    color: #2B4C8C; 
 }
 
 /* Bloco da Direita: Botões */
