@@ -114,11 +114,8 @@ class UserTest extends TestCase {
         $res = User::create($email, 'pass', 'RelUser', 'reluser');
         $this->assertArrayHasKey('user_id', $res);
         $uid = $res['user_id'];
-
-        // insere livro diretamente na conexão de teste
-        $pdo = DatabaseTestHelper::getPdo();
-        $stmt = $pdo->prepare("INSERT INTO Books (titulo, autor, ano_publicacao, user_id) VALUES (?, ?, ?, ?)");
-        $stmt->execute(['Livro Teste', 'Autor', 2020, $uid]);
+        // cria livro relacionado via helper (usa Book::create quando disponível)
+        $book = self::createTestBook(['titulo' => 'Livro Teste', 'autor' => 'Autor', 'ano_publicacao' => 2020, 'user_id' => $uid]);
 
         $result = User::findWithBooks($uid);
         $this->assertNotNull($result);

@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ .'/TestCase.php';
-require_once __DIR__ .'/DatabaseTestHelper.php';
-require_once __DIR__ .'/../App/models/Admin.php';
+require_once __DIR__ . '/TestCase.php';
+require_once __DIR__ . '/DatabaseTestHelper.php';
+require_once __DIR__ . '/../App/models/Admin.php';
 
 class AdminTest extends TestCase {
 
@@ -14,7 +14,7 @@ class AdminTest extends TestCase {
         $nome = 'Admin Teste Create';
         $username = 'admtestcreate';
 
-        $res = Admin::create($nome, $username, $email, $password);
+        $res = self::createTestAdmin(['nome' => $nome, 'username' => $username, 'email' => $email, 'senha' => $password]);
         $this->assertArrayHasKey('admin_id', $res);
         $id = $res['admin_id'];
 
@@ -31,7 +31,7 @@ class AdminTest extends TestCase {
         $nome = 'Admin Teste Find';
         $username = 'admtestfind';
 
-        $res = Admin::create($nome, $username, $email, $password);
+        $res = self::createTestAdmin(['nome' => $nome, 'username' => $username, 'email' => $email, 'senha' => $password]);
         $this->assertArrayHasKey('admin_id', $res);
         $id = $res['admin_id'];
 
@@ -54,10 +54,10 @@ class AdminTest extends TestCase {
         $password = 'pass';
         $username = 'dupadmin';
 
-        $r1 = Admin::create('Nome1', $username, $email, $password);
+        $r1 = self::createTestAdmin(['nome' => 'Nome1', 'username' => $username, 'email' => $email, 'senha' => $password]);
         $this->assertArrayHasKey('admin_id', $r1);
 
-        $r2 = Admin::create('Nome2', 'otheruser', $email, 'otherpass');
+        $r2 = self::createTestAdmin(['nome' => 'Nome2', 'username' => 'otheruser', 'email' => $email, 'senha' => 'otherpass']);
         $this->assertArrayHasKey('error', $r2);
 
         // cleanup
@@ -71,7 +71,7 @@ class AdminTest extends TestCase {
         $password = 'passall';
         $username = 'alladmin';
 
-        $res = Admin::create('NomeAll', $username, $email, $password);
+        $res = self::createTestAdmin(['nome' => 'NomeAll', 'username' => $username, 'email' => $email, 'senha' => $password]);
         $this->assertArrayHasKey('admin_id', $res);
         $id = $res['admin_id'];
 
@@ -93,7 +93,7 @@ class AdminTest extends TestCase {
         $password = 'passupdate';
         $username = 'updateadmin';
 
-        $res = Admin::create('NomeBefore', $username, $email, $password);
+        $res = self::createTestAdmin(['nome' => 'NomeBefore', 'username' => $username, 'email' => $email, 'senha' => $password]);
         $this->assertArrayHasKey('admin_id', $res);
         $id = $res['admin_id'];
 
@@ -118,11 +118,27 @@ class AdminTest extends TestCase {
         $this->assertArrayHasKey('message', $res);
     }
 
+    // Testando exclusão de admin existente
+    public function testDeleteAdmin()
+    {
+        $email = 'adm_delete@example.com';
+        $password = 'tobedeleted';
+        $res = self::createTestAdmin(['nome' => 'ToDelete', 'username' => 'todelete', 'email' => $email, 'senha' => $password]);
+        $this->assertArrayHasKey('admin_id', $res);
+        $id = $res['admin_id'];
+
+        $del = Admin::delete($id);
+        $this->assertArrayHasKey('message', $del);
+
+        $found = Admin::getById($id);
+        $this->assertFalse($found);
+    }
+
     // Testando atualização de senha
     public function testUpdatePassword() {
         $email = 'adm_pwd@example.com';
         $password = 'oldpass';
-        $res = Admin::create('NomePwd', 'userpwd', $email, $password);
+        $res = self::createTestAdmin(['nome' => 'NomePwd', 'username' => 'userpwd', 'email' => $email, 'senha' => $password]);
         $this->assertArrayHasKey('admin_id', $res);
         $id = $res['admin_id'];
 
@@ -144,7 +160,7 @@ class AdminTest extends TestCase {
     public function testUpdateKeepsPasswordWhenNull() {
         $email = 'adm_keep@example.com';
         $password = 'keepme';
-        $res = Admin::create('NomeKeep', 'userkeep', $email, $password);
+        $res = self::createTestAdmin(['nome' => 'NomeKeep', 'username' => 'userkeep', 'email' => $email, 'senha' => $password]);
         $this->assertArrayHasKey('admin_id', $res);
         $id = $res['admin_id'];
 
@@ -168,7 +184,7 @@ class AdminTest extends TestCase {
         $username = 'hashtest';
         $email = 'hash+' . uniqid() . '@example.com';
         $password = 'original123';
-        $res = Admin::create($nome, $username, $email, $password);
+        $res = self::createTestAdmin(['nome' => $nome, 'username' => $username, 'email' => $email, 'senha' => $password]);
 
         $this->assertArrayHasKey('admin_id', $res);
         $id = $res['admin_id'];
