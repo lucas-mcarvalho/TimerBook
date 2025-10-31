@@ -1,21 +1,18 @@
+let pdfGlobal = null;
+let paginaAtual = 1;
+
+// Carrega o PDF e inicializa o leitor
 async function carregarPdf(livro) {
   try {
-    if (!livro.caminho_arquivo) {
-      throw new Error("Campo 'caminho_arquivo' ausente no retorno do livro!");
-    }
-
+    if (!livro.caminho_arquivo) throw new Error("Campo 'caminho_arquivo' ausente no retorno do livro!");
     const pdfUrl = livro.caminho_arquivo;
-    console.log(`📘 Carregando PDF do livro "${livro.titulo}"...`);
 
-    const pdf = await carregarDocumentoPdf(pdfUrl);
-    await renderizarPdf(pdf);
-
+    pdfGlobal = await carregarDocumentoPdf(pdfUrl);
+    renderizarPagina(paginaAtual);
   } catch (err) {
     tratarErro(err);
   }
 }
-
-// --- Funções auxiliares ---
 
 async function carregarDocumentoPdf(pdfUrl) {
   const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
@@ -23,48 +20,142 @@ async function carregarDocumentoPdf(pdfUrl) {
   return pdf;
 }
 
-async function renderizarPdf(pdf) {
+// Renderiza uma página do PDF no canvas
+async function renderizarPagina(numPagina) {
   const container = document.getElementById('pdfContainer');
-  container.innerHTML = ''; // limpa o container antes de renderizar
+  container.innerHTML = ''; // limpa o container
 
-  for (let pagina = 1; pagina <= pdf.numPages; pagina++) {
-    const page = await pdf.getPage(pagina);
-    const elementoPagina = criarElementoPagina(page, pagina, pdf.numPages);
-    container.appendChild(elementoPagina);
-  }
-}
-
-function criarElementoPagina(page, numero, total) {
+  const page = await pdfGlobal.getPage(numPagina);
   const scale = 1.2;
   const viewport = page.getViewport({ scale });
 
-  // cria container da página
-  const div = document.createElement('div');
-  div.classList.add('page-container');
-
-  // cria canvas e renderiza a página nele
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   canvas.width = viewport.width;
   canvas.height = viewport.height;
-  page.render({ canvasContext: ctx, viewport });
 
-  // cria botão de progresso
-  const botao = document.createElement('button');
-  botao.textContent = 'Ver progresso';
-  botao.onclick = () => mostrarProgresso(numero, total);
+  const renderTask = page.render({ canvasContext: ctx, viewport });
+  await renderTask.promise;
 
-  div.appendChild(canvas);
-  div.appendChild(botao);
+  // Cria a barra de controle (botões + info)
+  const controles = criarBarraDeControles();
+
+  container.appendChild(canvas);
+  container.appendChild(controles);
+
+  atualizarBarraDeControles(); // atualiza os dados (ex: "Página 5 / 100")
+}
+
+// Cria os elementos da barra de controle (somente uma vez)
+function criarBarraDeControles() {
+  const div = document.createElement('div');
+  div.id = 'barraControles';
+  div.style.display = 'flex';
+  div.style.justifyContent = 'center';
+  div.style.alignItems = 'center';
+  div.style.gap = '10px';
+  div.style.marginTop = '20px';
+  div.style.flexWrap = 'wrap';
+
+  // Texto "Página X / Y"
+  const textoPagina = document.createElement('span');
+  textoPagina.id = 'textoPagina';
+  textoPagina.style.fontSize = '16px';
+  textoPagina.style.fontWeight = 'bold';
+
+  // Botões
+  const btnVoltar = criarBotao('Voltar', () => window.history.back());
+  div.appendChild(btnVoltar);
+  const btnAnterior = criarBotao('←', paginaAnterior);
+  const btnProxima = criarBotao('→', proximaPagina);
+
+  // Campo de entrada de página
+  const inputPagina = document.createElement('input');
+  inputPagina.type = 'number';
+  inputPagina.id = 'inputPagina';
+  inputPagina.min = 1;
+  inputPagina.max = pdfGlobal.numPages;
+  inputPagina.placeholder = 'Ir...';
+  inputPagina.style.width = '60px';
+  inputPagina.style.textAlign = 'center';
+  inputPagina.style.borderRadius = '5px';
+  inputPagina.style.border = '1px solid #888';
+  inputPagina.style.padding = '5px';
+
+  // Botão "Ir"
+  const btnIr = criarBotao('Ir', () => {
+    const valor = parseInt(inputPagina.value);
+    if (isNaN(valor) || valor < 1 || valor > pdfGlobal.numPages) {
+      alert(`Digite um número entre 1 e ${pdfGlobal.numPages}`);
+      return;
+    }
+    paginaAtual = valor;
+    renderizarPagina(paginaAtual);
+  });
+
+  // Botão "Ver progresso"
+  const btnProgresso = criarBotao('Ver progresso', () => mostrarProgresso(paginaAtual, pdfGlobal.numPages));
+
+  div.appendChild(textoPagina);
+  div.appendChild(btnAnterior);
+  div.appendChild(btnProxima);
+  div.appendChild(inputPagina);
+  div.appendChild(btnIr);
+  div.appendChild(btnProgresso);
+
   return div;
 }
 
+// Atualiza o texto da barra quando muda de página
+function atualizarBarraDeControles() {
+  const texto = document.getElementById('textoPagina');
+  if (texto && pdfGlobal) {
+    texto.textContent = `Página ${paginaAtual} / ${pdfGlobal.numPages}`;
+  }
+}
+
+// Cria botões reutilizáveis
+function criarBotao(texto, acao) {
+  const btn = document.createElement('button');
+  btn.textContent = texto;
+  btn.onclick = acao;
+  btn.style.background = '#007bff';
+  btn.style.color = 'white';
+  btn.style.border = 'none';
+  btn.style.padding = '8px 12px';
+  btn.style.borderRadius = '8px';
+  btn.style.cursor = 'pointer';
+  btn.style.transition = '0.3s';
+  btn.onmouseover = () => (btn.style.background = '#0056b3');
+  btn.onmouseout = () => (btn.style.background = '#007bff');
+  return btn;
+}
+
+// Navegação entre páginas
+function proximaPagina() {
+  if (paginaAtual < pdfGlobal.numPages) {
+    paginaAtual++;
+    renderizarPagina(paginaAtual);
+  }
+}
+
+function paginaAnterior() {
+  if (paginaAtual > 1) {
+    paginaAtual--;
+    renderizarPagina(paginaAtual);
+  }
+}
+
+// Progresso de leitura
 function mostrarProgresso(paginaAtual, totalPaginas) {
   const porcentagem = ((paginaAtual / totalPaginas) * 100).toFixed(1);
   alert(`Você está na página ${paginaAtual} de ${totalPaginas}.\nProgresso: ${porcentagem}% lido.`);
 }
 
+// Tratamento de erro
 function tratarErro(err) {
   console.error('❌ Erro ao carregar PDF:', err);
   alert("Erro ao abrir o livro: " + err.message);
 }
+
+
