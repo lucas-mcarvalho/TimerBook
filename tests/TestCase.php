@@ -59,6 +59,17 @@ class TestCase extends BaseTestCase
         );";
         self::$pdo->exec($sqlReading);
 
+        // Cria tabela SessaoLeitura (ReadingSession) usada pelo modelo ReadingSession
+        $sqlSessao = "CREATE TABLE IF NOT EXISTS SessaoLeitura (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            pk_leitura INTEGER,
+            data_inicio TEXT,
+            data_fim TEXT,
+            tempo_sessao INTEGER,
+            paginas_lidas INTEGER
+        );";
+        self::$pdo->exec($sqlSessao);
+
         // Definições de ambiente de teste para serviços externos (ex: S3)
         $_ENV['AWS_DEFAULT_REGION'] = $_ENV['AWS_DEFAULT_REGION'] ?? 'us-east-1';
         $_ENV['AWS_ACCESS_KEY_ID'] = $_ENV['AWS_ACCESS_KEY_ID'] ?? 'test';
