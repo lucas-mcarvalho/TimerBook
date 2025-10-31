@@ -1,5 +1,32 @@
 // js/estatisticaLivros.js
 
+async function iniciarSessaoLeitura() {
+    
+    try {
+        const response = await fetch("http://localhost/TimerBook/public/reading/start", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                // Dados necessários para iniciar a sessão de leitura
+                user_id: 71, // Exemplo de ID do livro
+                book_id: 145 // Exemplo de ID do livro
+            })
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log("Sessão de leitura iniciada com sucesso:", data);
+        } else {
+            console.error("Erro ao iniciar a sessão de leitura:", data.error);
+        }   
+    }     catch (error) {
+        console.error("Erro na comunicação com a API:", error);
+    }   
+}
+
+
 (function () {
     const API_BASE = "http://localhost/TimerBook/public";
 
