@@ -114,13 +114,14 @@ async function listarLivros(endpoint) {
                     <a class="link_livro" href="${livro.caminho_arquivo}" target="_blank">
                         <img src="${livro.capa_livro}" alt="Capa do livro">
                     </a>
-                    <button class="read-button" onclick="window.location.href='/TimerBook/App/views/html/leitorPdf.php?id=${livro.id}'">Ler</button>
-                    <button class="delete-button" onclick="deletarLivro(${livro.id})">Excluir</button style="display:none;">
-                    <form action="index.php?action=editar_livro" method="POST">
-                        <input type="hidden" name="id_livro" value="${livro.id}">
-                        <button class="edit-button">Editar</button>
-                    </form>
-                </div>
+                    <div class="action-buttons">
+                        <button class="read-button" onclick="window.location.href='/TimerBook/App/views/html/leitorPdf.php?id=${livro.id}'">Ler</button>
+                        <form action="index.php?action=editar_livro" method="POST" style="margin: 0;"> <input type="hidden" name="id_livro" value="${livro.id}">
+                            <button class="edit-button">Editar</button>
+                        </form>
+                        <button class="delete-button" onclick="deletarLivro(${livro.id})">Excluir</button>  
+                    </div>
+                    </div>
             `;
         });
     } catch (error) {
