@@ -25,7 +25,7 @@ $id = $_GET['UserId'] ?? null;;
             </a>
         </div>
         <div class="header-buttons">
-            <button class="nav1-button" onclick="window.history.back()">Voltar</button> 
+            <button class="profile-button" onclick="window.history.back()">Voltar</button> 
         </div>
     </header>
 
