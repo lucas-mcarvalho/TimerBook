@@ -102,7 +102,7 @@ async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas) {
         bookItem.className = 'book-item';
         
         const statusClass = book.status ? book.status.toLowerCase().replace(/ /g, '-') : 'indefinido';
-
+        console.log(book);
         bookItem.innerHTML = `
             <div class="book-cover-col">
                 <img src="${book.capa_livro || 'uploads/default_cover.png'}" alt="Capa do Livro: ${book.titulo}" class="book-cover">

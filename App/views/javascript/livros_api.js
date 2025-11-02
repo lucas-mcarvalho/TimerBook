@@ -9,7 +9,7 @@ async function cadastrarLivro() {
     console.log(formData); // Debug: Verifica os dados do formulário
 
     try {
-        const res = await fetch("http://localhost/TimerBook/public/botoks", {
+        const res = await fetch("http://localhost/TimerBook/public/books", {
             method: "POST",
             body: formData,
             credentials: "include" // <- envia cookies de sessão
