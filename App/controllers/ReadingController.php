@@ -270,5 +270,47 @@ public function getReadingTimeStats($user_id = null)
     echo json_encode($result);
 }
 
+public function getBookReading($book_id) {
+    header("Content-Type: application/json");
+
+    if (!$book_id) {
+        http_response_code(400);
+        echo json_encode(["error" => "book_id é obrigatório"]);
+        return;
+    }
+
+    $leituras = Reading::getReadinBook($book_id);
+
+    if (isset($leituras['error'])) {
+        http_response_code(500);
+        echo json_encode($leituras);
+        return;
+    }
+
+    echo json_encode($leituras);
+
+}
+
+
+
+public function getSessionBook($book_id) {
+    header("Content-Type: application/json");
+
+    if (!$book_id) {
+        http_response_code(400);
+        echo json_encode(["error" => "book_id é obrigatório"]);
+        return;
+    }
+
+    $sessoes = ReadingSession::getSessionBook($book_id);
+
+    if (isset($sessoes['error'])) {
+        http_response_code(500);
+        echo json_encode($sessoes);
+        return;
+    }
+
+    echo json_encode($sessoes);
+}
 
 }

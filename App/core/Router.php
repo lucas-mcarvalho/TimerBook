@@ -287,7 +287,19 @@ case (preg_match('#^GET /reading/totals/(\d+)$#', "$method $endpoint", $matches)
     break;
 
 
-    
+// Tempo total de leitura por usuário
+case (preg_match('#^GET /reading/book/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $controller = new ReadingController();
+    $controller->getBookReading((int)$matches[1]);
+    break;
+
+
+
+case (preg_match('#^GET /reading/book/(\d+)/sessions$#', "$method $endpoint", $matches) ? true : false):
+    $controller = new ReadingSessionController();
+    $controller->getSessionBook((int)$matches[1]);
+    break;
+
 default:
     http_response_code(404);
     echo json_encode(["error" => "Endpoint não encontrado"]);
