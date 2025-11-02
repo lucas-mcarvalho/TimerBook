@@ -75,5 +75,27 @@ class ReadingSessionController
         http_response_code(isset($result['error']) ? 500 : 200);
         echo json_encode($result);
     }
+
+
+
+    public function getSessionBook($book_id) {
+    header("Content-Type: application/json");
+
+    if (!$book_id) {
+        http_response_code(400);
+        echo json_encode(["error" => "book_id é obrigatório"]);
+        return;
+    }
+
+    $sessoes = ReadingSession::getSessionBook($book_id);
+
+    if (isset($sessoes['error'])) {
+        http_response_code(500);
+        echo json_encode($sessoes);
+        return;
+    }
+
+    echo json_encode($sessoes);
+}
 }
 ?>

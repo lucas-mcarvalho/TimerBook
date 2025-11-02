@@ -165,10 +165,6 @@ class Reading
         }
     }
 
-
-
-
-
       public static function iniciarLeitura($user_id, $book_id) {
         $pdo = Database::connect();
 
@@ -247,5 +243,59 @@ class Reading
         }
     }
 
+
+    //RETORNA A LEITURA ASSOCIADA AO LIVRO DO USUARIO
+public static function getReadinBook($book_id) {
+    try {
+        $pdo = Database::connect();
+
+        $stmt = $pdo->prepare("
+            SELECT id, pk_usuario, livro, status, data_inicio, data_fim
+            FROM Reading
+            WHERE livro = ?
+            ORDER BY data_inicio DESC
+        ");
+        $stmt->execute([$book_id]);
+
+        $leituras = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $leituras ?: []; // retorna lista vazia se não houver leituras
+
+    } catch (PDOException $e) {
+        return ["error" => "Erro em Reading::getLeiturasPorLivro: " . $e->getMessage()];
+    }
+}
+
+
+
+public static function getSessionBook($book_id) {
+    try {
+        $pdo = Database::connect();
+
+        // Busca todas as sessões ligadas a leituras do livro
+        $stmt = $pdo->prepare("
+            SELECT 
+                s.id AS sessao_id,
+                s.pk_leitura,
+                s.data_inicio,
+                s.data_fim,
+                s.tempo_sessao,
+                r.pk_usuario,
+                r.status,
+                r.data_inicio AS leitura_inicio,
+                r.data_fim AS leitura_fim
+            FROM SessaoLeitura s
+            INNER JOIN Reading r ON s.pk_leitura = r.id
+            WHERE r.livro = ?
+            ORDER BY s.data_inicio DESC
+        ");
+        $stmt->execute([$book_id]);
+
+        $sessoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $sessoes ?: []; // retorna vazio se não houver sessões
+
+    } catch (PDOException $e) {
+        return ["error" => "Erro em ReadingSession::getSessoesPorLivro: " . $e->getMessage()];
+    }
+}
 
 }
