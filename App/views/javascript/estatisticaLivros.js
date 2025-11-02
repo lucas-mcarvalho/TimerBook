@@ -1,6 +1,6 @@
 // js/estatisticaLivros.js
 
-async function iniciarSessaoLeitura() {
+async function iniciarSessaoLeitura(user_id, book_id) {
     
     try {
         const response = await fetch("http://localhost/TimerBook/public/reading/start", {
@@ -10,20 +10,50 @@ async function iniciarSessaoLeitura() {
             },
             body: JSON.stringify({
                 // Dados necessários para iniciar a sessão de leitura
-                user_id: 71, // Exemplo de ID do livro
-                book_id: 145 // Exemplo de ID do livro
+                user_id: user_id, // Exemplo de ID do livro
+                book_id: book_id // Exemplo de ID do livro
             })
         });
         const data = await response.json();
 
+        const leitura_id = data.leitura_id;
+        const sessao_id = data.sessao_id;
+
         if (response.ok) {
-            console.log("Sessão de leitura iniciada com sucesso:", data);
+            console.log("Sessão de leitura iniciada com sucesso:", leitura_id, sessao_id);
+            return {leitura_id, sessao_id};
         } else {
             console.error("Erro ao iniciar a sessão de leitura:", data.error);
         }   
     }     catch (error) {
         console.error("Erro na comunicação com a API:", error);
     }   
+}
+
+async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas) {
+    try {
+        const response = await fetch("http://localhost/TimerBook/public/reading/finish", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                // Dados necessários para finalizar a sessão de leitura
+                leitura_id: leitura_id, 
+                sessao_id: sessao_id,
+                paginas_lidas: paginas_lidas,
+            })
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log("Sessão de leitura finalizada com sucesso:", data);
+        } else {
+            console.error("Erro ao finalizar a sessão de leitura:", data.error);
+        }   
+    }catch (error) {
+        console.error("Erro na comunicação com a API:", error);
+    }
 }
 
 

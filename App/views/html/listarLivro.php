@@ -74,8 +74,8 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
     </main>
 
     <script>
-
-        listarLivrosUsuario();
+        const user_id = "<?php echo $user_id; ?>";
+        listarLivrosUsuario(user_id);
 
         const bookList = document.getElementById('book-list');
         const prevButton = document.getElementById('prev-button');

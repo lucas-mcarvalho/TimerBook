@@ -9,7 +9,7 @@ async function cadastrarLivro() {
     console.log(formData); // Debug: Verifica os dados do formulário
 
     try {
-        const res = await fetch("http://localhost/TimerBook/public/books", {
+        const res = await fetch("http://localhost/TimerBook/public/botoks", {
             method: "POST",
             body: formData,
             credentials: "include" // <- envia cookies de sessão
@@ -86,7 +86,7 @@ async function deletarLivro(id) {
 
 
 
-async function listarLivrosUsuario() {
+async function listarLivrosUsuario(user_id) {
     try {
         const res = await fetch(`http://localhost/TimerBook/public/my-books`, {
             method: "GET",
@@ -125,11 +125,17 @@ async function listarLivrosUsuario() {
 
         const readButtons = divLivros.querySelectorAll(".read-button");
         readButtons.forEach(button => {
-            button.addEventListener("click", (e) => {
-                const id = e.target.closest('.livro-card').id.split('-')[1];
-                console.log("Read button clicked:", id);
-                iniciarSessaoLeitura();
-                window.location.href = `/TimerBook/App/views/html/leitorPdf.php?id=${id}`;
+            button.addEventListener("click", async (e) => {
+                const book_id = e.target.closest('.livro-card').id.split('-')[1];
+                const data = await iniciarSessaoLeitura(user_id, book_id);
+                if (!data) {
+                    alert("Erro ao iniciar a sessão de leitura.");
+                    return;
+                }
+                const leitura_id = data.leitura_id;
+                const sessao_id = data.sessao_id;
+
+                window.location.href = `/TimerBook/App/views/html/leitorPdf.php?id=${book_id}&leitura_id=${leitura_id}&sessao_id=${sessao_id}`;
             });
         });
     } catch (error) {
