@@ -1,27 +1,14 @@
 let pdfGlobal = null;
 let paginaAtual = 1;
-let globalSessaoId = null;
-let globalLeituraId = null;
 
 // Carrega o PDF e inicializa o leitor
-
-/***
- Para que o leitor seja capaz de ir na última página lida, é necessário carregar os
- dados da última sessão do usuário naquela determinada. É preciso uma função capaz
- de retornar os dados da útima sessão de uma leitua, dado o ID da leitura.
- 
- retornarUltimaSessaoLeitura(leitura_id) -> { sessao_id, pagina_atual }
- ***/
-
-async function carregarPdf(livro, sessao_id, leitura_id) {
-  globalLeituraId = leitura_id;
-  globalSessaoId = sessao_id;
+async function carregarPdf(livro) {
   try {
     if (!livro.caminho_arquivo) throw new Error("Campo 'caminho_arquivo' ausente no retorno do livro!");
     const pdfUrl = livro.caminho_arquivo;
 
     pdfGlobal = await carregarDocumentoPdf(pdfUrl);
-    renderizarPagina(paginaAtual, sessao_id, leitura_id);
+    renderizarPagina(paginaAtual);
   } catch (err) {
     tratarErro(err);
   }
@@ -34,7 +21,7 @@ async function carregarDocumentoPdf(pdfUrl) {
 }
 
 // Renderiza uma página do PDF no canvas
-async function renderizarPagina(numPagina, sessao_id, leitura_id) {
+async function renderizarPagina(numPagina) {
   const container = document.getElementById('pdfContainer');
   container.innerHTML = ''; // limpa o container
 
@@ -51,7 +38,7 @@ async function renderizarPagina(numPagina, sessao_id, leitura_id) {
   await renderTask.promise;
 
   // Cria a barra de controle (botões + info)
-  const controles = criarBarraDeControles(sessao_id, leitura_id, numPagina);
+  const controles = criarBarraDeControles();
 
   container.appendChild(canvas);
   container.appendChild(controles);
@@ -60,7 +47,7 @@ async function renderizarPagina(numPagina, sessao_id, leitura_id) {
 }
 
 // Cria os elementos da barra de controle (somente uma vez)
-function criarBarraDeControles(sessao_id, leitura_id, pagina_atual) {
+function criarBarraDeControles() {
   const div = document.createElement('div');
   div.id = 'barraControles';
   div.style.display = 'flex';
@@ -76,15 +63,9 @@ function criarBarraDeControles(sessao_id, leitura_id, pagina_atual) {
   textoPagina.style.fontSize = '16px';
   textoPagina.style.fontWeight = 'bold';
 
-  
   // Botões
-  const btnVoltar = criarBotao('Voltar', async () => {
-    console.log(sessao_id, leitura_id, pagina_atual);
-    await finalizarSessaoLeitura(sessao_id, leitura_id, pagina_atual);
-    window.history.back();
-  }); 
+  const btnVoltar = criarBotao('Voltar', () => window.history.back());
   div.appendChild(btnVoltar);
- 
   const btnAnterior = criarBotao('←', paginaAnterior);
   const btnProxima = criarBotao('→', proximaPagina);
 
@@ -98,7 +79,7 @@ function criarBarraDeControles(sessao_id, leitura_id, pagina_atual) {
   inputPagina.style.width = '60px';
   inputPagina.style.textAlign = 'center';
   inputPagina.style.borderRadius = '5px';
-  inputPagina.style.border = '1px solid #534444ff';
+  inputPagina.style.border = '1px solid #888';
   inputPagina.style.padding = '5px';
 
   // Botão "Ir"
@@ -109,7 +90,7 @@ function criarBarraDeControles(sessao_id, leitura_id, pagina_atual) {
       return;
     }
     paginaAtual = valor;
-    renderizarPagina(paginaAtual, globalSessaoId, globalLeituraId);
+    renderizarPagina(paginaAtual);
   });
 
   // Botão "Ver progresso"
@@ -154,14 +135,14 @@ function criarBotao(texto, acao) {
 function proximaPagina() {
   if (paginaAtual < pdfGlobal.numPages) {
     paginaAtual++;
-    renderizarPagina(paginaAtual, globalSessaoId, globalLeituraId);
+    renderizarPagina(paginaAtual);
   }
 }
 
 function paginaAnterior() {
   if (paginaAtual > 1) {
     paginaAtual--;
-    renderizarPagina(paginaAtual, globalSessaoId, globalLeituraId);
+    renderizarPagina(paginaAtual);
   }
 }
 
@@ -176,3 +157,5 @@ function tratarErro(err) {
   console.error('❌ Erro ao carregar PDF:', err);
   alert("Erro ao abrir o livro: " + err.message);
 }
+
+

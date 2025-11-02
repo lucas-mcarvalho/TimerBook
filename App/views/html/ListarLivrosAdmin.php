@@ -49,7 +49,7 @@ $id = $_GET['UserId'] ?? null;;
 const userId = "<?php echo $id; ?>";
 console.log("User ID:", userId);
 
-listarLivrosAdmin(userId);
+listarLivros("books/user/{id}".replace("{id}", userId));
 
 </script>
 
