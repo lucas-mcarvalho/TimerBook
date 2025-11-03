@@ -5,6 +5,9 @@ require_once '../App/controllers/BookController.php';
 require_once '../App/controllers/AdminController.php';
 require_once '../App/controllers/AuthenticationController.php';
 require_once '../App/controllers/GoogleController.php';
+require_once '../App/controllers/ReadingController.php';
+require_once '../App/controllers/ReadingSessionController.php';
+
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -58,12 +61,6 @@ switch ("$method $endpoint") {
         $controller->getById($userId);
         break;
 
-    // Buscar usuário com seus livros  GET /users/{id}/books
-    case (preg_match('#^GET /users/(\d+)/books$#', "$method $endpoint", $matches) ? true : false):
-        $controller = new UserController();
-        $userId = (int)$matches[1];
-        $controller->findWithBooks($userId);
-        break;
     // Atualizar usuário PUT /users/{id}
     case (preg_match('#^POST /users/(\d+)$#', "$method $endpoint", $matches) ? true : false):
         $controller = new UserController();
@@ -118,8 +115,14 @@ switch ("$method $endpoint") {
     $controller->getMyBooks();
     break;
 
+    // Buscar livro por ID → GET /books/{id}
+    case (preg_match('#^GET /books/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $bookId = (int)$matches[1];
+    $controller = new BookController();
+    $controller->findById($bookId);
+    break;
     //UPDATE DO LIVRO
-    case (preg_match('#^PUT /books/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    case (preg_match('#^POST /books/(\d+)$#', "$method $endpoint", $matches) ? true : false):
     $bookId = (int)$matches[1];
     $controller = new BookController();
     $controller->update($bookId);
@@ -140,7 +143,13 @@ switch ("$method $endpoint") {
         $controller = new AdminController();
         $controller->getById($id);
         break;
-
+    
+    // GET /books/user/{user_id}
+    case (preg_match('#^GET /books/user/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $user_id = (int)$matches[1];
+        $controller = new BookController();
+        $controller->getByUser($user_id);
+        break;
 
     case 'POST /admin/login':
         $controller = new AdminController();
@@ -182,8 +191,118 @@ switch ("$method $endpoint") {
         $controller->googleCallback();
         break;
 
-    default:
-        http_response_code(404);
-        echo json_encode(["error" => "Endpoint não encontrado"]);
-        break; 
+   // ---------------- LEITURAS ----------------
+    case 'POST /reading': // Criar nova leitura
+        $controller = new ReadingController();
+        $controller->create();
+        break;
+
+    case 'GET /reading': // Buscar todas as leituras
+        $controller = new ReadingController();
+        $controller->getAll();
+        break;
+
+    case (preg_match('#^GET /reading/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new ReadingController();
+        $controller->getById((int)$matches[1]);
+        break;
+
+    case (preg_match('#^GET /reading/user/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new ReadingController();
+        $controller->getByUser((int)$matches[1]);
+        break;
+
+    case (preg_match('#^PUT /reading/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new ReadingController();
+        $controller->update((int)$matches[1]);
+        break;
+
+    case (preg_match('#^DELETE /reading/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new ReadingController();
+        $controller->delete((int)$matches[1]);
+        break;
+
+    // Estatísticas gerais de leitura por usuário
+    case (preg_match('#^GET /reading/statistics/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new ReadingController();
+        $controller->getStatisticsByUserId((int)$matches[1]);
+        break;
+
+    // ---------------- SESSÕES DE LEITURA ----------------
+    case 'POST /reading-session': // Criar sessão
+        $controller = new ReadingSessionController();
+        $controller->createSession();
+        break;
+
+    case 'GET /reading-session': // Todas as sessões
+        $controller = new ReadingSessionController();
+        $controller->getAllSessions();
+        break;
+
+    
+    case (preg_match('#^PUT /reading-session/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new ReadingSessionController();
+        $controller->updateSession((int)$matches[1]);
+        break;
+
+    case (preg_match('#^DELETE /reading-session/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+        $controller = new ReadingSessionController();
+        $controller->deleteSession((int)$matches[1]);
+        break;
+
+
+        // Estatísticas gerais de leitura por usuário
+case (preg_match('#^GET /reading/statistics/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $controller = new ReadingController();
+    $controller->getStatisticsByUserId((int)$matches[1]);
+    break;
+
+// Média de páginas lidas por usuário
+case (preg_match('#^GET /reading/average-pages/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $controller = new ReadingController();
+    $controller->getAveragePagesByUser((int)$matches[1]);
+    break;
+
+// Tempo total de leitura por usuário
+case (preg_match('#^GET /reading/time/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $controller = new ReadingController();
+    $controller->getReadingTimeStats((int)$matches[1]);
+    break;
+
+// Iniciar leitura + sessão
+case 'POST /reading/start':
+    $controller = new ReadingController();
+    $controller->iniciar();
+    break;
+
+// Finalizar leitura + sessão
+case 'POST /reading/finish':
+    $controller = new ReadingController();
+    $controller->finalizar();
+    break;
+
+// Estatísticas do usuário logado (via sessão)
+case (preg_match('#^GET /reading/totals/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $controller = new ReadingController();
+    $controller->estatisticas((int)$matches[1]); // Passa o ID para a função
+    break;
+
+
+// Tempo total de leitura por usuário
+case (preg_match('#^GET /reading/book/(\d+)$#', "$method $endpoint", $matches) ? true : false):
+    $controller = new ReadingController();
+    $controller->getBookReading((int)$matches[1]);
+    break;
+
+
+    // Sessões de leitura por livro
+case (preg_match('#^GET /reading/book/(\d+)/sessions$#', "$method $endpoint", $matches) ? true : false):
+    $controller = new ReadingSessionController();
+    $controller->getSessionBook((int)$matches[1]);
+    break;
+
+default:
+    http_response_code(404);
+    echo json_encode(["error" => "Endpoint não encontrado"]);
+    break; 
 }

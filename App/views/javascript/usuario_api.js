@@ -176,3 +176,28 @@ async function redefinirSenha(){
         });
     });
 }
+
+async function deletarConta(currentUserId) {
+    try {
+        closeDeleteModal();
+        const response = await fetch(`/TimerBook/public/users/${currentUserId}`, {
+            method: 'DELETE',
+            headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            
+        const data = await response.json();
+        if (response.ok) {
+            showNotification('Conta deletada com sucesso', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.php?action=login';
+            }, 1500);
+        } else {
+            showNotification(data.error || data.message || 'Erro ao deletar conta', 'error');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        showNotification('Erro ao conectar com o servidor', 'error');
+    }
+}
