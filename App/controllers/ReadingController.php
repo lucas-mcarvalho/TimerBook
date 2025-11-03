@@ -155,62 +155,33 @@ class ReadingController
         ]);
     }
 
-  public function finalizar() {
-        header("Content-Type: application/json");
-        $data = json_decode(file_get_contents("php://input"), true);
-        if (!$data || !isset($data['sessao_id']) || !isset($data['leitura_id']) || !isset($data['paginas_lidas'])) {
-             http_response_code(400); 
-             echo json_encode([
-                 "error" => "Payload JSON inválido. Campos 'sessao_id', 'leitura_id', e 'paginas_lidas' são obrigatórios."
-             ]);
-             return;
-        }
+ public function finalizar() {
+    header("Content-Type: application/json");
+    $data = json_decode(file_get_contents("php://input"), true);
 
-      
-        $resultStop = ReadingSession::StopSession($data['sessao_id'], $data['paginas_lidas']);
-        
-        if (is_array($resultStop) && isset($resultStop['error'])) {
-             http_response_code(500);
-             echo json_encode($resultStop);
-             return;
-        }
-
- 
-        $resultFinalize = Reading::finalizarLeitura($data['leitura_id']);
-        
-       
-        if (is_array($resultFinalize) && isset($resultFinalize['error'])) {
-            
-             http_response_code(500);
-             echo json_encode($resultFinalize);
-             return;
-        }
-
-        if ($resultFinalize === 0) {
-           
-            $leituraAtual = Reading::getById($data['leitura_id']);
-
-            if (!$leituraAtual) {
-                http_response_code(404); 
-                echo json_encode(["error" => "Falha ao finalizar: Leitura com ID " . $data['leitura_id'] . " realmente não foi encontrada."]);
-                return;
-            }
-
-            if ($leituraAtual['status'] === 'concluída') {
-              
-                echo json_encode(["status" => "Leitura já estava finalizada."]);
-                return;
-            }
-
-         
-             http_response_code(500);
-             echo json_encode(["error" => "Falha desconhecida ao atualizar a leitura ID " . $data['leitura_id'] . ". Nenhuma linha foi alterada."]);
-             return;
-        }
-
-        
-        echo json_encode(["status" => "Leitura finalizada com sucesso", "updates" => $resultFinalize]);
+    if (!$data || !isset($data['sessao_id']) || !isset($data['leitura_id']) || !isset($data['paginas_lidas'])) {
+        http_response_code(400);
+        echo json_encode([
+            "error" => "Payload JSON inválido. Campos 'sessao_id', 'leitura_id' e 'paginas_lidas' são obrigatórios."
+        ]);
+        return;
     }
+
+    // Encerra apenas a sessão, sem alterar status da leitura
+    $resultStop = ReadingSession::StopSession($data['sessao_id'], $data['paginas_lidas']);
+
+    if (is_array($resultStop) && isset($resultStop['error'])) {
+        http_response_code(500);
+        echo json_encode($resultStop);
+        return;
+    }
+
+    echo json_encode([
+        "status" => "Sessão finalizada com sucesso",
+        "updates" => $resultStop
+    ]);
+}
+
 
     public function estatisticas($user_id) {
     

@@ -169,7 +169,7 @@ class Reading
         $pdo = Database::connect();
 
         // Verifica se já existe leitura em andamento para este livro e usuário
-        $stmt = $pdo->prepare("SELECT id FROM Reading WHERE pk_usuario = ? AND livro = ? AND status = 'em andamento'");
+        $stmt = $pdo->prepare("SELECT id FROM Reading WHERE pk_usuario = ? AND livro = ?");
         $stmt->execute([$user_id, $book_id]);
         $leitura = $stmt->fetch();
 
@@ -205,7 +205,6 @@ class Reading
           
             $stmt = $pdo->prepare("
                 UPDATE Reading 
-                SET status = 'concluída', 
                     tempo_gasto = ?, 
                     paginas_lidas = ?, 
                     data_fim = NOW() 
