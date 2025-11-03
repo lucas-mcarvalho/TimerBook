@@ -1,3 +1,14 @@
+<?php
+ $sessao_id = $_GET['sessao_id'] ?? null;
+ $leitura_id = $_GET['leitura_id'] ?? null;
+ 
+ if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+  }
+$userId = $_SESSION["user_id"];
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -38,6 +49,7 @@
   <div id="pdfContainer"></div>
 
   <!-- PDF.js CDN -->
+  <script src="/TimerBook/App/views/javascript/estatisticaLivros.js?v=<?= time() ?>"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="/TimerBook/App/views/javascript/utils.js?v=<?= time() ?>"></script>
   <script src="/TimerBook/App/views/javascript/leitor.js?v=<?= time() ?>"></script>
@@ -50,11 +62,34 @@
       throw new Error('ID do livro não informado na query string.');
     }
 
-    async function init() {
+    const sessao_id = "<?php echo $sessao_id; ?>";
+    const leitura_id = "<?php echo $leitura_id; ?>";  
+    const user_id = "<?php echo $userId; ?>";
+
+    
+
+    let ultimaPaginaLida = 0;
+    //let penultimaPaginaLida = 0;
+    async function init(sessao_id, leitura_id) {
       const livro = await buscarLivro(bookId);
-      carregarPdf(livro);
+      /*** 
+      const ultimaPagina = await buscarUltimaSessao(livro.id); 
+      const penultimaPagina = await buscarSessao(livro.id, 0);
+      if(ultimaPagina && penultimaPagina){
+        ultimaPaginaLida = ultimaPagina.paginas_lidas + penultimaPagina.paginas_lidas;
+      }
+      else{
+        if(ultimaPagina){
+          ultimaPaginaLida = ultimaPagina.paginas_lidas
+        }
+      }
+      ***/
+      ultimaPaginaLida = await buscarUltimaPagina(user_id);
+      carregarPdf(livro, sessao_id, leitura_id, ultimaPaginaLida);
+      console.log("NO lEITOR: Sessão ID:", sessao_id, "Leitura ID:", leitura_id, "Ultima pagina lida: ", ultimaPaginaLida);
     }
-    init();
+    init(sessao_id, leitura_id);
+   
   </script>
 </body>
 </html>

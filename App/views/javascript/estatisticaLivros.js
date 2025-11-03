@@ -1,6 +1,78 @@
 // js/estatisticaLivros.js
 
-(function () {
+
+async function iniciarSessaoLeitura(user_id, book_id) {
+    
+    try {
+        const response = await fetch("http://localhost/TimerBook/public/reading/start", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                // Dados necessários para iniciar a sessão de leitura
+                user_id: user_id, // Exemplo de ID do livro
+                book_id: book_id // Exemplo de ID do livro
+            })
+        });
+        const data = await response.json();
+
+        const leitura_id = data.leitura_id;
+        const sessao_id = data.sessao_id;
+
+        if (response.ok) {
+            console.log("Sessão de leitura iniciada com sucesso:", leitura_id, sessao_id);
+            return {leitura_id, sessao_id};
+        } else {
+            console.error("Erro ao iniciar a sessão de leitura:", data.error);
+        }   
+    }     catch (error) {
+        console.error("Erro na comunicação com a API:", error);
+    }   
+}
+
+async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas, id_livro) {
+    const ultimaPaginaLida = await buscarUltimaPagina(user_id);
+    if(ultimaPaginaLida){
+        console.log("Ultima Página Lida", ultimaPaginaLida);
+        if(paginas_lidas > ultimaPaginaLida){
+            let pg_ant = paginas_lidas;
+            paginas_lidas = paginas_lidas - ultimaPaginaLida;
+            console.log("O usuário estava na página ", ultimaPaginaLida, " E avançou até ", pg_ant, "Portanto ele leu ", paginas_lidas);
+        }
+        else{
+            paginas_lidas = 0;
+        }
+    }
+
+
+    try {
+        const response = await fetch("http://localhost/TimerBook/public/reading/finish", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                // Dados necessários para finalizar a sessão de leitura
+                leitura_id: leitura_id, 
+                sessao_id: sessao_id,
+                paginas_lidas: paginas_lidas,
+            })
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log("Sessão de leitura finalizada com sucesso:", data);
+        } else {
+            console.error("Erro ao finalizar a sessão de leitura:", data.error);
+        }   
+    }catch (error) {
+        console.error("Erro na comunicação com a API:", error);
+    }
+}
+
+
+(async function () {
     const API_BASE = "http://localhost/TimerBook/public";
 
     function formatarTempo(segundos ) {
@@ -40,12 +112,12 @@
         }
     }
 
-    function renderBookCard(book) {
+    function renderBookCard(book) {     
         const bookItem = document.createElement('div');
         bookItem.className = 'book-item';
         
         const statusClass = book.status ? book.status.toLowerCase().replace(/ /g, '-') : 'indefinido';
-
+        console.log(book);
         bookItem.innerHTML = `
             <div class="book-cover-col">
                 <img src="${book.capa_livro || 'uploads/default_cover.png'}" alt="Capa do Livro: ${book.titulo}" class="book-cover">
@@ -63,6 +135,72 @@
         `;
 
         return bookItem;
+    }
+    function renderEstatisticasGerais(stats) {
+        const statsDisplay = document.getElementById('general-stats-display');
+        statsDisplay.innerHTML = ''; // Limpa o conteúdo
+
+        if (!stats) {
+            statsDisplay.innerHTML = "<p>Nenhum dado estatístico geral encontrado.</p>";
+            return;
+        }
+
+        // Estrutura de exibição dos dados (pode ser ajustada via CSS)
+        statsDisplay.innerHTML = `
+            <div class="stat-card">
+                <h4>Livros Totais</h4>
+                <p class="stat-value">${stats.total_livros || 0}</p>
+            </div>
+            <div class="stat-card">
+                <h4>Tempo Total de Leitura</h4>
+                <p class="stat-value">${formatarTempo(stats.tempo_total)}</p>
+            </div>
+            <div class="stat-card">
+                <h4>Total de Páginas Lidas</h4>
+                <p class="stat-value">${stats.paginas_total || 0}</p>
+            </div>
+
+            <div class="stat-card">
+                <h4>Média de Páginas Lidas por Livro</h4>
+                <p class="stat-value">${stats.media_paginas_por_livro || 0}</p>
+            </div>
+        `;
+    }
+    async function estatisticasGeraisUsuario(user_id){
+        const generalLoading = document.getElementById('general-stats-loading');
+        const generalError = document.getElementById('general-stats-error');
+        
+        generalLoading.style.display = 'block';
+        generalError.style.display = 'none';
+
+        try {
+            console.log("Buscando estatísticas gerais para o usuário ID:", user_id);
+            const response = await fetch(`http://localhost/TimerBook/public/reading/totals/${user_id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log("Estatísticas gerais obtidas com sucesso:", data);
+                // CHAMA A FUNÇÃO DE RENDERIZAÇÃO
+                renderEstatisticasGerais(data); 
+                return data;
+            } else {
+                const errorMessage = data.error || "Erro desconhecido ao obter estatísticas gerais.";
+                console.error("Erro ao obter as estatísticas gerais:", errorMessage);
+                generalError.textContent = `Erro ao carregar dados: ${errorMessage}`;
+                generalError.style.display = 'block';
+            }   
+        } catch (error) {
+            console.error("Erro na comunicação com a API:", error);
+            generalError.textContent = `Falha na comunicação com o servidor: ${error.message}`;
+            generalError.style.display = 'block';
+        } finally {
+            generalLoading.style.display = 'none';
+        }
     }
 
     async function carregarEstatisticas(userId, userName) {
@@ -124,4 +262,31 @@
 
     // Expor a função para ser chamada pelo HTML
     window.carregarEstatisticas = carregarEstatisticas;
+    window.estatisticasGeraisUsuario = estatisticasGeraisUsuario;
 })();
+
+
+/***
+async function estatisticasGeraisUsuario(user_id){
+    try {
+        console.log("Buscando estatísticas gerais para o usuário ID:", user_id);
+        const response = await fetch(`http://localhost/TimerBook/public/reading/totals/${user_id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log("Estatísticas gerais obtidas com sucesso:", data);
+            return data;
+        } else {
+            console.error("Erro ao obter as estatísticas gerais:", data.error);
+        }   
+    } catch (error) {
+        console.error("Erro na comunicação com a API:", error);
+    }
+}
+
+***/

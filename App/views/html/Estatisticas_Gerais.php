@@ -13,8 +13,6 @@ if (!$user_id) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="/TimerBook/App/views/javascript/utils.js?v=<?= time() ?>"></script>
-
     
     <link rel="stylesheet" href="style/admin.css"> 
     <link rel="stylesheet" href="style/estatisticaLivros.css">
@@ -36,13 +34,23 @@ if (!$user_id) {
 </header>
 
 <main class="stats-container">
-    <h2 class="stats-title">Estatísticas de Livros de <span id="user-name-display"><?= htmlspecialchars($user_name) ?></span></h2>
-    
-    <p id="loading" class="loading-message">Carregando dados...</p>
-    <p id="error-message" class="error-message" style="display:none;"></p>
+    <h2 class="stats-title">Estatísticas de Leitura de <span id="user-name-display"><?= htmlspecialchars($user_name) ?></span></h2>
 
+    <div class="general-stats-card-container">
+        <div id="general-stats-loading" style="display:none;">Carregando estatísticas gerais...</div>
+        <div id="general-stats-error" class="error-message" style="display:none;"></div>
+        <div id="general-stats-display" class="general-stats-grid">
+            </div>
+    </div>
+
+    <!--
+    <h3 class="section-title">Livros Lidos e em Progresso</h3>
+
+    <div id="loading" class="loading" style="display:none;">Carregando...</div>
+    <div id="error-message" class="error-message" style="display:none;"></div>
     <div id="books-list" class="books-list">
         </div>
+    -->
 </main>
 
 <script src="/TimerBook/App/views/javascript/estatisticaLivros.js"></script>
@@ -53,7 +61,7 @@ if (!$user_id) {
         const userName = <?= json_encode($user_name) ?>;
 
         if (userId) {
-            carregarEstatisticas(userId, userName);
+            estatisticasGeraisUsuario(userId);
         } else {
             document.getElementById('error-message').textContent = "Erro: ID do usuário não fornecido.";
             document.getElementById('error-message').style.display = 'block';

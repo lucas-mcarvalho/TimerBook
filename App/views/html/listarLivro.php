@@ -28,6 +28,7 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Timer Book - Meus Livros</title>
     <link rel="stylesheet" href="style/listarLivro.css?v=<?php echo time(); ?>">
+    <script src="/TimerBook/App/views/javascript/estatisticaLivros.js?v=<?= time() ?>"></script>
     <script src="/TimerBook/App/views/javascript/livros_api.js?v=<?= time() ?>"></script>
 </head>
 <body>
@@ -69,16 +70,20 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
             <a href="index.php?action=estatistica_livros&id=<?php echo $user_id ?>&user_name=<?php echo $user_name ?>" class="add-book-button stats-button">
                 Ver Estatísticas
             </a>
+             <a href="index.php?action=estatistica_geral&id=<?php echo $user_id ?>&user_name=<?php echo $user_name ?>" class="add-book-button stats-button">
+                Ver Estatísticas Gerais
+            </a>
         </div>
     </main>
 
     <script>
-
-        listarLivros("my-books");
+        const user_id = "<?php echo $user_id; ?>";
+        listarLivrosUsuario(user_id);
 
         const bookList = document.getElementById('book-list');
         const prevButton = document.getElementById('prev-button');
         const nextButton = document.getElementById('next-button');
+        const readButton = document.getElementById('read-button');
 
         nextButton.addEventListener('click', () => {
             bookList.scrollBy({
@@ -93,6 +98,7 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
                 behavior: 'smooth'
             });
         });
+    
     </script>
     
 </body>

@@ -1,14 +1,36 @@
 let pdfGlobal = null;
 let paginaAtual = 1;
+let globalSessaoId = null;
+let globalLeituraId = null;
+let globalIdLivro = null;
+
+
 
 // Carrega o PDF e inicializa o leitor
-async function carregarPdf(livro) {
+
+/***
+ Para que o leitor seja capaz de ir na última página lida, é necessário carregar os
+ dados da última sessão do usuário naquela determinada. É preciso uma função capaz
+ de retornar os dados da útima sessão de uma leitua, dado o ID da leitura.
+ 
+ retornarUltimaSessaoLeitura(leitura_id) -> { sessao_id, pagina_atual }
+ ***/
+
+async function carregarPdf(livro, sessao_id, leitura_id, ultimaPaginaLida) {
+  globalIdLivro = livro.id;
+  console.log("Id livro carregar pdf", globalIdLivro);
+  globalLeituraId = leitura_id;
+  globalSessaoId = sessao_id;
+  if(ultimaPaginaLida){
+    paginaAtual = ultimaPaginaLida;
+  }
+  console.log("Página a ser carregada:", paginaAtual);
   try {
     if (!livro.caminho_arquivo) throw new Error("Campo 'caminho_arquivo' ausente no retorno do livro!");
     const pdfUrl = livro.caminho_arquivo;
 
     pdfGlobal = await carregarDocumentoPdf(pdfUrl);
-    renderizarPagina(paginaAtual);
+    renderizarPagina(paginaAtual, sessao_id, leitura_id, globalIdLivro);
   } catch (err) {
     tratarErro(err);
   }
@@ -21,7 +43,7 @@ async function carregarDocumentoPdf(pdfUrl) {
 }
 
 // Renderiza uma página do PDF no canvas
-async function renderizarPagina(numPagina) {
+async function renderizarPagina(numPagina, sessao_id, leitura_id, id_livro) {
   const container = document.getElementById('pdfContainer');
   container.innerHTML = ''; // limpa o container
 
@@ -38,7 +60,7 @@ async function renderizarPagina(numPagina) {
   await renderTask.promise;
 
   // Cria a barra de controle (botões + info)
-  const controles = criarBarraDeControles();
+  const controles = criarBarraDeControles(sessao_id, leitura_id, numPagina, id_livro);
 
   container.appendChild(canvas);
   container.appendChild(controles);
@@ -47,7 +69,7 @@ async function renderizarPagina(numPagina) {
 }
 
 // Cria os elementos da barra de controle (somente uma vez)
-function criarBarraDeControles() {
+function criarBarraDeControles(sessao_id, leitura_id, pagina_atual, id_livro) {
   const div = document.createElement('div');
   div.id = 'barraControles';
   div.style.display = 'flex';
@@ -63,9 +85,14 @@ function criarBarraDeControles() {
   textoPagina.style.fontSize = '16px';
   textoPagina.style.fontWeight = 'bold';
 
+  
   // Botões
-  const btnVoltar = criarBotao('Voltar', () => window.history.back());
+  const btnVoltar = criarBotao('Voltar', async () => {
+    await finalizarSessaoLeitura(sessao_id, leitura_id, pagina_atual, id_livro);
+    window.history.back();
+  }); 
   div.appendChild(btnVoltar);
+ 
   const btnAnterior = criarBotao('←', paginaAnterior);
   const btnProxima = criarBotao('→', proximaPagina);
 
@@ -79,7 +106,7 @@ function criarBarraDeControles() {
   inputPagina.style.width = '60px';
   inputPagina.style.textAlign = 'center';
   inputPagina.style.borderRadius = '5px';
-  inputPagina.style.border = '1px solid #888';
+  inputPagina.style.border = '1px solid #534444ff';
   inputPagina.style.padding = '5px';
 
   // Botão "Ir"
@@ -90,7 +117,7 @@ function criarBarraDeControles() {
       return;
     }
     paginaAtual = valor;
-    renderizarPagina(paginaAtual);
+    renderizarPagina(paginaAtual, globalSessaoId, globalLeituraId, globalIdLivro);
   });
 
   // Botão "Ver progresso"
@@ -135,14 +162,14 @@ function criarBotao(texto, acao) {
 function proximaPagina() {
   if (paginaAtual < pdfGlobal.numPages) {
     paginaAtual++;
-    renderizarPagina(paginaAtual);
+    renderizarPagina(paginaAtual, globalSessaoId, globalLeituraId, globalIdLivro);
   }
 }
 
 function paginaAnterior() {
   if (paginaAtual > 1) {
     paginaAtual--;
-    renderizarPagina(paginaAtual);
+    renderizarPagina(paginaAtual, globalSessaoId, globalLeituraId, globalIdLivro);
   }
 }
 
@@ -157,5 +184,3 @@ function tratarErro(err) {
   console.error('❌ Erro ao carregar PDF:', err);
   alert("Erro ao abrir o livro: " + err.message);
 }
-
-

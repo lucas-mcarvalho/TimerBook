@@ -1,5 +1,4 @@
 async function cadastrarLivro() {
-
     const form = document.getElementById("cadastro-livro-form");
 
     form.addEventListener("submit", async (event) => {
@@ -87,15 +86,14 @@ async function deletarLivro(id) {
 
 
 
-async function listarLivros(endpoint) {
+async function listarLivrosUsuario(user_id) {
     try {
-        const res = await fetch(`http://localhost/TimerBook/public/${endpoint}`, {
+        const res = await fetch(`http://localhost/TimerBook/public/my-books`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
             credentials: "include"
         });
 
-        console.log(endpoint);
         if (!res.ok) {
             throw new Error(`Erro na requisição: ${res.status}`);
         }
@@ -115,7 +113,7 @@ async function listarLivros(endpoint) {
                         <img src="${livro.capa_livro}" alt="Capa do livro">
                     </a>
                     <div class="action-buttons">
-                        <button class="read-button" onclick="window.location.href='/TimerBook/App/views/html/leitorPdf.php?id=${livro.id}'">Ler</button>
+                        <button id="read-button" class="read-button">Ler</button>
                         <form action="index.php?action=editar_livro" method="POST" style="margin: 0;"> <input type="hidden" name="id_livro" value="${livro.id}">
                             <button class="edit-button">Editar</button>
                         </form>
@@ -124,15 +122,26 @@ async function listarLivros(endpoint) {
                     </div>
             `;
         });
+
+        const readButtons = divLivros.querySelectorAll(".read-button");
+        readButtons.forEach(button => {
+            button.addEventListener("click", async (e) => {
+                const book_id = e.target.closest('.livro-card').id.split('-')[1];
+                const data = await iniciarSessaoLeitura(user_id, book_id);
+                if (!data) {
+                    alert("Erro ao iniciar a sessão de leitura.");
+                    return;
+                }
+                const leitura_id = data.leitura_id;
+                const sessao_id = data.sessao_id;
+
+                window.location.href = `/TimerBook/App/views/html/leitorPdf.php?id=${book_id}&leitura_id=${leitura_id}&sessao_id=${sessao_id}`;
+            });
+        });
     } catch (error) {
         console.error("Erro ao buscar livros:", error);
     }
 }
-
-
-//listarLivros(); // chama a função
-
-
 // rologem da barra de visualisação de livro 
     document.addEventListener('DOMContentLoaded', () => {
     const divLivros = document.getElementById("book-list");
@@ -147,6 +156,97 @@ async function listarLivros(endpoint) {
     //listarLivros(endpoint);
 
     // Rolagem da barra
+    const prevButton = document.getElementById('prev-button');
+    const nextButton = document.getElementById('next-button');
+
+    if (prevButton && nextButton) {
+        prevButton.addEventListener('click', () => {
+            divLivros.scrollBy({ left: -200, behavior: 'smooth' });
+        });
+
+        nextButton.addEventListener('click', () => {
+            divLivros.scrollBy({ left: 200, behavior: 'smooth' });
+        });
+    }
+});
+
+async function editarLivro(id_livro) {
+    const form = document.getElementById("editUserForm");
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault(); // previne reload
+
+        // Cria o FormData somente **quando o usuário clica em submit**
+        const formData = new FormData(form);
+
+        // Debug: verifica os dados preenchidos
+        console.log(formData);
+
+        try {
+            const res = await fetch(`http://localhost/TimerBook/public/books/${id_livro}`, {
+                method: "POST",
+                body: formData,
+                credentials: "include"
+            });
+
+            if (!res.ok) {
+                throw new Error(`Erro na requisição: ${res.status}`);
+            }
+
+            const resultado = await res.json();
+            console.log("Livro atualizado com sucesso:", resultado);
+            alert("Livro atualizado com sucesso!");
+        } catch (error) {
+            console.error("Erro ao atualizar livro:", error);
+            alert("Erro ao atualizar livro. Por favor, tente novamente.");
+        }
+    });
+}
+
+async function listarLivrosAdmin(id) {
+    try {
+        const res = await fetch(`http://localhost/TimerBook/public/books/user/${id}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include"
+        });
+
+        if (!res.ok) {
+            throw new Error(`Erro na requisição: ${res.status}`);
+        }
+
+        const livros = await res.json();
+        const divLivros = document.getElementById("book-list");
+        divLivros.innerHTML = "";
+
+        console.log(livros); // Debug: Verifica os livros recebidos
+
+        livros.forEach(livro => {
+            divLivros.innerHTML += `
+                <div class="livro-card" id="livro-${livro.id}">
+                    <p class="titulo">${livro.titulo}</p>
+                    <p class="autor">${livro.autor}</p>
+                    <a class="link_livro" href="${livro.caminho_arquivo}" target="_blank">
+                        <img src="${livro.capa_livro}" alt="Capa do livro">
+                    </a>
+                    <div class="action-buttons">
+                        <form action="index.php?action=editar_livro" method="POST" style="margin: 0;"> <input type="hidden" name="id_livro" value="${livro.id}">
+                            <button class="edit-button">Editar</button>
+                        </form>
+                        <button class="delete-button" onclick="deletarLivro(${livro.id})">Excluir</button>  
+                    </div>
+                    </div>
+            `;
+        });
+    } catch (error) {
+        console.error("Erro ao buscar livros:", error);
+    }
+}
+// rologem da barra de visualisação de livro 
+    document.addEventListener('DOMContentLoaded', () => {
+    const divLivros = document.getElementById("book-list");
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('userId');
     const prevButton = document.getElementById('prev-button');
     const nextButton = document.getElementById('next-button');
 

@@ -136,6 +136,45 @@
     padding: 20px;
 }
 
-.status-badge.status-não-iniciado {
-    color: #D93025;
+
+
+
+
+
+.general-stats-card-container {
+    margin-bottom: 30px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.general-stats-grid {
+    display: flex; /* ou grid com grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-around;
+}
+
+.stat-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 180px;
+    flex-grow: 1; /* Para ocupar o espaço disponível */
+}
+
+.stat-card h4 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1em;
+}
+
+.stat-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #007bff; /* Cor primária */
+    margin: 5px 0 0 0;
 }
