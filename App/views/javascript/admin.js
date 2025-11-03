@@ -82,14 +82,13 @@
       <div class="user-actions" style="display:flex;gap:8px;">
         <button class="edit-btn" data-id="${user.id}">Editar</button>
         <button class="delete-btn" data-id="${user.id}">Excluir</button>
-        <button class="edit-livro-btn" data-id="${user.id}">Editar Livro</button>
+        <button class="edit-livro-btn" data-id="${user.id}">ver livros</button>
       </div>
       
     `;
     return userItem;
   }
 
-// ... dentro do seu arquivo admin.js ...
 
   function attachUserActionListeners(container) {
     container.querySelectorAll(".delete-btn").forEach((btn) => {
@@ -108,21 +107,18 @@
       };
     });
 
-    // ⬇️ ADICIONE ESTE BLOCO ⬇️
-    // Faz o botão "Editar Livro" redirecionar para a página 
-    // de gerenciamento de livros daquele usuário.
-    container.querySelectorAll(".edit-livro-btn").forEach((btn) => {
-      btn.onclick = () => {
-        const id = btn.getAttribute("data-id"); // Pega o ID do *usuário*
-        if (!id) {
-          alert("ID do usuário não encontrado!");
-          return;
-        }
-        // Redireciona para a sua página de gerenciar livros, passando o ID do usuário
-        // (Ajuste 'adm_livros' se o nome da sua 'action' for outro)
-        window.location.href = `index.php?action=adm_livros&userId=${encodeURIComponent(id)}`;
-      };
-    });
+    // Listener para o botão "ver livros"
+	  container.querySelectorAll(".edit-livro-btn").forEach((btn) => {
+	    btn.onclick = () => {
+	      const id = btn.getAttribute("data-id");
+	      if (!id) {
+	        alert("ID do usuário não encontrado!");
+	        return;
+	      }
+	      console.log("ID do usuário para ver livros:", id);
+	      window.location.href = `index.php?action=adm_ver_livros&UserId=${encodeURIComponent(id)}`;
+	    };
+	  });
   }
 
   // ... resto do seu admin.js ...
@@ -148,7 +144,6 @@
     alert("Erro ao excluir: " + (err.message || "verifique o console"));
   }
 }
-
 
 
   // ==========================
@@ -234,7 +229,7 @@
           if (!res.ok) throw new Error(data.error || data.message || "Erro ao atualizar");
 
           alert("✅ Usuário atualizado com sucesso!");
-          window.location.href = "index.php?action=admin";
+          //window.location.href = "index.php?action=admin";
         } catch (err) {
           console.error(err);
           alert("Erro ao salvar alterações: " + err.message);

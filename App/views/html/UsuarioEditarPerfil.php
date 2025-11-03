@@ -1,5 +1,3 @@
-<?php session_start(); ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -45,18 +43,15 @@
                     <input type="text" id="username" name="username" placeholder="Digite o nome de usuário" required>
                 </div>
 
-                <div class="form-group">
+                
+                <div style="display: none;" class="form-group">
                     <label for="senha">Senha:</label>
                     <input type="password" id="senha" name="senha" placeholder="Deixe em branco para manter">
                 </div>
 
                 <div class="form-buttons">
                     <button type="submit" id="save-button" class="save-button">Salvar Alterações</button>
-                    <a href="index.php?action=admin" 
-                     id="back-button" 
-                     class="back-button">
-                    Voltar
-                    </a>
+                    <a href="index.php?action=perfil_usuario" id="back-button" class="back-button">Voltar</a>
                 </div>
             </form>
         </div>
