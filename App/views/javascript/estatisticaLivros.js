@@ -1,5 +1,6 @@
 // js/estatisticaLivros.js
 
+
 async function iniciarSessaoLeitura(user_id, book_id) {
     
     try {
@@ -30,7 +31,21 @@ async function iniciarSessaoLeitura(user_id, book_id) {
     }   
 }
 
-async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas) {
+async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas, id_livro) {
+    const ultimaPaginaLida = await buscarUltimaPagina(user_id);
+    if(ultimaPaginaLida){
+        console.log("Ultima Página Lida", ultimaPaginaLida);
+        if(paginas_lidas > ultimaPaginaLida){
+            let pg_ant = paginas_lidas;
+            paginas_lidas = paginas_lidas - ultimaPaginaLida;
+            console.log("O usuário estava na página ", ultimaPaginaLida, " E avançou até ", pg_ant, "Portanto ele leu ", paginas_lidas);
+        }
+        else{
+            paginas_lidas = 0;
+        }
+    }
+
+
     try {
         const response = await fetch("http://localhost/TimerBook/public/reading/finish", {
             method: 'POST',
@@ -57,7 +72,7 @@ async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas) {
 }
 
 
-(function () {
+(async function () {
     const API_BASE = "http://localhost/TimerBook/public";
 
     function formatarTempo(segundos ) {
@@ -97,7 +112,7 @@ async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas) {
         }
     }
 
-    function renderBookCard(book) {
+    function renderBookCard(book) {     
         const bookItem = document.createElement('div');
         bookItem.className = 'book-item';
         

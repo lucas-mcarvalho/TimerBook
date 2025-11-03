@@ -239,6 +239,7 @@ switch ("$method $endpoint") {
         $controller->getAllSessions();
         break;
 
+    
     case (preg_match('#^PUT /reading-session/(\d+)$#', "$method $endpoint", $matches) ? true : false):
         $controller = new ReadingSessionController();
         $controller->updateSession((int)$matches[1]);
@@ -294,7 +295,7 @@ case (preg_match('#^GET /reading/book/(\d+)$#', "$method $endpoint", $matches) ?
     break;
 
 
-
+    // Sessões de leitura por livro
 case (preg_match('#^GET /reading/book/(\d+)/sessions$#', "$method $endpoint", $matches) ? true : false):
     $controller = new ReadingSessionController();
     $controller->getSessionBook((int)$matches[1]);

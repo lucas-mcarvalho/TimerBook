@@ -279,6 +279,7 @@ public static function getSessionBook($book_id) {
                 s.data_inicio,
                 s.data_fim,
                 s.tempo_sessao,
+                s.paginas_lidas,
                 r.pk_usuario,
                 r.status,
                 r.data_inicio AS leitura_inicio,
