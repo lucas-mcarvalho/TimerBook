@@ -177,8 +177,7 @@ class ReadingController
     }
 
     echo json_encode([
-        "status" => "Sessão finalizada com sucesso",
-        "updates" => $resultStop
+        "status" => "Sessão finalizada com sucesso"
     ]);
 }
 
