@@ -121,6 +121,72 @@ async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas) {
 
         return bookItem;
     }
+    function renderEstatisticasGerais(stats) {
+        const statsDisplay = document.getElementById('general-stats-display');
+        statsDisplay.innerHTML = ''; // Limpa o conteúdo
+
+        if (!stats) {
+            statsDisplay.innerHTML = "<p>Nenhum dado estatístico geral encontrado.</p>";
+            return;
+        }
+
+        // Estrutura de exibição dos dados (pode ser ajustada via CSS)
+        statsDisplay.innerHTML = `
+            <div class="stat-card">
+                <h4>Livros Totais</h4>
+                <p class="stat-value">${stats.total_livros || 0}</p>
+            </div>
+            <div class="stat-card">
+                <h4>Tempo Total de Leitura</h4>
+                <p class="stat-value">${formatarTempo(stats.tempo_total)}</p>
+            </div>
+            <div class="stat-card">
+                <h4>Total de Páginas Lidas</h4>
+                <p class="stat-value">${stats.paginas_total || 0}</p>
+            </div>
+
+            <div class="stat-card">
+                <h4>Média de Páginas Lidas por Livro</h4>
+                <p class="stat-value">${stats.media_paginas_por_livro || 0}</p>
+            </div>
+        `;
+    }
+    async function estatisticasGeraisUsuario(user_id){
+        const generalLoading = document.getElementById('general-stats-loading');
+        const generalError = document.getElementById('general-stats-error');
+        
+        generalLoading.style.display = 'block';
+        generalError.style.display = 'none';
+
+        try {
+            console.log("Buscando estatísticas gerais para o usuário ID:", user_id);
+            const response = await fetch(`http://localhost/TimerBook/public/reading/totals/${user_id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log("Estatísticas gerais obtidas com sucesso:", data);
+                // CHAMA A FUNÇÃO DE RENDERIZAÇÃO
+                renderEstatisticasGerais(data); 
+                return data;
+            } else {
+                const errorMessage = data.error || "Erro desconhecido ao obter estatísticas gerais.";
+                console.error("Erro ao obter as estatísticas gerais:", errorMessage);
+                generalError.textContent = `Erro ao carregar dados: ${errorMessage}`;
+                generalError.style.display = 'block';
+            }   
+        } catch (error) {
+            console.error("Erro na comunicação com a API:", error);
+            generalError.textContent = `Falha na comunicação com o servidor: ${error.message}`;
+            generalError.style.display = 'block';
+        } finally {
+            generalLoading.style.display = 'none';
+        }
+    }
 
     async function carregarEstatisticas(userId, userName) {
         const listContainer = document.getElementById("books-list");
@@ -181,4 +247,31 @@ async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas) {
 
     // Expor a função para ser chamada pelo HTML
     window.carregarEstatisticas = carregarEstatisticas;
+    window.estatisticasGeraisUsuario = estatisticasGeraisUsuario;
 })();
+
+
+/***
+async function estatisticasGeraisUsuario(user_id){
+    try {
+        console.log("Buscando estatísticas gerais para o usuário ID:", user_id);
+        const response = await fetch(`http://localhost/TimerBook/public/reading/totals/${user_id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log("Estatísticas gerais obtidas com sucesso:", data);
+            return data;
+        } else {
+            console.error("Erro ao obter as estatísticas gerais:", data.error);
+        }   
+    } catch (error) {
+        console.error("Erro na comunicação com a API:", error);
+    }
+}
+
+***/

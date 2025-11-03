@@ -79,6 +79,7 @@ function criarBarraDeControles(sessao_id, leitura_id, pagina_atual) {
   
   // Botões
   const btnVoltar = criarBotao('Voltar', async () => {
+    console.log('Finalizando sessão de leitura e voltando... Dados:');
     console.log(sessao_id, leitura_id, pagina_atual);
     await finalizarSessaoLeitura(sessao_id, leitura_id, pagina_atual);
     window.history.back();

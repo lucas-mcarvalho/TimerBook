@@ -70,6 +70,9 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
             <a href="index.php?action=estatistica_livros&id=<?php echo $user_id ?>&user_name=<?php echo $user_name ?>" class="add-book-button stats-button">
                 Ver Estatísticas
             </a>
+             <a href="index.php?action=estatistica_geral&id=<?php echo $user_id ?>&user_name=<?php echo $user_name ?>" class="add-book-button stats-button">
+                Ver Estatísticas Gerais
+            </a>
         </div>
     </main>
 

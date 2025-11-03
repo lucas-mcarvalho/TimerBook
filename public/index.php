@@ -63,6 +63,9 @@ switch ($action) {
     case 'estatistica_livros':
         require_once __DIR__ . '/../App/views/html/estatisticaLivros.php';
         break;    
+    case 'estatistica_geral':
+        require_once __DIR__ . '/../App/views/html/Estatisticas_Gerais.php';
+        break;
     default:
         echo "Ação não reconhecida.";
         break;
