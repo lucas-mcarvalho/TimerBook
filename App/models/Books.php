@@ -71,8 +71,12 @@ public static function delete($id)
     $pdo = Database::connect();
 
     try {
-        // --- Inicia transação ---
-        $pdo->beginTransaction();
+        // --- Inicia transação apenas se não houver uma ativa (evita nested transaction em testes) ---
+        $startedTransaction = false;
+        if (!$pdo->inTransaction()) {
+            $pdo->beginTransaction();
+            $startedTransaction = true;
+        }
 
         // 1️⃣ Busca todas as leituras relacionadas a este livro
         $stmt = $pdo->prepare("SELECT id FROM Reading WHERE livro = ?");
@@ -127,12 +131,17 @@ public static function delete($id)
         $stmt = $pdo->prepare("DELETE FROM Books WHERE id = ?");
         $stmt->execute([$id]);
 
-        // --- Finaliza transação ---
-        $pdo->commit();
+        // --- Finaliza transação apenas se nós a iniciamos ---
+        if ($startedTransaction && $pdo->inTransaction()) {
+            $pdo->commit();
+        }
 
         return ["message" => "Livro, leituras e sessões excluídos com sucesso"];
     } catch (Exception $e) {
-        $pdo->rollBack();
+        // Faz rollback apenas se nós iniciamos a transação
+        if (isset($startedTransaction) && $startedTransaction && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         return ["error" => "Falha ao deletar: " . $e->getMessage()];
     }
 }
