@@ -1,6 +1,6 @@
 // js/admin.js
 (function () {
-  const API_BASE = "http://localhost/TimerBook/public";
+  const API_BASE = "http://15.228.179.50/TimerBook/public";
 
   // ==========================
   // LISTAGEM DE USUÁRIOS

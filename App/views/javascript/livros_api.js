@@ -9,7 +9,7 @@ async function cadastrarLivro() {
     console.log(formData); // Debug: Verifica os dados do formulário
 
     try {
-        const res = await fetch("http://localhost/TimerBook/public/books", {
+        const res = await fetch("http://15.228.179.50/TimerBook/public/books", {
             method: "POST",
             body: formData,
             credentials: "include" // <- envia cookies de sessão
@@ -62,7 +62,7 @@ async function deletarLivro(id) {
 
     try {
         //Inicia a requisição HTTP
-        const res = await fetch(`http://localhost/TimerBook/public/books/${id}`, {
+        const res = await fetch(`http://15.228.179.50/TimerBook/public/books/${id}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" }
         });
