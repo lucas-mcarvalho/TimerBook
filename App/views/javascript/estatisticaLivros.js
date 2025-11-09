@@ -71,6 +71,29 @@ async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas, id_l
     }
 }
 
+async function finalizarLeitura(leitura_id){
+    try {
+        const response = await fetch("http://localhost/TimerBook/public/reading/finish-read", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                leitura_id: leitura_id, 
+            })
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log("Leitura finalizada com sucesso:", data);
+        } else {
+            console.error("Erro ao finalizar a leitura:", data.error);
+        }   
+    }catch (error) {
+        console.error("Erro na comunicação com a API:", error);
+    }
+}
+
 
 (async function () {
     const API_BASE = "http://localhost/TimerBook/public";
@@ -117,7 +140,8 @@ async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas, id_l
         bookItem.className = 'book-item';
         
         const statusClass = book.status ? book.status.toLowerCase().replace(/ /g, '-') : 'indefinido';
-        console.log(book);
+        const statusColor = (book.status === 'Finalizada') ? 'color: green; font-weight: bold;' : '';
+
         bookItem.innerHTML = `
             <div class="book-cover-col">
                 <img src="${book.capa_livro || 'uploads/default_cover.png'}" alt="Capa do Livro: ${book.titulo}" class="book-cover">
@@ -126,7 +150,11 @@ async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas, id_l
                 <h3 class="book-title">${book.titulo}</h3>
                 <p><strong>Autor:</strong> ${book.autor}</p>
                 <p><strong>Ano:</strong> ${book.ano_publicacao}</p>
-                <p><strong>Status:</strong> <span class="status-badge status-${statusClass}">${book.status || 'N/A'}</span></p>
+                <p><strong>Status:</strong> 
+                    <span class="status-badge status-${statusClass}" style="${statusColor}">
+                        ${book.status || 'N/A'}
+                    </span>
+                </p>
                 <p><strong>Tempo gasto:</strong> ${formatarTempo(book.tempo_gasto)}</p>
                 <p><strong>Páginas lidas:</strong> ${book.paginas_lidas}</p>
                 <p><strong>Data início:</strong> ${formatarData(book.data_inicio)}</p>
@@ -136,6 +164,7 @@ async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas, id_l
 
         return bookItem;
     }
+
     function renderEstatisticasGerais(stats) {
         const statsDisplay = document.getElementById('general-stats-display');
         statsDisplay.innerHTML = ''; // Limpa o conteúdo
