@@ -190,7 +190,7 @@ class Reading
         // Cria nova leitura
         $stmt = $pdo->prepare("
             INSERT INTO Reading (pk_usuario, livro, `status`, data_inicio) 
-            VALUES (?, ?, 'em andamento', NOW())
+            VALUES (?, ?, 'Em andamento', NOW())
         ");
         $stmt->execute([$user_id, $book_id]);
         return $pdo->lastInsertId();
