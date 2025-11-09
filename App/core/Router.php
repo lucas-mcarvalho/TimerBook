@@ -276,12 +276,12 @@ case 'POST /reading/start':
     break;
 
 // Finalizar sessão
-case 'POST  /reading/finish':
+case 'POST /reading/finish':
     $controller = new ReadingController();
     $controller->finalizar();
     break;
-    
-case (preg_match('#^POST /reading/read-finish$#', "$method $endpoint") ? true : false):
+
+case (preg_match('#^POST /reading/finish-read$#', "$method $endpoint") ? true : false):
     $controller = new ReadingController();
     $controller->finalizarLeitura();
     break;

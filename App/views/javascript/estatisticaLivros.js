@@ -140,7 +140,8 @@ async function finalizarLeitura(leitura_id){
         bookItem.className = 'book-item';
         
         const statusClass = book.status ? book.status.toLowerCase().replace(/ /g, '-') : 'indefinido';
-        console.log(book);
+        const statusColor = (book.status === 'Finalizada') ? 'color: green; font-weight: bold;' : '';
+
         bookItem.innerHTML = `
             <div class="book-cover-col">
                 <img src="${book.capa_livro || 'uploads/default_cover.png'}" alt="Capa do Livro: ${book.titulo}" class="book-cover">
@@ -149,7 +150,11 @@ async function finalizarLeitura(leitura_id){
                 <h3 class="book-title">${book.titulo}</h3>
                 <p><strong>Autor:</strong> ${book.autor}</p>
                 <p><strong>Ano:</strong> ${book.ano_publicacao}</p>
-                <p><strong>Status:</strong> <span class="status-badge status-${statusClass}">${book.status || 'N/A'}</span></p>
+                <p><strong>Status:</strong> 
+                    <span class="status-badge status-${statusClass}" style="${statusColor}">
+                        ${book.status || 'N/A'}
+                    </span>
+                </p>
                 <p><strong>Tempo gasto:</strong> ${formatarTempo(book.tempo_gasto)}</p>
                 <p><strong>Páginas lidas:</strong> ${book.paginas_lidas}</p>
                 <p><strong>Data início:</strong> ${formatarData(book.data_inicio)}</p>
@@ -159,6 +164,7 @@ async function finalizarLeitura(leitura_id){
 
         return bookItem;
     }
+
     function renderEstatisticasGerais(stats) {
         const statsDisplay = document.getElementById('general-stats-display');
         statsDisplay.innerHTML = ''; // Limpa o conteúdo

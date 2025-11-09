@@ -77,7 +77,7 @@ function criarBarraDeControles(sessao_id, leitura_id, pagina_atual, id_livro) {
   // Botões
   const btnVoltar = criarBotao('Voltar', async () => {
     await finalizarSessaoLeitura(sessao_id, leitura_id, pagina_atual, id_livro);
-    //window.history.back();
+    window.history.back();
   }); 
   div.appendChild(btnVoltar);
  
@@ -115,9 +115,10 @@ function criarBarraDeControles(sessao_id, leitura_id, pagina_atual, id_livro) {
   const btnFinalizar = document.createElement('button');
   btnFinalizar.textContent = 'Finalizar Leitura';
   btnFinalizar.onclick = async () => {
+    await finalizarSessaoLeitura(sessao_id, leitura_id, pagina_atual, id_livro);
     await finalizarLeitura(leitura_id);
     alert('Leitura finalizada!');
-    //window.history.back();
+    window.history.back();
   };
   btnFinalizar.style.background = '#dc3545';
   btnFinalizar.style.color = 'white';

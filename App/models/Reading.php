@@ -165,27 +165,38 @@ class Reading
         }
     }
 
-      public static function iniciarLeitura($user_id, $book_id) {
+     public static function iniciarLeitura($user_id, $book_id) {
         $pdo = Database::connect();
 
-        // Verifica se já existe leitura em andamento para este livro e usuário
-        $stmt = $pdo->prepare("SELECT id FROM Reading WHERE pk_usuario = ? AND livro = ?");
+        // Verifica se já existe leitura para este livro e usuário
+        $stmt = $pdo->prepare("SELECT id, status FROM Reading WHERE pk_usuario = ? AND livro = ?");
         $stmt->execute([$user_id, $book_id]);
         $leitura = $stmt->fetch();
 
         if ($leitura) {
-            return $leitura['id']; // Retorna a leitura existente
+            // Se a leitura estiver finalizada, reabrir
+            if ($leitura['status'] === 'Finalizada') {
+                $stmt = $pdo->prepare("
+                    UPDATE Reading
+                    SET `status` = 'em andamento', data_fim = NULL
+                    WHERE id = ?
+                ");
+                $stmt->execute([$leitura['id']]);
+            }
+
+            return $leitura['id']; 
         }
 
         // Cria nova leitura
         $stmt = $pdo->prepare("
-            INSERT INTO Reading (pk_usuario, livro, status, data_inicio) 
+            INSERT INTO Reading (pk_usuario, livro, `status`, data_inicio) 
             VALUES (?, ?, 'em andamento', NOW())
         ");
         $stmt->execute([$user_id, $book_id]);
         return $pdo->lastInsertId();
     }
 
+    
    public static function finalizarLeitura($leitura_id) {
         try { 
             $pdo = Database::connect();
@@ -207,7 +218,8 @@ class Reading
                 UPDATE Reading 
                 SET tempo_gasto = ?, 
                     paginas_lidas = ?, 
-                    data_fim = NOW() 
+                    data_fim = NOW(), 
+                    status = 'Finalizada'
                 WHERE id = ?
             ");
             
