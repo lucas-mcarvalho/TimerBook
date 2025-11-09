@@ -71,6 +71,29 @@ async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas, id_l
     }
 }
 
+async function finalizarLeitura(leitura_id){
+    try {
+        const response = await fetch("http://localhost/TimerBook/public/reading/finish-read", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                leitura_id: leitura_id, 
+            })
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log("Leitura finalizada com sucesso:", data);
+        } else {
+            console.error("Erro ao finalizar a leitura:", data.error);
+        }   
+    }catch (error) {
+        console.error("Erro na comunicação com a API:", error);
+    }
+}
+
 
 (async function () {
     const API_BASE = "http://localhost/TimerBook/public";

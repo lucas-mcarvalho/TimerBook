@@ -205,7 +205,7 @@ class Reading
           
             $stmt = $pdo->prepare("
                 UPDATE Reading 
-                    tempo_gasto = ?, 
+                SET tempo_gasto = ?, 
                     paginas_lidas = ?, 
                     data_fim = NOW() 
                 WHERE id = ?

@@ -275,10 +275,15 @@ case 'POST /reading/start':
     $controller->iniciar();
     break;
 
-// Finalizar leitura + sessão
-case 'POST /reading/finish':
+// Finalizar sessão
+case 'POST  /reading/finish':
     $controller = new ReadingController();
     $controller->finalizar();
+    break;
+    
+case (preg_match('#^POST /reading/read-finish$#', "$method $endpoint") ? true : false):
+    $controller = new ReadingController();
+    $controller->finalizarLeitura();
     break;
 
 // Estatísticas do usuário logado (via sessão)

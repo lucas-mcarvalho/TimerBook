@@ -4,18 +4,7 @@ let globalSessaoId = null;
 let globalLeituraId = null;
 let globalIdLivro = null;
 
-
-
 // Carrega o PDF e inicializa o leitor
-
-/***
- Para que o leitor seja capaz de ir na última página lida, é necessário carregar os
- dados da última sessão do usuário naquela determinada. É preciso uma função capaz
- de retornar os dados da útima sessão de uma leitua, dado o ID da leitura.
- 
- retornarUltimaSessaoLeitura(leitura_id) -> { sessao_id, pagina_atual }
- ***/
-
 async function carregarPdf(livro, sessao_id, leitura_id, ultimaPaginaLida) {
   globalIdLivro = livro.id;
   console.log("Id livro carregar pdf", globalIdLivro);
@@ -85,11 +74,10 @@ function criarBarraDeControles(sessao_id, leitura_id, pagina_atual, id_livro) {
   textoPagina.style.fontSize = '16px';
   textoPagina.style.fontWeight = 'bold';
 
-  
   // Botões
   const btnVoltar = criarBotao('Voltar', async () => {
     await finalizarSessaoLeitura(sessao_id, leitura_id, pagina_atual, id_livro);
-    window.history.back();
+    //window.history.back();
   }); 
   div.appendChild(btnVoltar);
  
@@ -123,12 +111,31 @@ function criarBarraDeControles(sessao_id, leitura_id, pagina_atual, id_livro) {
   // Botão "Ver progresso"
   const btnProgresso = criarBotao('Ver progresso', () => mostrarProgresso(paginaAtual, pdfGlobal.numPages));
 
+  // ✅ Botão "Finalizar Leitura" (vermelho)
+  const btnFinalizar = document.createElement('button');
+  btnFinalizar.textContent = 'Finalizar Leitura';
+  btnFinalizar.onclick = async () => {
+    await finalizarLeitura(leitura_id);
+    alert('Leitura finalizada!');
+    //window.history.back();
+  };
+  btnFinalizar.style.background = '#dc3545';
+  btnFinalizar.style.color = 'white';
+  btnFinalizar.style.border = 'none';
+  btnFinalizar.style.padding = '8px 12px';
+  btnFinalizar.style.borderRadius = '8px';
+  btnFinalizar.style.cursor = 'pointer';
+  btnFinalizar.style.transition = '0.3s';
+  btnFinalizar.onmouseover = () => (btnFinalizar.style.background = '#a71d2a');
+  btnFinalizar.onmouseout = () => (btnFinalizar.style.background = '#dc3545');
+
   div.appendChild(textoPagina);
   div.appendChild(btnAnterior);
   div.appendChild(btnProxima);
   div.appendChild(inputPagina);
   div.appendChild(btnIr);
   div.appendChild(btnProgresso);
+  div.appendChild(btnFinalizar); // ✅ adicionado no final
 
   return div;
 }
