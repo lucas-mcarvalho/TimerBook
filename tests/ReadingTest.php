@@ -130,4 +130,115 @@ class ReadingTest extends TestCase
         // cleanup
         Book::delete($book['book_id']);
     }
+
+
+
+    public function testStarReading()
+{
+    $userId = self::createTestUser(null, ['nome' => 'UserIni', 'username' => 'iniuser', 'email' => 'ini_' . uniqid() . '@example.com']);
+    $book = self::createTestBook(['titulo' => 'Livro Iniciar', 'autor' => 'Autor I', 'user_id' => $userId]);
+    $this->assertArrayHasKey('book_id', $book);
+
+    // Cria nova leitura
+    $leituraId = Reading::iniciarLeitura($userId, $book['book_id']);
+    $this->assertNotEmpty($leituraId);
+
+    // Tenta iniciar novamente o mesmo livro — deve retornar o mesmo id
+    $mesmoId = Reading::iniciarLeitura($userId, $book['book_id']);
+    $this->assertEquals($leituraId, $mesmoId);
+
+    // cleanup
+    Reading::delete($leituraId);
+    Book::delete($book['book_id']);
+}
+
+
+public function testEndReading()
+{
+    $userId = self::createTestUser(null, ['nome' => 'UserFin', 'username' => 'finuser', 'email' => 'fin_' . uniqid() . '@example.com']);
+    $book = self::createTestBook(['titulo' => 'Livro Finalizar', 'autor' => 'Autor F', 'user_id' => $userId]);
+    $reading = Reading::create($userId, $book['book_id'], 'Em andamento', 0, 0, null, null);
+
+    // Cria sessões simuladas para esta leitura
+    $pdo = self::getPdo();
+    $ins = $pdo->prepare('INSERT INTO SessaoLeitura (pk_leitura, data_inicio, data_fim, tempo_sessao, paginas_lidas) VALUES (?, ?, ?, ?, ?)');
+    $ins->execute([$reading['reading_id'], date('Y-m-d H:i:s', strtotime('-30 minutes')), date('Y-m-d H:i:s'), 1800, 20]);
+
+    // Chama finalizarLeitura
+    $rows = Reading::finalizarLeitura($reading['reading_id']);
+    $this->assertGreaterThanOrEqual(1, $rows);
+
+    // Confirma atualização
+    $found = Reading::getById($reading['reading_id']);
+    $this->assertEquals('Finalizada', $found['status']);
+
+    // cleanup
+    Reading::delete($reading['reading_id']);
+    Book::delete($book['book_id']);
+}
+
+
+public function testStatistcsUser()
+{
+    $userId = self::createTestUser(null, ['nome' => 'UserStats', 'username' => 'statsuser', 'email' => 'stats_' . uniqid() . '@example.com']);
+    $b1 = self::createTestBook(['titulo' => 'Livro 1', 'user_id' => $userId]);
+    $b2 = self::createTestBook(['titulo' => 'Livro 2', 'user_id' => $userId]);
+
+    Reading::create($userId, $b1['book_id'], 'Finalizada', 1200, 50, null, date('Y-m-d H:i:s'));
+    Reading::create($userId, $b2['book_id'], 'Finalizada', 600, 30, null, date('Y-m-d H:i:s'));
+
+    $stats = Reading::estatisticasUsuario($userId);
+    $this->assertIsArray($stats);
+    $this->assertArrayHasKey('total_livros', $stats);
+    $this->assertGreaterThanOrEqual(2, (int)$stats['total_livros']);
+    $this->assertGreaterThan(0, (float)$stats['tempo_total']);
+
+    // cleanup
+    $pdo = self::getPdo();
+    $pdo->exec("DELETE FROM Reading WHERE pk_usuario = " . (int)$userId);
+}
+
+
+public function testGetReadinBook()
+{
+    $userId = self::createTestUser(null, ['nome' => 'UserGB', 'username' => 'gbuser', 'email' => 'gb_' . uniqid() . '@example.com']);
+    $book = self::createTestBook(['titulo' => 'Livro GB', 'user_id' => $userId]);
+    $reading = Reading::create($userId, $book['book_id'], 'Em andamento', 0, 0);
+
+    $leituras = Reading::getReadinBook($book['book_id']);
+    $this->assertIsArray($leituras);
+    $this->assertNotEmpty($leituras);
+    $this->assertEquals($book['book_id'], $leituras[0]['livro']);
+
+    // cleanup
+    Reading::delete($reading['reading_id']);
+    Book::delete($book['book_id']);
+}
+
+
+public function testGetSessionBook()
+{
+    $userId = self::createTestUser(null, ['nome' => 'UserSB', 'username' => 'sbuser', 'email' => 'sb_' . uniqid() . '@example.com']);
+    $book = self::createTestBook(['titulo' => 'Livro SB', 'user_id' => $userId]);
+    $reading = Reading::create($userId, $book['book_id']);
+
+    // Cria duas sessões associadas à leitura
+    $pdo = self::getPdo();
+    $pdo->prepare("INSERT INTO SessaoLeitura (pk_leitura, data_inicio, data_fim, tempo_sessao, paginas_lidas) VALUES (?, ?, ?, ?, ?)")
+        ->execute([$reading['reading_id'], date('Y-m-d H:i:s', strtotime('-1 hour')), date('Y-m-d H:i:s'), 3600, 10]);
+    $pdo->prepare("INSERT INTO SessaoLeitura (pk_leitura, data_inicio, data_fim, tempo_sessao, paginas_lidas) VALUES (?, ?, ?, ?, ?)")
+        ->execute([$reading['reading_id'], date('Y-m-d H:i:s', strtotime('-2 hours')), date('Y-m-d H:i:s', strtotime('-1 hour')), 3600, 5]);
+
+    $sessoes = Reading::getSessionBook($book['book_id']);
+    $this->assertIsArray($sessoes);
+    $this->assertGreaterThanOrEqual(2, count($sessoes));
+    $this->assertArrayHasKey('sessao_id', $sessoes[0]);
+
+    // cleanup
+    $pdo->exec("DELETE FROM SessaoLeitura WHERE pk_leitura = " . (int)$reading['reading_id']);
+    Reading::delete($reading['reading_id']);
+    Book::delete($book['book_id']);
+}
+
+
 }
