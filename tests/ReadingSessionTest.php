@@ -163,4 +163,32 @@ class ReadingSessionTest extends TestCase
         $pdo = self::getPdo();
         $pdo->exec("DELETE FROM SessaoLeitura WHERE pk_leitura = " . (int)$reading['reading_id']);
     }
+
+
+public function testGetSessionBook()
+{
+    $userId = self::createTestUser(null, ['nome' => 'BookSessUser', 'username' => 'bsuser', 'email' => 'bs_' . uniqid() . '@example.com']);
+    $book = self::createTestBook(['user_id' => $userId]);
+    $reading = self::createTestReading($userId, $book['book_id']);
+
+    // cria 2 sessões para este livro
+    ReadingSession::create($reading['reading_id'], '2025-01-01 08:00:00', '2025-01-01 08:30:00', 1800, 10);
+    ReadingSession::create($reading['reading_id'], '2025-01-02 09:00:00', '2025-01-02 09:15:00', 900, 5);
+
+    // chama o método que queremos testar
+    $sessions = ReadingSession::getSessionBook($book['book_id']);
+
+    // Verifica se retornou um array
+    $this->assertIsArray($sessions);
+    $this->assertCount(2, $sessions);
+    $this->assertArrayHasKey('sessao_id', $sessions[0]);
+    $this->assertEquals($book['book_id'], $book['book_id']); // só pra garantir o contexto
+
+    // cleanup
+    $pdo = self::getPdo();
+    $pdo->exec("DELETE FROM SessaoLeitura WHERE pk_leitura = " . (int)$reading['reading_id']);
+}
+
+
+
 }
