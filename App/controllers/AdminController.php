@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/Admin.php';
+require_once __DIR__ . '/../core/ApiHelper.php';
 
 
 ini_set('display_errors', 1);
@@ -11,16 +12,9 @@ class AdminController
     // LOGIN DO ADMIN
     public function login()
     {
-        $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
-
-        if (stripos($contentType, "application/json") !== false) {
-            $data = json_decode(file_get_contents("php://input"), true);
-            $email = $data['email'] ?? null;
-            $password = $data['password'] ?? null;
-        } else {
-            $email = $_POST['email'] ?? null;
-            $password = $_POST['password'] ?? null;
-        }
+        $data = ApiHelper::getRequestData();
+        $email = $data['email'] ?? null;
+        $password = $data['password'] ?? null;
 
          if (!$email || !$password) {
             http_response_code(400);
@@ -43,19 +37,7 @@ class AdminController
         }
 
         if ($isAuthenticated) {
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            }
-            $_SESSION['admin_logged_in'] = true;
-            $_SESSION['admin'] = $admin;
-            $_SESSION['admin_id'] = $admin['id'];
-            $_SESSION['username'] = $admin['username'];
-
-            if (!empty($admin['profile_photo'])) {
-                $_SESSION['profile_photo'] = ltrim($admin['profile_photo'], '/');
-            } else {
-                $_SESSION['profile_photo'] = null;
-            }
+            ApiHelper::setAdminSession($admin);
 
             echo json_encode([
                 "success" => true,
@@ -248,9 +230,7 @@ class AdminController
     // CHECK LOGIN (Protege rotas de admin)
     public static function checkLogin()
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
+        ApiHelper::startSessionIfNeeded();
         if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
             exit;
         }
