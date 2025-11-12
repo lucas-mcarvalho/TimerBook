@@ -78,7 +78,7 @@ class Reading
             if ($tempo_gasto !== null) {
                 $fields[] = "tempo_gasto = ?";
                 $values[] = $tempo_gasto;
-            }
+            }          
             if ($paginas_lidas !== null) {
                 $fields[] = "paginas_lidas = ?";
                 $values[] = $paginas_lidas;
