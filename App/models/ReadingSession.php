@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../core/database_config.php';
 
-// O comentário "//Consertar aqui" foi resolvido.
 class ReadingSession
 {
     // Criar nova sessão de leitura
@@ -9,13 +8,21 @@ class ReadingSession
     {
         try {
             $pdo = Database::connect();
+
+            // Verifica se leitura existe
+            $check = $pdo->prepare("SELECT id FROM Reading WHERE id = ?");
+            $check->execute([$reading_id]);
+            if ($check->rowCount() === 0) {
+                return ["error" => "Leitura informada não existe."];
+            }
+
             $data_inicio = $data_inicio ?? date('Y-m-d H:i:s');
 
             $stmt = $pdo->prepare("
-                INSERT INTO SessaoLeitura (pk_leitura, data_inicio, data_fim, tempo_sessao,paginas_lidas)
+                INSERT INTO SessaoLeitura (pk_leitura, data_inicio, data_fim, tempo_sessao, paginas_lidas)
                 VALUES (?, ?, ?, ?, ?)
             ");
-            $stmt->execute([$reading_id, $data_inicio, $data_fim, $tempo_sessao,$paginas_lidas]);
+            $stmt->execute([$reading_id, $data_inicio, $data_fim, $tempo_sessao, $paginas_lidas]);
 
             return [
                 "message" => "Sessão de leitura criada com sucesso",
@@ -61,10 +68,16 @@ class ReadingSession
                 $values[] = $data_fim;
             }
             if ($tempo_sessao !== null) {
+                if (!is_numeric($tempo_sessao) || $tempo_sessao < 0) {
+                    return ["error" => "O campo tempo_sessao deve ser um número positivo"];
+                }
                 $fields[] = "tempo_sessao = ?";
                 $values[] = $tempo_sessao;
             }
             if ($paginas_lidas !== null) {
+                if (!is_numeric($paginas_lidas) || $paginas_lidas < 0) {
+                    return ["error" => "O campo paginas_lidas deve ser um número positivo"];
+                }
                 $fields[] = "paginas_lidas = ?";
                 $values[] = $paginas_lidas;
             }
@@ -77,6 +90,10 @@ class ReadingSession
             $sql = "UPDATE SessaoLeitura SET " . implode(", ", $fields) . " WHERE id = ?";
             $stmt = $pdo->prepare($sql);
             $stmt->execute($values);
+
+            if ($stmt->rowCount() === 0) {
+                return ["error" => "Nenhum registro foi atualizado. Verifique o ID."];
+            }
 
             return ["message" => "Sessão de leitura atualizada com sucesso"];
         } catch (PDOException $e) {
@@ -91,112 +108,111 @@ class ReadingSession
             $pdo = Database::connect();
             $stmt = $pdo->prepare("DELETE FROM SessaoLeitura WHERE id = ?");
             $stmt->execute([$id]);
+
+            if ($stmt->rowCount() === 0) {
+                return ["error" => "Sessão não encontrada para exclusão."];
+            }
+
             return ["message" => "Sessão de leitura excluída com sucesso"];
         } catch (PDOException $e) {
             return ["error" => "Erro ao excluir sessão: " . $e->getMessage()];
         }
     }
 
-  // --- CORREÇÃO ABAIXO ---
+    // Iniciar nova sessão
+    public static function StartSession($leitura_id)
+    {
+        try {
+            $pdo = Database::connect();
 
-  /**
-   * Inicia uma NOVA sessão de leitura (cronômetro).
-   * Ela deve receber o ID da leitura (Reading) principal.
-   */
-  public static function StartSession($leitura_id)
-  {
-      try {
-          $pdo = Database::connect();
-          $stmt = $pdo->prepare("
-              INSERT INTO SessaoLeitura (pk_leitura, data_inicio, tempo_sessao)
-              VALUES (?, NOW(), 0)
-          ");
-          $stmt->execute([$leitura_id]);
-          return $pdo->lastInsertId(); // Retorna o ID da *nova sessão*
-      
-      } catch (PDOException $e) {
-           return ["error" => "Erro em ReadingSession::StartSession: " . $e->getMessage()];
-      }
-  }
+            // Verifica se leitura existe
+            $check = $pdo->prepare("SELECT id FROM Reading WHERE id = ?");
+            $check->execute([$leitura_id]);
+            if ($check->rowCount() === 0) {
+                return ["error" => "Leitura informada não existe."];
+            }
 
+            $stmt = $pdo->prepare("
+                INSERT INTO SessaoLeitura (pk_leitura, data_inicio, tempo_sessao)
+                VALUES (?, NOW(), 0)
+            ");
+            $stmt->execute([$leitura_id]);
+            return $pdo->lastInsertId();
 
-public static function StopSession($sessao_id, $paginas_lidas)
-{
-    try {
-        $pdo = Database::connect();
-        $pdo->beginTransaction();
-
-        
-        $check = $pdo->prepare("SELECT pk_leitura, data_inicio FROM SessaoLeitura WHERE id = ?");
-        $check->execute([$sessao_id]);
-        $sessao = $check->fetch(PDO::FETCH_ASSOC);
-
-        if (!$sessao) {
-            $pdo->rollBack();
-            return ["error" => "Sessão de leitura não encontrada."];
+        } catch (PDOException $e) {
+            return ["error" => "Erro em ReadingSession::StartSession: " . $e->getMessage()];
         }
-
-        $leitura_id = $sessao['pk_leitura'];
-
-    
-        $stmt = $pdo->prepare("
-            UPDATE SessaoLeitura
-            SET 
-                data_fim = NOW(),
-                tempo_sessao = TIMESTAMPDIFF(SECOND, data_inicio, NOW()),
-                paginas_lidas = ?
-            WHERE id = ?
-        ");
-        $stmt->execute([$paginas_lidas, $sessao_id]);
-
-        if ($stmt->rowCount() === 0) {
-          
-            $pdo->rollBack();
-            return ["error" => "Falha ao atualizar a sessão. Verifique o ID."];
-        }
-
-      
-        $getTempo = $pdo->prepare("SELECT tempo_sessao FROM SessaoLeitura WHERE id = ?");
-        $getTempo->execute([$sessao_id]);
-        $tempoSessao = (int)$getTempo->fetchColumn();
-        if ($tempoSessao < 0) $tempoSessao = 0;
-
-        $updateReadingTempo = $pdo->prepare("
-            UPDATE Reading
-            SET tempo_gasto = COALESCE(tempo_gasto, 0) + ?
-            WHERE id = ?
-        ");
-        $updateReadingTempo->execute([$tempoSessao, $leitura_id]);
-
-       
-        $updateReadingPaginas = $pdo->prepare("
-            UPDATE Reading
-            SET paginas_lidas = COALESCE(paginas_lidas, 0) + ?
-            WHERE id = ?
-        ");
-        $updateReadingPaginas->execute([$paginas_lidas, $leitura_id]);
-
-      
-        $pdo->commit();
-
-       
-        $get = $pdo->prepare("
-            SELECT s.*, r.paginas_lidas AS total_paginas_lidas, r.tempo_gasto AS total_tempo_gasto, r.status
-            FROM SessaoLeitura s
-            JOIN Reading r ON s.pk_leitura = r.id
-            WHERE s.id = ?
-        ");
-        $get->execute([$sessao_id]);
-        $dados = $get->fetch(PDO::FETCH_ASSOC);
-
-    } catch (PDOException $e) {
-        if ($pdo->inTransaction()) $pdo->rollBack();
-        return ["error" => "Erro em ReadingSession::StopSession: " . $e->getMessage()];
     }
-}
 
+    public static function StopSession($sessao_id, $paginas_lidas)
+    {
+        try {
+            $pdo = Database::connect();
+            $pdo->beginTransaction();
 
-    // Média de páginas por usuário
+            $check = $pdo->prepare("SELECT pk_leitura, data_inicio FROM SessaoLeitura WHERE id = ? FOR UPDATE");
+            $check->execute([$sessao_id]);
+            $sessao = $check->fetch(PDO::FETCH_ASSOC);
+
+            if (!$sessao) {
+                $pdo->rollBack();
+                return ["error" => "Sessão de leitura não encontrada."];
+            }
+
+            $leitura_id = $sessao['pk_leitura'];
+
+            $stmt = $pdo->prepare("
+                UPDATE SessaoLeitura
+                SET 
+                    data_fim = NOW(),
+                    tempo_sessao = GREATEST(TIMESTAMPDIFF(SECOND, data_inicio, NOW()), 0),
+                    paginas_lidas = ?
+                WHERE id = ?
+            ");
+            $stmt->execute([$paginas_lidas, $sessao_id]);
+
+            if ($stmt->rowCount() === 0) {
+                $pdo->rollBack();
+                return ["error" => "Falha ao atualizar a sessão. Verifique o ID."];
+            }
+
+            $getTempo = $pdo->prepare("SELECT tempo_sessao FROM SessaoLeitura WHERE id = ?");
+            $getTempo->execute([$sessao_id]);
+            $tempoSessao = (int)$getTempo->fetchColumn();
+
+            $updateReadingTempo = $pdo->prepare("
+                UPDATE Reading
+                SET tempo_gasto = COALESCE(tempo_gasto, 0) + ?
+                WHERE id = ?
+            ");
+            $updateReadingTempo->execute([$tempoSessao, $leitura_id]);
+
+            $updateReadingPaginas = $pdo->prepare("
+                UPDATE Reading
+                SET paginas_lidas = COALESCE(paginas_lidas, 0) + ?
+                WHERE id = ?
+            ");
+            $updateReadingPaginas->execute([$paginas_lidas, $leitura_id]);
+
+            $pdo->commit();
+
+            $get = $pdo->prepare("
+                SELECT s.*, r.paginas_lidas AS total_paginas_lidas, r.tempo_gasto AS total_tempo_gasto, r.status
+                FROM SessaoLeitura s
+                JOIN Reading r ON s.pk_leitura = r.id
+                WHERE s.id = ?
+            ");
+            $get->execute([$sessao_id]);
+            $dados = $get->fetch(PDO::FETCH_ASSOC);
+
+            return ["message" => "Sessão encerrada com sucesso", "dados" => $dados];
+
+        } catch (PDOException $e) {
+            if ($pdo->inTransaction()) $pdo->rollBack();
+            return ["error" => "Erro em ReadingSession::StopSession: " . $e->getMessage()];
+        }
+    }
+
     public static function getAveragePagesByUser($user_id)
     {
         try {
@@ -222,8 +238,8 @@ public static function StopSession($sessao_id, $paginas_lidas)
             if ($user_id) {
                 $stmt = $pdo->prepare("
                     SELECT
-                        SUM(s.tempo_sessao) AS tempo_total_segundos,
-                        ROUND(AVG(s.tempo_sessao), 2) AS tempo_medio_segundos
+                        COALESCE(SUM(s.tempo_sessao), 0) AS tempo_total_segundos,
+                        ROUND(COALESCE(AVG(s.tempo_sessao), 0), 2) AS tempo_medio_segundos
                     FROM SessaoLeitura s
                     JOIN Reading l ON s.pk_leitura = l.id
                     WHERE l.pk_usuario = ?
@@ -232,72 +248,49 @@ public static function StopSession($sessao_id, $paginas_lidas)
             } else {
                 $stmt = $pdo->query("
                     SELECT
-                        SUM(tempo_sessao) AS tempo_total_segundos,
-                        ROUND(AVG(tempo_sessao), 2) AS tempo_medio_segundos
+                        COALESCE(SUM(tempo_sessao), 0) AS tempo_total_segundos,
+                        ROUND(COALESCE(AVG(tempo_sessao), 0), 2) AS tempo_medio_segundos
                     FROM SessaoLeitura
                 ");
             }
 
-        
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            return $result ? $result : [
-                "tempo_total_segundos" => 0,
-                "tempo_medio_segundos" => 0
-            ];
-            // --- FIM DA SIMPLIFICAÇÃO ---
+            return $stmt->fetch(PDO::FETCH_ASSOC);
 
         } catch (PDOException $e) {
             return ["error" => "Erro ao calcular tempo de leitura: " . $e->getMessage()];
         }
     }
 
-    private static function formatSeconds($seconds)
+    public static function getSessionBook($book_id)
     {
-        if (!$seconds) return "00:00:00";
-        $seconds = (int)$seconds;
-        if ($seconds < 0) $seconds = 0;
+        try {
+            $pdo = Database::connect();
 
-        $hours = floor($seconds / 3600);
-        $minutes = floor(($seconds % 3600) / 60);
-        $seconds = $seconds % 60;
-        return sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
-    }
+            $stmt = $pdo->prepare("
+                SELECT 
+                    s.id AS sessao_id,
+                    s.pk_leitura,
+                    s.data_inicio,
+                    s.data_fim,
+                    s.tempo_sessao,
+                    s.paginas_lidas,
+                    r.pk_usuario,
+                    r.status,
+                    r.data_inicio AS leitura_inicio,
+                    r.data_fim AS leitura_fim
+                FROM SessaoLeitura s
+                INNER JOIN Reading r ON s.pk_leitura = r.id
+                WHERE r.livro = ?
+                ORDER BY s.data_inicio DESC
+            ");
+            $stmt->execute([$book_id]);
 
+            $sessoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $sessoes ?: [];
 
-
-
-public static function getSessionBook($book_id) {
-    try {
-        $pdo = Database::connect();
-
-        // Busca todas as sessões ligadas a leituras do livro
-        $stmt = $pdo->prepare("
-            SELECT 
-                s.id AS sessao_id,
-                s.pk_leitura,
-                s.data_inicio,
-                s.data_fim,
-                s.tempo_sessao,
-                s.paginas_lidas,
-                r.pk_usuario,
-                r.status,
-                r.data_inicio AS leitura_inicio,
-                r.data_fim AS leitura_fim
-            FROM SessaoLeitura s
-            INNER JOIN Reading r ON s.pk_leitura = r.id
-            WHERE r.livro = ?
-            ORDER BY s.data_inicio DESC
-        ");
-        $stmt->execute([$book_id]);
-
-        $sessoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $sessoes ?: []; // retorna vazio se não houver sessões
-
-    } catch (PDOException $e) {
-        return ["error" => "Erro em ReadingSession::getSessoesPorLivro: " . $e->getMessage()];
+        } catch (PDOException $e) {
+            return ["error" => "Erro em ReadingSession::getSessoesPorLivro: " . $e->getMessage()];
+        }
     }
 }
-
-  }
 ?>
