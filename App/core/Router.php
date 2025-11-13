@@ -7,7 +7,7 @@ require_once '../App/controllers/AuthenticationController.php';
 require_once '../App/controllers/GoogleController.php';
 require_once '../App/controllers/ReadingController.php';
 require_once '../App/controllers/ReadingSessionController.php';
-require_once '../App/controllers/ReminderController.php';
+require_once '../App/controllers/RemindController.php';
 
 
 

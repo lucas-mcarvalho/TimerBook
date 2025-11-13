@@ -295,21 +295,20 @@ class ReadingSession
 
 
 
-  public static function getInactiveUsers($dias_inatividade = 3)
+ public static function getInactiveUsers($dias_inatividade = 3)
 {
     try {
-        // Cria a conexão com o banco
         $pdo = Database::connect();
 
-        // Consulta: busca usuários que não leem há X dias
         $sql = "
             SELECT 
                 u.id AS user_id, 
                 u.nome, 
                 u.email,
-                COALESCE(DATEDIFF(NOW(), MAX(rs.data_fim)), DATEDIFF(NOW(), u.created_at)) AS dias_inativo
+                COALESCE(DATEDIFF(NOW(), MAX(s.data_fim)), 999) AS dias_inativo
             FROM User u
-            LEFT JOIN ReadingSession rs ON rs.user_id = u.id
+            LEFT JOIN Reading r ON r.pk_usuario = u.id
+            LEFT JOIN SessaoLeitura s ON s.pk_leitura = r.id
             GROUP BY u.id
             HAVING dias_inativo >= :dias
         ";
@@ -318,15 +317,11 @@ class ReadingSession
         $stmt->bindValue(':dias', $dias_inatividade, PDO::PARAM_INT);
         $stmt->execute();
 
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return $result ?: [];
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     } catch (PDOException $e) {
         return ["error" => "Erro em ReadingSession::getInactiveUsers: " . $e->getMessage()];
     }
 }
-
-
 }
 ?>
