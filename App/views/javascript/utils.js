@@ -88,7 +88,7 @@ async function buscarEstatisticas(id_user) {
         });
         
         if (!response.ok) {
-            throw new Error("Erro ao buscar estatisticas do usuário.");
+            return;
         }
         const stats = await response.json();
         return stats;
@@ -111,7 +111,7 @@ async function buscarUltimoLivro(id_user) {
 
         for (let stat of book_stats) {
             if (!stat) continue;
-
+            if(stat.data_inicio == null) continue;
             // Busca a última sessão do livro (buscarSessao já faz isso)
             const ultimaSessao = await buscarSessao(stat.id, 0);
 
