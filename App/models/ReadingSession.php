@@ -302,26 +302,37 @@ class ReadingSession
 
         $sql = "
             SELECT 
-                u.id AS user_id, 
-                u.nome, 
+                u.id AS user_id,
+                u.nome,
                 u.email,
-                COALESCE(DATEDIFF(NOW(), MAX(s.data_fim)), 999) AS dias_inativo
+                MAX(s.data_fim) AS ultima_sessao,
+                DATEDIFF(NOW(), MAX(s.data_fim)) AS dias_inativo
             FROM User u
             LEFT JOIN Reading r ON r.pk_usuario = u.id
             LEFT JOIN SessaoLeitura s ON s.pk_leitura = r.id
             GROUP BY u.id
-            HAVING dias_inativo >= :dias
+            HAVING dias_inativo >= :dias OR dias_inativo IS NULL
         ";
 
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':dias', $dias_inatividade, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Se quiser tratar os que nunca leram
+        foreach ($usuarios as &$u) {
+            if ($u['dias_inativo'] === null) {
+                $u['dias_inativo'] = 'Nunca iniciou uma sessão';
+            }
+        }
+
+        return $usuarios;
 
     } catch (PDOException $e) {
         return ["error" => "Erro em ReadingSession::getInactiveUsers: " . $e->getMessage()];
     }
 }
+
 }
 ?>
