@@ -9,7 +9,7 @@ async function cadastrarLivro() {
     console.log(formData); // Debug: Verifica os dados do formulário
 
     try {
-        const res = await fetch("http://localhost/TimerBook/public/books", {
+        const res = await fetch("http://15.228.179.50/TimerBook/public/books", {
             method: "POST",
             body: formData,
             credentials: "include" // <- envia cookies de sessão
@@ -62,7 +62,7 @@ async function deletarLivro(id) {
 
     try {
         //Inicia a requisição HTTP
-        const res = await fetch(`http://localhost/TimerBook/public/books/${id}`, {
+        const res = await fetch(`http://15.228.179.50/TimerBook/public/books/${id}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" }
         });
@@ -88,7 +88,7 @@ async function deletarLivro(id) {
 
 async function listarLivrosUsuario(user_id) {
     try {
-        const res = await fetch(`http://localhost/TimerBook/public/my-books`, {
+        const res = await fetch(`http://15.228.179.50/TimerBook/public/my-books`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
             credentials: "include"
@@ -183,7 +183,7 @@ async function editarLivro(id_livro) {
         console.log(formData);
 
         try {
-            const res = await fetch(`http://localhost/TimerBook/public/books/${id_livro}`, {
+            const res = await fetch(`http://15.228.179.50/TimerBook/public/books/${id_livro}`, {
                 method: "POST",
                 body: formData,
                 credentials: "include"
@@ -205,7 +205,7 @@ async function editarLivro(id_livro) {
 
 async function listarLivrosAdmin(id) {
     try {
-        const res = await fetch(`http://localhost/TimerBook/public/books/user/${id}`, {
+        const res = await fetch(`http://15.228.179.50/TimerBook/public/books/user/${id}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
             credentials: "include"
@@ -274,7 +274,7 @@ async function editarLivro(id_livro) {
         console.log(formData);
 
         try {
-            const res = await fetch(`http://localhost/TimerBook/public/books/${id_livro}`, {
+            const res = await fetch(`http://15.228.179.50/TimerBook/public/books/${id_livro}`, {
                 method: "POST",
                 body: formData,
                 credentials: "include"
