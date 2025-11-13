@@ -36,13 +36,13 @@ class ReminderController
             $dias = $u['dias_inativo'];
 
             // Conteúdo do e-mail
-            $assunto = "Hora de continuar sua leitura 📚";
+            $assunto = "Hora de continuar sua leitura ";
             $corpo = "
                 <p>Olá <strong>{$nome}</strong>,</p>
                 <p>Você está há <strong>{$dias}</strong> dias sem ler nada.</p>
-                <p>Que tal retomar sua leitura hoje? 😊</p>
+                <p>Que tal retomar sua leitura hoje? </p>
                 <hr>
-                <p><em>LeituraApp - Seu progresso, sua história.</em></p>
+                <p><em>TimerBook - Seu progresso, sua história.</em></p>
             ";
 
             $mail = new PHPMailer(true);
