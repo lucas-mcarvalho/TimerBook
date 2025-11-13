@@ -292,5 +292,41 @@ class ReadingSession
             return ["error" => "Erro em ReadingSession::getSessoesPorLivro: " . $e->getMessage()];
         }
     }
+
+
+
+  public static function getInactiveUsers($dias_inatividade = 3)
+{
+    try {
+        // Cria a conexão com o banco
+        $pdo = Database::connect();
+
+        // Consulta: busca usuários que não leem há X dias
+        $sql = "
+            SELECT 
+                u.id AS user_id, 
+                u.nome, 
+                u.email,
+                COALESCE(DATEDIFF(NOW(), MAX(rs.data_fim)), DATEDIFF(NOW(), u.created_at)) AS dias_inativo
+            FROM User u
+            LEFT JOIN ReadingSession rs ON rs.user_id = u.id
+            GROUP BY u.id
+            HAVING dias_inativo >= :dias
+        ";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':dias', $dias_inatividade, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ?: [];
+
+    } catch (PDOException $e) {
+        return ["error" => "Erro em ReadingSession::getInactiveUsers: " . $e->getMessage()];
+    }
+}
+
+
 }
 ?>

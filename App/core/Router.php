@@ -7,6 +7,8 @@ require_once '../App/controllers/AuthenticationController.php';
 require_once '../App/controllers/GoogleController.php';
 require_once '../App/controllers/ReadingController.php';
 require_once '../App/controllers/ReadingSessionController.php';
+require_once '../App/controllers/ReminderController.php';
+
 
 
 header('Content-Type: application/json; charset=utf-8');
@@ -305,6 +307,14 @@ case (preg_match('#^GET /reading/book/(\d+)/sessions$#', "$method $endpoint", $m
     $controller = new ReadingSessionController();
     $controller->getSessionBook((int)$matches[1]);
     break;
+
+
+// ---------------- LEMBRETES DE LEITURA ----------------
+case 'GET /reminders/send':
+    $controller = new ReminderController();
+    $controller->sendReminders(); // 3 dias
+    break;
+
 
 default:
     http_response_code(404);
