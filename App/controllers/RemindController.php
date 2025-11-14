@@ -39,7 +39,7 @@ class ReminderController
             $assunto = "Hora de continuar sua leitura ";
             $corpo = "
                 <p>Olá <strong>{$nome}</strong>,</p>
-                <p>Você está há <strong>{$dias}</strong> dias sem ler nada.</p>
+                <p>Você está há <strong>{$dias}</strong> dia(s) sem ler nada.</p>
                 <p>Que tal retomar sua leitura hoje? </p>
                 <hr>
                 <p><em>TimerBook - Seu progresso, sua história.</em></p>
