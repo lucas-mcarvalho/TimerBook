@@ -75,15 +75,12 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
                 </div>
             </div>
         </section>
-
-        <aside class="ranking-container">
-            <h2>Ranking</h2>
-            <ol class="ranking-list">
-                <li><span>1º</span> Nome do Usuário 1</li>
-                <li><span>2º</span> Nome do Usuário 2</li>
-                <li><span>3º</span> Nome do Usuário 3</li>
-            </ol>
+        
+         <!-- last-book é a classe para alterar o pocionamento geral do livro-->
+        <aside class="last-book">
+            <h2>Ultimo livro Lido: </h2>
         </aside>
+        
     </main>
 
     <footer class="main-footer">
@@ -105,6 +102,10 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
             }
             document.getElementById("radio" + count).checked = true;
         }
+         document.addEventListener("DOMContentLoaded", () => {
+            const user_id = "<?php echo $id_user; ?>";
+            mostrarUltimoLivro(user_id);
+        });
     </script>
 
 </body>
