@@ -153,7 +153,7 @@ async function redefinirSenha(){
             const email = document.getElementById("email").value;
 
             try {
-                const res = await fetch("http://localhost:8080/forgot-pasword", {
+                const res = await fetch("http://localhost:8080/forgot-password", {
                     method: "POST",
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
                     body: "email=" + encodeURIComponent(email)
