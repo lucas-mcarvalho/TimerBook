@@ -1,5 +1,6 @@
 <?php
 $profilePhoto = $_SESSION['profile_photo'] ?? "uploads/default.png";
+$user_id = $_SESSION['user_id'];
 // Se a foto é URL do S3, usa diretamente, senão adiciona o caminho local
 if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
     // É URL do S3, mantém como está
@@ -19,6 +20,7 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Timerbook - Início</title>
     <link rel="stylesheet" href="style/home.css">
+    <script src="/TimerBook/App/views/javascript/utils.js?v=<?= time() ?>"></script>
 </head>
 <body>
 
@@ -103,7 +105,7 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
             document.getElementById("radio" + count).checked = true;
         }
          document.addEventListener("DOMContentLoaded", () => {
-            const user_id = "<?php echo $id_user; ?>";
+            const user_id = "<?php echo $user_id; ?>";
             mostrarUltimoLivro(user_id);
         });
     </script>
