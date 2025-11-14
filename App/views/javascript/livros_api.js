@@ -135,7 +135,7 @@ async function listarLivrosUsuario(user_id) {
                 const leitura_id = data.leitura_id;
                 const sessao_id = data.sessao_id;
 
-                window.location.href = `/TimerBook/App/views/html/leitorPdf.php?id=${book_id}&leitura_id=${leitura_id}&sessao_id=${sessao_id}`;
+                window.location.href = `index.php?action=ler-livro&id=${book_id}&leitura_id=${leitura_id}&sessao_id=${sessao_id}`;
             });
         });
     } catch (error) {
