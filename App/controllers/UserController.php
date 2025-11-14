@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../core/ApiHelper.php';
 require_once __DIR__ . '/../core/database_config.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
@@ -20,18 +21,10 @@ class UserController
     //FUNCAO DE LOGIN
     public function login()
     {
-        //VERIFICA O TIPO QUE FOI RECEBIDO
-        $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
-        //SE FOI JSON
-        if (stripos($contentType, "application/json") !== false) {
-            $data = json_decode(file_get_contents("php://input"), true);
-            $email = $data['email'] ?? null;
-            $password = $data['password'] ?? null;
-        } else {
-            //OU SE FOI FORM DATA , DO TIPO HTML
-            $email = $_POST['email'] ?? null;
-            $password = $_POST['password'] ?? null;
-        }
+        // Dados do request (json ou form)
+        $data = ApiHelper::getRequestData();
+        $email = $data['email'] ?? null;
+        $password = $data['password'] ?? null;
 
         //VERIFICA SE OS CAMPOS EMAIL E SENHA FORAM PREENCHIDOS
         if (!$email || !$password) {
@@ -46,20 +39,8 @@ class UserController
         //VERIFICA SE O USUARIO E VALIDO E VERIFICA A SENHA COM O PASSWORD_VERIFY QUE E PARA VERIFICAR SENHAS CRIPTOGRAFADAS
         if ($user && isset($user['senha']) && password_verify($password, $user['senha'])) {
            
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            }
-            $_SESSION['user_logged_in'] = true;
-            $_SESSION['user'] = $user;
-
-            // Armazena informações do usuário na sessão
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            if (!empty($user['profile_photo'])) {
-               $_SESSION['profile_photo'] = ltrim($user['profile_photo'], '/');
-          } else {
-                   $_SESSION['profile_photo'] = null;
-               }
+            // centraliza configuração de sessão
+            ApiHelper::setUserSession($user);
             //RETORNA A MENSAGEM DE SUCESSO E OS DADOS DO USUARIO ,SEM INCLUIR A SENHA
             echo json_encode([
                 "success" => true,
