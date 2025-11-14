@@ -55,7 +55,11 @@ switch ($action) {
     case 'adm_ver_livros':
         require_once __DIR__ . '/../App/views/html/ListarLivrosAdmin.php';
         break;
-  
+
+    case 'ler-livro':
+        require_once __DIR__ . '/../App/views/html/leitorPdf.php';
+        break;
+
     case 'usuario_editar':
         require_once __DIR__ . '/../App/views/html/UsuarioEditarPerfil.php';
         break;
