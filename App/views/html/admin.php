@@ -19,7 +19,7 @@
     
     <div class="header-right">
         <!-- Cria rota para saida do admin-->
-        <a href="/TimerBook/public/admin/logout" class="logout-button">Sair</a>
+        <a href="/admin/logout" class="logout-button">Sair</a>
     </div>
 </header>
 
