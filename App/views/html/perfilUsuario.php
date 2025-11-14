@@ -36,7 +36,7 @@ $userId = $_SESSION["user_id"] ?? $_SESSION["id"];
     <title>Timerbook - Meu Perfil</title>
     <link rel="stylesheet" href="style/perfilUsuario.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="/TimerBook/App/views/javascript/usuario_api.js?v=<?= time() ?>"></script>
+    <script src="/js/usuario_api.js?v=<?= time() ?>"></script>
 </head>
 <body>
 

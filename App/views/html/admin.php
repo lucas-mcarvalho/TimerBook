@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style/admin.css">
     <title>Timer Book</title>
 
-    <script src="/TimerBook/App/views/javascript/admin.js?v=<?= time() ?>"></script>
+    <script src="/js/admin.js?v=<?= time() ?>"></script>
 </head>
 <body>
 

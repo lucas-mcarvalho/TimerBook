@@ -41,7 +41,7 @@ async function cadastrarUsuario() {
         const formData = new FormData(form);
 
         try {
-            const res = await fetch("http://localhost/TimerBook/public/register", {
+            const res = await fetch("http://localhost:8080/register", {
                 method: "POST",
                 body: formData
             } );
@@ -102,7 +102,7 @@ async function loginUsuario() {
 
         try {
             // 1) Tenta login como ADMIN
-            const adminRes = await fetch("http://localhost/TimerBook/public/admin/login", {
+            const adminRes = await fetch("http://localhost:8080/admin/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
@@ -118,7 +118,7 @@ async function loginUsuario() {
             }
 
             // 2) Se não for admin (ex.: 401), tenta login como USUÁRIO comum
-            const userRes = await fetch("http://localhost/TimerBook/public/login", {
+            const userRes = await fetch("http://localhost:8080/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
@@ -153,7 +153,7 @@ async function redefinirSenha(){
             const email = document.getElementById("email").value;
 
             try {
-                const res = await fetch("http://localhost/TimerBook/public/forgot-password", {
+                const res = await fetch("http://localhost:8080/forgot-pasword", {
                     method: "POST",
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
                     body: "email=" + encodeURIComponent(email)
@@ -180,7 +180,7 @@ async function redefinirSenha(){
 async function deletarConta(currentUserId) {
     try {
         closeDeleteModal();
-        const response = await fetch(`/TimerBook/public/users/${currentUserId}`, {
+        const response = await fetch(`/users/${currentUserId}`, {
             method: 'DELETE',
             headers: {
                     'Content-Type': 'application/json',

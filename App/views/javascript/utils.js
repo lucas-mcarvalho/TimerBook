@@ -1,6 +1,6 @@
 async function buscarLivro($id_livro) {
     try {
-        const response = await fetch(`http://localhost/TimerBook/public/books/${$id_livro}`, {
+        const response = await fetch(`http://localhost:8080/books/${$id_livro}`, {
             method: "GET",
             credentials: "include"
         });
@@ -19,7 +19,7 @@ async function buscarLivro($id_livro) {
 
 async function buscarUltimaSessao(id_livro){
     try {
-        const response = await fetch(`http://localhost/TimerBook/public/reading/book/${id_livro}/sessions`, {
+        const response = await fetch(`http://localhost:8080/reading/book/${id_livro}/sessions`, {
             method: "GET",
             credentials: "include"
         });
@@ -39,7 +39,7 @@ async function buscarUltimaSessao(id_livro){
 
 async function buscarSessao(id_livro, index) {
     try {
-        const response = await fetch(`http://localhost/TimerBook/public/reading/book/${id_livro}/sessions`, {
+        const response = await fetch(`http://localhost:8080/reading/book/${id_livro}/sessions`, {
             method: "GET",
             credentials: "include"
         });
@@ -59,7 +59,7 @@ async function buscarSessao(id_livro, index) {
 
 async function buscarUltimaPagina(id_user, id_livro) {
     try {
-        const response = await fetch(`http://localhost/TimerBook/public/reading/statistics/${id_user}`, {
+        const response = await fetch(`http://localhost:8080/reading/statistics/${id_user}`, {
             method: "GET",
             credentials: "include"
         });
