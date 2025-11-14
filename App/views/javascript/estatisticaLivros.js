@@ -32,7 +32,7 @@ async function iniciarSessaoLeitura(user_id, book_id) {
 }
 
 async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas, id_livro) {
-    const ultimaPaginaLida = await buscarUltimaPagina(user_id);
+    const ultimaPaginaLida = await buscarUltimaPagina(user_id, id_livro);
     if(ultimaPaginaLida){
         console.log("Ultima Página Lida", ultimaPaginaLida);
         if(paginas_lidas > ultimaPaginaLida){

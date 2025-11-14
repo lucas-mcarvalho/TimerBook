@@ -127,6 +127,7 @@ class Reading
             // A filtragem pelo usuário deve ser feita na tabela Books (b.user_id)
             $stmt = $pdo->prepare("
                 SELECT
+                    b.id,
                     b.titulo,
                     b.autor,
                     b.ano_publicacao,
