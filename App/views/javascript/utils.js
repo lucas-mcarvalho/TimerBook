@@ -57,7 +57,28 @@ async function buscarSessao(id_livro, index) {
     }
 }
 
-async function buscarUltimaPagina(id_user, id_livro) {
+async function iniciarSessaoLeitura(user_id, book_id) {
+    try {
+        const res = await fetch(`http://localhost/TimerBook/public/reading/start`, {
+	        method: "POST",
+	        headers: { "Content-Type": "application/json" },
+	        body: JSON.stringify({ user_id, book_id }),
+	        credentials: "include"
+	    });
+	
+	    if (!res.ok) {
+            throw new Error(`Erro ao iniciar sessão: ${res.status}`);
+	    }
+	
+        const data = await res.json();
+	        return data;
+	} catch (error) {
+	    console.error("Erro ao iniciar sessão de leitura:", error);
+	    return null;
+	}
+}
+
+async function buscarUltimaPagina(id_user) {
     try {
         const response = await fetch(`http://localhost/TimerBook/public/reading/statistics/${id_user}`, {
             method: "GET",
@@ -69,17 +90,10 @@ async function buscarUltimaPagina(id_user, id_livro) {
         }
 
         const stats = await response.json();
-        let book;
-        for(let b of stats){
-            if(b.id == id_livro){
-                book = b;
-            }
+        if(stats[0].paginas_lidas != null){
+            return stats[0].paginas_lidas;
         }
-        console.log("status do livro ALSKNAS: ", stats)
-        if(book.paginas_lidas != null){
-            return book.paginas_lidas;
-        }
-        return 0;
+        return stats[1].paginas_lidas;
         
     } catch (error) {
         console.error("Erro na função buscarUltimaPagina:", error);
@@ -165,17 +179,32 @@ async function mostrarUltimoLivro(id_user) {
             return;
         }
 
+        // A lógica de listarLivrosUsuario usa iniciarSessaoLeitura para obter os IDs.
+        // Vamos replicar essa lógica aqui para garantir que os IDs sejam válidos.
+        const data = await iniciarSessaoLeitura(id_user, livro.id);
+        
+        if (!data || !data.leitura_id || !data.sessao_id) {
+            lastBookSection.innerHTML = `<p>Erro ao iniciar a sessão de leitura para o último livro.</p>`;
+            return;
+        }
+        
+        const leituraId = data.leitura_id;
+        const sessaoId = data.sessao_id;
+        
         //Classes css que mudam partes específicas do livro como tamanho da img, fonte etc.
         lastBookSection.innerHTML = `
-            <div class="book-card">
+            <div class="book-card-home">
+                <div class="book-info-home">
+                    <p class="last-read-text">Última Leitura</p>
+                    <h3 class="book-title-home">${livro.titulo}</h3>
+                    <p class="book-author-home">${livro.autor}</p>
+                </div>
                 <img src="${livro.capa_livro || 'uploads/default_cover.jpg'}" 
                      alt="Capa do livro" 
-                     class="book-cover">
-
-                <div class="book-info">
-                    <h3>${livro.titulo}</h3>
-                    <p><strong>Autor:</strong> ${livro.autor}</p>
-                    <p><strong>Gênero:</strong> ${livro.genero || 'Desconhecido'}</p>
+                     class="book-cover-home">
+                
+                <div class="book-actions-home">
+                    <a href="/TimerBook/App/views/html/leitorPdf.php?id=${livro.id}&leitura_id=${leituraId}&sessao_id=${sessaoId}" class="action-button-home read-button-home">Ler</a>
                 </div>
             </div>
         `;

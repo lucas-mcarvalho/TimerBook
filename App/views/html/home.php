@@ -1,6 +1,6 @@
 <?php
 $profilePhoto = $_SESSION['profile_photo'] ?? "uploads/default.png";
-$user_id = $_SESSION['user_id'];
+$id_user = $_SESSION['user_id'];
 // Se a foto é URL do S3, usa diretamente, senão adiciona o caminho local
 if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
     // É URL do S3, mantém como está
@@ -20,6 +20,7 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Timerbook - Início</title>
     <link rel="stylesheet" href="style/home.css">
+	<link rel="stylesheet" href="style/ultimoLivro.css?v=<?= time() ?>">
     <script src="/TimerBook/App/views/javascript/utils.js?v=<?= time() ?>"></script>
 </head>
 <body>
@@ -77,12 +78,15 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
                 </div>
             </div>
         </section>
-        
-         <!-- last-book é a classe para alterar o pocionamento geral do livro-->
-        <aside class="last-book">
-            <h2>Ultimo livro Lido: </h2>
-        </aside>
-        
+
+	    <!-- last-book é a classe para alterar o pocionamento geral do livro-->
+	        <aside class="last-book">
+	            <h2 class="last-book-title">Última Leitura:</h2>
+	            <div id="last-book-content">
+	                <!-- Conteúdo do último livro será injetado aqui pelo JS -->
+	                <p>Nenhum livro encontrado recentemente.</p>
+	            </div>
+	        </aside>
     </main>
 
     <footer class="main-footer">
@@ -105,7 +109,7 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
             document.getElementById("radio" + count).checked = true;
         }
          document.addEventListener("DOMContentLoaded", () => {
-            const user_id = "<?php echo $user_id; ?>";
+            const user_id = "<?php echo $id_user; ?>";
             mostrarUltimoLivro(user_id);
         });
     </script>
