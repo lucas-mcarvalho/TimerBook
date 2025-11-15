@@ -181,15 +181,7 @@ async function mostrarUltimoLivro(id_user) {
 
         // A lógica de listarLivrosUsuario usa iniciarSessaoLeitura para obter os IDs.
         // Vamos replicar essa lógica aqui para garantir que os IDs sejam válidos.
-        const data = await iniciarSessaoLeitura(id_user, livro.id);
-        
-        if (!data || !data.leitura_id || !data.sessao_id) {
-            lastBookSection.innerHTML = `<p>Erro ao iniciar a sessão de leitura para o último livro.</p>`;
-            return;
-        }
-        
-        const leituraId = data.leitura_id;
-        const sessaoId = data.sessao_id;
+        //const data = await iniciarSessaoLeitura(id_user, livro.id);
         
         //Classes css que mudam partes específicas do livro como tamanho da img, fonte etc.
         lastBookSection.innerHTML = `
@@ -204,15 +196,23 @@ async function mostrarUltimoLivro(id_user) {
                      class="book-cover-home">
                 
                 <div class="book-actions-home">
-                    <a href="/TimerBook/App/views/html/leitorPdf.php?id=${livro.id}&leitura_id=${leituraId}&sessao_id=${sessaoId}" class="action-button-home read-button-home">Ler</a>
+                    <button class="action-button-home read-button-home">Ler</button>
                 </div>
             </div>
         `;
+
+        const readButton = lastBookSection.querySelector(".read-button-home");
+            readButton.addEventListener("click", async () => {
+            console.log("Botão Ler clicado!");
+            const data = await iniciarSessaoLeitura(id_user, livro.id);
+            const leitura_id = data.leitura_id;
+            const sessao_id = data.sessao_id;
+
+            window.location.href = `/TimerBook/App/views/html/leitorPdf.php?id=${book_id}&leitura_id=${leitura_id}&sessao_id=${sessao_id}`;    
+});
 
     } catch (error) {
         console.error("Erro ao renderizar último livro:", error);
         lastBookSection.innerHTML = `<p>Erro ao carregar o último livro.</p>`;
     }
 }
-
-
