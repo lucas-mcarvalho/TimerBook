@@ -207,6 +207,7 @@ async function mostrarUltimoLivro(id_user) {
             const data = await iniciarSessaoLeitura(id_user, livro.id);
             const leitura_id = data.leitura_id;
             const sessao_id = data.sessao_id;
+            const book_id = livro.id;
 
             window.location.href = `/TimerBook/App/views/html/leitorPdf.php?id=${book_id}&leitura_id=${leitura_id}&sessao_id=${sessao_id}`;    
 });
