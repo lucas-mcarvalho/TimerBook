@@ -33,6 +33,7 @@ $userId = $_SESSION["user_id"] ?? $_SESSION["id"];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="uploads/TimerbookFavicon.png" type="image/png">
     <title>Timerbook - Meu Perfil</title>
     <link rel="stylesheet" href="style/perfilUsuario.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">

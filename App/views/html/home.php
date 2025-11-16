@@ -18,6 +18,7 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="uploads/TimerbookFavicon.png" type="image/png">
     <title>Timerbook - Início</title>
     <link rel="stylesheet" href="style/home.css">
 	<link rel="stylesheet" href="style/ultimoLivro.css?v=<?= time() ?>">

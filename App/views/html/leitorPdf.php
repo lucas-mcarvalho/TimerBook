@@ -13,6 +13,7 @@ $userId = $_SESSION["user_id"];
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" href="uploads/TimerbookFavicon.png" type="image/png">
   <title>Leitor PDF com Navegação</title>
   <style>
     body {
