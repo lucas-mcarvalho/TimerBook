@@ -7,8 +7,8 @@ require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/App/core/database_config.php';
 require __DIR__ . '/App/controllers/RemindController.php';
 
-// Parâmetros: número de dias de inatividade (opcional)
-$days = 3;
+// Parâmetros: número de dias de inatividade (opcional). Padrão alterado para 1 dia.
+$days = 1;
 if (isset($argv[1]) && is_numeric($argv[1])) {
     $days = (int)$argv[1];
 }
