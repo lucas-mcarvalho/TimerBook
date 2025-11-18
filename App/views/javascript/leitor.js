@@ -55,6 +55,7 @@ async function renderizarPagina(numPagina, sessao_id, leitura_id, id_livro) {
   container.appendChild(controles);
 
   atualizarBarraDeControles(); // atualiza os dados (ex: "Página 5 / 100")
+  atualizarProgresso();
 }
 
 // Cria os elementos da barra de controle (somente uma vez)
@@ -106,6 +107,7 @@ function criarBarraDeControles(sessao_id, leitura_id, pagina_atual, id_livro) {
     }
     paginaAtual = valor;
     renderizarPagina(paginaAtual, globalSessaoId, globalLeituraId, globalIdLivro);
+    atualizarProgresso();
   });
 
   // Botão "Ver progresso"
@@ -138,6 +140,41 @@ function criarBarraDeControles(sessao_id, leitura_id, pagina_atual, id_livro) {
   div.appendChild(btnProgresso);
   div.appendChild(btnFinalizar); // ✅ adicionado no final
 
+  // Barra de progresso
+const progressoContainer = document.createElement('div');
+progressoContainer.style.width = '80%';
+progressoContainer.style.height = '20px';
+progressoContainer.style.background = '#ddd';
+progressoContainer.style.borderRadius = '10px';
+progressoContainer.style.position = 'relative';
+progressoContainer.style.marginTop = '10px';
+progressoContainer.style.overflow = 'hidden';
+
+const progressoBar = document.createElement('div');
+progressoBar.id = 'progressoBar';
+progressoBar.style.height = '100%';
+progressoBar.style.width = '0%';
+progressoBar.style.background = '#4caf50';
+progressoBar.style.transition = 'width 0.3s ease';
+
+// Texto da porcentagem no centro
+const progressoTexto = document.createElement('div');
+progressoTexto.id = 'progressoTexto';
+progressoTexto.style.position = 'absolute';
+progressoTexto.style.top = '50%';
+progressoTexto.style.left = '50%';
+progressoTexto.style.transform = 'translate(-50%, -50%)';
+progressoTexto.style.fontWeight = 'bold';
+progressoTexto.style.color = '#000';
+progressoTexto.style.pointerEvents = 'none'; // texto não bloqueia cliques
+
+progressoContainer.appendChild(progressoBar);
+progressoContainer.appendChild(progressoTexto);
+
+div.appendChild(progressoContainer);
+
+
+
   return div;
 }
 
@@ -148,6 +185,21 @@ function atualizarBarraDeControles() {
     texto.textContent = `Página ${paginaAtual} / ${pdfGlobal.numPages}`;
   }
 }
+
+function atualizarProgresso() {
+  if (!pdfGlobal) return;
+
+  const barra = document.getElementById('progressoBar');
+  const texto = document.getElementById('progressoTexto');
+  if (!barra || !texto) return;
+
+  const porcentagem = ((paginaAtual / pdfGlobal.numPages) * 100).toFixed(1);
+
+  barra.style.width = `${porcentagem}%`;
+  texto.textContent = `${porcentagem}%`;
+}
+
+
 
 // Cria botões reutilizáveis
 function criarBotao(texto, acao) {
@@ -172,6 +224,7 @@ function proximaPagina() {
     paginaAtual++;
     renderizarPagina(paginaAtual, globalSessaoId, globalLeituraId, globalIdLivro);
   }
+  atualizarProgresso();
 }
 
 function paginaAnterior() {
@@ -179,6 +232,7 @@ function paginaAnterior() {
     paginaAtual--;
     renderizarPagina(paginaAtual, globalSessaoId, globalLeituraId, globalIdLivro);
   }
+  atualizarProgresso();
 }
 
 // Progresso de leitura
