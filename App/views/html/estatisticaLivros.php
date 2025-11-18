@@ -45,54 +45,7 @@ if (!$user_id) {
     <div id="books-list" class="books-list">
         </div>
 </main>
-<section class="grafico-section">
-        <h3 class="grafico-titulo">Desempenho Semanal (Páginas Lidas)</h3>
-        
-        <div class="grafico-container">
-            <div class="grafico-background">
-                <div class="guide-line"></div>
-                <div class="guide-line"></div>
-                <div class="guide-line"></div>
-                <div class="guide-line"></div>
-                <div class="guide-line"></div>
-            </div>
 
-            <div class="coluna-dia">
-                <div class="barra" style="height: 15%;" data-paginas="15"></div> 
-                <span class="dia-label">Dom</span>
-            </div>
-
-            <div class="coluna-dia">
-                <div class="barra" style="height: 45%;" data-paginas="45"></div>
-                <span class="dia-label">Seg</span>
-            </div>
-
-            <div class="coluna-dia">
-                <div class="barra" style="height: 70%;" data-paginas="120"></div>
-                <span class="dia-label">Ter</span>
-            </div>
-
-            <div class="coluna-dia">
-                <div class="barra" style="height: 30%;" data-paginas="30"></div>
-                <span class="dia-label">Qua</span>
-            </div>
-
-            <div class="coluna-dia">
-                <div class="barra" style="height: 85%;" data-paginas="150"></div>
-                <span class="dia-label">Qui</span>
-            </div>
-
-            <div class="coluna-dia">
-                <div class="barra" style="height: 60%;" data-paginas="90"></div>
-                <span class="dia-label">Sex</span>
-            </div>
-
-            <div class="coluna-dia">
-                <div class="barra" style="height: 20%;" data-paginas="20"></div>
-                <span class="dia-label">Sáb</span>
-            </div>
-        </div>
-    </section>
 <script src="/TimerBook/App/views/javascript/estatisticaLivros.js"></script>
 
 <script>
