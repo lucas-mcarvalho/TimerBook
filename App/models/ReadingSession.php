@@ -12,7 +12,8 @@ class ReadingSession
             // Verifica se leitura existe
             $check = $pdo->prepare("SELECT id FROM Reading WHERE id = ?");
             $check->execute([$reading_id]);
-            if ($check->rowCount() === 0) {
+            $found = $check->fetch(PDO::FETCH_ASSOC);
+            if (!$found) {
                 return ["error" => "Leitura informada não existe."];
             }
 
@@ -128,7 +129,8 @@ class ReadingSession
             // Verifica se leitura existe
             $check = $pdo->prepare("SELECT id FROM Reading WHERE id = ?");
             $check->execute([$leitura_id]);
-            if ($check->rowCount() === 0) {
+            $found = $check->fetch(PDO::FETCH_ASSOC);
+            if (!$found) {
                 return ["error" => "Leitura informada não existe."];
             }
 
