@@ -240,5 +240,92 @@ public function testGetSessionBook()
     Book::delete($book['book_id']);
 }
 
+public function testGetBookStatisticsWithDetails()
+{
+    // Cria um usuário e dois livros
+    $userId = self::createTestUser(null, ['nome' => 'UserStatsDetail', 'username' => 'stats_detail', 'email' => 'stats_detail_' . uniqid() . '@example.com']);
+    $book1 = self::createTestBook(['titulo' => 'Livro A', 'autor' => 'Autor X', 'user_id' => $userId]);
+    $book2 = self::createTestBook(['titulo' => 'Livro B', 'autor' => 'Autor Y', 'user_id' => $userId]);
+
+    $book1_id = $book1['book_id'];
+    $book2_id = $book2['book_id'];
+
+    // Cria leituras para os livros
+    // Livro A: Em andamento, 120 minutos, 50 páginas
+    $r1 = Reading::create($userId, $book1_id, 'Em andamento', 120, 50, date('Y-m-d H:i:s', strtotime('-1 day')), null);
+    // Livro B: Finalizada, 60 minutos, 30 páginas
+    $r2 = Reading::create($userId, $book2_id, 'Finalizada', 60, 30, date('Y-m-d H:i:s', strtotime('-2 days')), date('Y-m-d H:i:s', strtotime('-1 day')));
+
+    // Executar o método a ser testado
+    $result = Reading::getBookStatisticsWithDetails($userId);
+
+    // Deve retornar um array com 2 entradas (2 livros diferentes)
+    $this->assertIsArray($result);
+    $this->assertCount(2, $result);
+
+    // Organizar o retorno por ID para facilitar o teste
+    $stats = [];
+    foreach ($result as $row) {
+         $stats[$row["id"]] = $row;
+    }
+
+    // LIVRO A (Em andamento)
+    $this->assertArrayHasKey($book1_id, $stats);
+    $this->assertEquals("Livro A", $stats[$book1_id]["titulo"]);
+    $this->assertEquals("Em andamento", $stats[$book1_id]["status"]);
+    $this->assertEquals(120, (int)$stats[$book1_id]["tempo_gasto"]);
+    $this->assertEquals(50, (int)$stats[$book1_id]["paginas_lidas"]);
+
+    // LIVRO B (Finalizada)
+    $this->assertArrayHasKey($book2_id, $stats);
+    $this->assertEquals("Livro B", $stats[$book2_id]["titulo"]);
+    $this->assertEquals("Finalizada", $stats[$book2_id]["status"]);
+    $this->assertEquals(60, (int)$stats[$book2_id]["tempo_gasto"]);
+    $this->assertEquals(30, (int)$stats[$book2_id]["paginas_lidas"]);
+
+    // Cleanup
+    Reading::delete($r1['reading_id']);
+    Reading::delete($r2['reading_id']);
+    Book::delete($book1_id);
+    Book::delete($book2_id);
+}
+
+public function testGetAllReadings()
+{
+    // Cria um usuário e um livro para associar à leitura
+    $userId = self::createTestUser(null, ['nome' => 'UserGetAll', 'username' => 'user_getall', 'email' => 'getall_' . uniqid() . '@example.com']);
+    $bookTitle = 'Livro GetAll';
+    $book = self::createTestBook(['titulo' => $bookTitle, 'autor' => 'Autor GA', 'ano_publicacao' => 2022, 'user_id' => $userId]);
+    $this->assertArrayHasKey('book_id', $book);
+    $bookId = $book['book_id'];
+
+    // Cria uma leitura
+    $r = Reading::create($userId, $bookId, 'Em andamento', 0, 0, null, null);
+    $this->assertArrayHasKey('reading_id', $r);
+    $readingId = $r['reading_id'];
+
+    // Chama o método getAll
+    $allReadings = Reading::getAll();
+
+    // Asserts
+    $this->assertIsArray($allReadings);
+    $this->assertNotEmpty($allReadings);
+
+    // Verifica se a leitura criada está presente no resultado
+    $found = false;
+    foreach ($allReadings as $reading) {
+        if ((int)$reading['id'] === (int)$readingId) {
+            $found = true;
+            $this->assertEquals($bookTitle, $reading['livro_titulo']);
+            $this->assertEquals($userId, (int)$reading['pk_usuario']);
+            break;
+        }
+    }
+    $this->assertTrue($found, "A leitura criada com ID {$readingId} não foi encontrada no resultado de getAll().");
+
+    // Cleanup
+    Reading::delete($readingId);
+    Book::delete($bookId);
+}
 
 }

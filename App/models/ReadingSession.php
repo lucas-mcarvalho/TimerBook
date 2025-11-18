@@ -333,5 +333,35 @@ HAVING dias_inativo >= :dias
         return ["error" => "Erro em ReadingSession::getInactiveUsers: " . $e->getMessage()];
     }
 }
+
+public static function getLastReadBookBySession($user_id)
+{
+    try {
+        $pdo = Database::connect();
+
+        $stmt = $pdo->prepare("
+            SELECT 
+                b.id AS book_id,
+                b.titulo,
+                b.autor,
+                b.ano_publicacao,
+                b.capa_livro,
+                MAX(s.data_inicio) AS ultima_sessao
+            FROM SessaoLeitura s
+            JOIN Reading r ON s.pk_leitura = r.id
+            JOIN Books b ON r.livro = b.id
+            WHERE r.pk_usuario = ?
+            GROUP BY b.id, b.titulo, b.autor, b.ano_publicacao, b.capa_livro
+            ORDER BY ultima_sessao DESC
+            LIMIT 1
+        ");
+        $stmt->execute([$user_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+    } catch (PDOException $e) {
+        return ["error" => "Erro ao buscar o último livro lido por sessão: " . $e->getMessage()];
+    }
+}
+
 }
 ?>
