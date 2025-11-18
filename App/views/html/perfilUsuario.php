@@ -10,23 +10,55 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['id'])) {
     exit();
 }
 
-// Foto de perfil
-$profilePhoto = $_SESSION['profile_photo'] ?? "uploads/default.png";
-// Se a foto é URL do S3, usa diretamente, senão adiciona o caminho local
-if ($profilePhoto && strpos($profilePhoto, 'http' ) === 0) {
-    // É URL do S3, mantém como está
+// Pega o ID da sessão
+$userId = $_SESSION["user_id"] ?? $_SESSION["id"];
+
+// --- CORREÇÃO AQUI ---
+// Em vez de confiar na sessão, buscamos os dados frescos do banco
+// Certifique-se de incluir seu arquivo de conexão ou model User se necessário
+// require_once '../App/models/User.php'; (Exemplo, ajuste o caminho)
+
+try {
+    // Supondo que você tenha um método para buscar por ID
+    // Se sua classe for diferente, ajuste aqui (ex: User::find($userId))
+    $userData = User::getById($userId); 
+    
+    if ($userData) {
+        // Atualiza as variáveis com o que veio do banco (S3)
+        $nome = $userData['nome'];
+        $username = $userData['username'];
+        $email = $userData['email'];
+        $profilePhoto = $userData['profile_photo']; // Aqui virá a URL nova do S3
+        
+        // Opcional: Atualizar a sessão para as outras páginas
+        $_SESSION['profile_photo'] = $profilePhoto;
+    } else {
+        // Fallback se não achar no banco (usa a sessão antiga)
+        $nome = $_SESSION['nome'] ?? '';
+        $username = $_SESSION['username'] ?? '';
+        $email = $_SESSION['email'] ?? '';
+        $profilePhoto = $_SESSION['profile_photo'] ?? null;
+    }
+
+} catch (Exception $e) {
+    // Se der erro no banco, usa a sessão como fallback
+    $nome = $_SESSION['nome'] ?? '';
+    $username = $_SESSION['username'] ?? '';
+    $email = $_SESSION['email'] ?? '';
+    $profilePhoto = $_SESSION['profile_photo'] ?? null;
+}
+
+// Lógica de fallback para imagem padrão ou local
+if (empty($profilePhoto)) {
+    $profilePhoto = "uploads/default.png";
+} elseif (strpos($profilePhoto, 'http') === 0) {
+    // É URL do S3, mantém como está (AQUI QUE ELE VAI ENTRAR AGORA)
 } else {
-    // É caminho local, adiciona o prefixo uploads/ se necessário
-    if ($profilePhoto && strpos($profilePhoto, 'uploads/') !== 0) {
+    // É caminho local antigo
+    if (strpos($profilePhoto, 'uploads/') !== 0) {
         $profilePhoto = "uploads/" . $profilePhoto;
     }
 }
-
-// Dados do usuário da sessão
-$nome = $_SESSION['nome'] ?? '';
-$username = $_SESSION['username'] ?? '';
-$email = $_SESSION['email'] ?? '';
-$userId = $_SESSION["user_id"] ?? $_SESSION["id"];
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">

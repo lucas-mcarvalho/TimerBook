@@ -237,6 +237,7 @@ class UserController
                     'Bucket' => $bucketName,
                     'Key' => $newName,
                     'SourceFile' => $file['tmp_name'],
+                    'ContentType' => $file['type']
                   //  'ACL' => 'public-read' 
                 ]);
 
