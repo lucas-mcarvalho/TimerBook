@@ -237,7 +237,8 @@ class UserController
                     'Bucket' => $bucketName,
                     'Key' => $newName,
                     'SourceFile' => $file['tmp_name'],
-                    'ACL' => 'public-read' 
+                    'ContentType' => $file['type']
+                  //  'ACL' => 'public-read' 
                 ]);
 
                 $profilePhoto = "https://{$bucketName}.s3.{$_ENV['AWS_DEFAULT_REGION']}.amazonaws.com/{$newName}";

@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" href="uploads/TimerbookFavicon.png" type="image/png">
   <title>Cadastro de Usuário</title>
   <link rel="stylesheet" href="style/style.css"> 
   <script src="/js/usuario_api.js"></script>

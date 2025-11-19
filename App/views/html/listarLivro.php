@@ -26,10 +26,12 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="uploads/TimerbookFavicon.png" type="image/png">
     <title>Timer Book - Meus Livros</title>
     <link rel="stylesheet" href="style/listarLivro.css?v=<?php echo time(); ?>">
-    <script src="/js/estatisticaLivros.js?v=<?= time() ?>"></script>
-    <script src="/js/livros_api.js?v=<?= time() ?>"></script>
+    <script src="/TimerBook/App/views/javascript/estatisticaLivros.js?v=<?= time() ?>"></script>
+    <script src="/TimerBook/App/views/javascript/livros_api.js?v=<?= time() ?>"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -48,6 +50,9 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
     </header>
 
     <main class="books-container">
+        <a href="index.php?action=home" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        </a> 
         <h2 class="title">MEUS LIVROS</h2>
         
         <div class="carousel-container">

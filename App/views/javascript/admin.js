@@ -184,6 +184,8 @@
     if (fileInput) {
       fileInput.addEventListener("change", () => {
         const file = fileInput.files[0];
+        console.log(file);
+        
         if (file) {
           const reader = new FileReader();
           reader.onload = (e) => (preview.src = e.target.result);
@@ -222,6 +224,7 @@
         try {
           const res = await fetch(`${API_BASE}/users/${userId}`, {
             method: "POST",
+            credentials : "include",
             headers,
             body,
           });

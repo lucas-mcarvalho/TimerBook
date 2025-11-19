@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style/redefinir.css">
+    <link rel="icon" href="uploads/TimerbookFavicon.png" type="image/png">
+    <link rel="stylesheet" href="/TimerBook/public/style/redefinir.css">
     <title>Redefinir senha</title>
 </head>
 <body>

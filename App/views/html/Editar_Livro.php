@@ -7,6 +7,7 @@ $id_livro = $_POST['id_livro'] ?? null;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="uploads/TimerbookFavicon.png" type="image/png">
     <link rel="stylesheet" href="../public/style/admEditar.css">
     <script src="/js/livros_api.js"></script>
     
