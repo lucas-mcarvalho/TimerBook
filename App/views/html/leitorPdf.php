@@ -50,10 +50,10 @@ $userId = $_SESSION["user_id"];
   <div id="pdfContainer"></div>
 
   <!-- PDF.js CDN -->
-  <script src="/TimerBook/App/views/javascript/estatisticaLivros.js?v=<?= time() ?>"></script>
+  <script src="/js/estatisticaLivros.js?v=<?= time() ?>"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="/TimerBook/App/views/javascript/utils.js?v=<?= time() ?>"></script>
-  <script src="/TimerBook/App/views/javascript/leitor.js?v=<?= time() ?>"></script>
+  <script src="/js/utils.js?v=<?= time() ?>"></script>
+  <script src="/js/leitor.js?v=<?= time() ?>"></script>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);

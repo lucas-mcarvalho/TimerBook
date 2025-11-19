@@ -71,7 +71,7 @@ class AuthenticationController {
             $stmt = $pdo->prepare("UPDATE `User` SET reset_token = ?, reset_token_expire = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = ?");
             $stmt->execute([$token, $user['id']]);
 
-            $resetLink = "http://localhost/TimerBook/public/index.php?action=reset_password&token=$token";
+            $resetLink = "http://localhost:8080/index.php?action=reset_password&token=$token";
             $mail = new PHPMailer(true);
 
             try {
@@ -174,7 +174,7 @@ class AuthenticationController {
             if (stripos($contentType, "application/json") !== false) {
                 echo json_encode(["success" => true, "message" => "Senha redefinida com sucesso!"]);
             } else {
-                header('Location: /TimerBook/public/index.php?action=reset_password&success=1');
+                header('Location: index.php?action=reset_password&success=1');
                 exit;
             }
 
@@ -187,7 +187,7 @@ class AuthenticationController {
     public static function checkLogin() {
         ApiHelper::startSessionIfNeeded();
         if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
-            header('Location: /TimerBook/public/index.php?action=login');
+            header('index.php?action=login');
             exit;
         }
     }
@@ -196,7 +196,7 @@ class AuthenticationController {
         ApiHelper::startSessionIfNeeded();
         $_SESSION = [];
         session_destroy();
-        header('Location: /TimerBook/public/index.php?action=login');
+        header('Location: index.php?action=login');
         exit;
     }
 }

@@ -21,15 +21,15 @@
         
         <script>
             setTimeout(function() {
-                window.location.href = '/TimerBook/public/index.php?action=login';
+                window.location.href = 'index.php?action=login';
             }, 3000);
         </script>
 
     <?php else: ?>
         
-        <form id="resetForm" action="/TimerBook/public/api.php?action=reset-password" method="post">
+        <form id="resetForm" action="api.php?action=reset-password" method="post">
           
-          <img class="logo" src="/TimerBook/public/uploads/main_logo.png" alt="logo">
+          <img class="logo" src="uploads/main_logo.png" alt="logo">
 
           <h1>Redefinir Senha</h1>
           <input type="hidden" name="token" value="<?php echo htmlspecialchars($_GET['token'] ?? ''); ?>">

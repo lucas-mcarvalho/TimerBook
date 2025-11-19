@@ -5,7 +5,7 @@
   <link rel="icon" href="uploads/TimerbookFavicon.png" type="image/png">
   <title>Login de Usuário</title>
   <link rel="stylesheet" href="style/login.css">
-  <script src="/TimerBook/App/views/javascript/usuario_api.js"></script>
+  <script src="/js/usuario_api.js"></script>
 
 </head>
 <body>
@@ -31,7 +31,7 @@
 <script>loginUsuario();</script>
 <script>
   document.getElementById("googleLoginBtn").addEventListener("click", () => {
-  window.location.href = "http://localhost/TimerBook/public/google-login";
+  window.location.href = "http://localhost:8080/google-login";
 });
 </script>
 </body>

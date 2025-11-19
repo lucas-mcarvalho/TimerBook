@@ -5,7 +5,7 @@
   <link rel="icon" href="uploads/TimerbookFavicon.png" type="image/png">
   <title>Cadastro de Usuário</title>
   <link rel="stylesheet" href="style/style.css"> 
-  <script src="/TimerBook/App/views/javascript/usuario_api.js"></script>
+  <script src="/js/usuario_api.js"></script>
 </head>
 <body>
 

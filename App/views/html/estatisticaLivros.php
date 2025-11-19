@@ -46,7 +46,7 @@ if (!$user_id) {
         </div>
 </main>
 
-<script src="/TimerBook/App/views/javascript/estatisticaLivros.js"></script>
+<script src="/js/estatisticaLivros.js"></script>
 
 <script>
     window.onload = function() {

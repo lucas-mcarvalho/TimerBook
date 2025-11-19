@@ -10,10 +10,9 @@ $dotenv->load();
 
 // CONEXAO DO BANCO DE DADOS MYSQL
 define('DB_HOST', $_ENV['DB_HOST']);
-define('DB_USER', $_ENV['DB_USER']);
-define('DB_PASS', $_ENV['DB_PASS']);
-define('DB_NAME', $_ENV['DB_NAME']);
-
+define('DB_USER', $_ENV['DB_USERNAME']);
+define('DB_PASS', $_ENV['DB_PASSWORD']);
+define('DB_NAME', $_ENV['DB_DATABASE']);
 class Database {
     // Para permitir testes, primeiro tentamos usar DB_DSN (ex: sqlite::memory:)
     // Também é possível injetar um PDO via DatabaseTestHelper (ver tests/DatabaseTestHelper.php)

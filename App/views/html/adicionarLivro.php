@@ -1,8 +1,3 @@
-<?php 
-session_start();
-$id = $_SESSION['user_id'] ?? null;
-?>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -11,8 +6,8 @@ $id = $_SESSION['user_id'] ?? null;
     <link rel="icon" href="uploads/TimerbookFavicon.png" type="image/png">
     <title>Cadastro de Livro</title>
     <link rel="stylesheet" href="style/adicionarLivro.css">
-
-    <script src="/TimerBook/App/views/javascript/livros_api.js"></script>
+    
+    <script src="/js/livros_api.js"></script>
 
 </head>
 <body>
@@ -56,12 +51,12 @@ $id = $_SESSION['user_id'] ?? null;
                 <input type="number" id="ano_publicacao" name="ano_publicacao" placeholder="Digite o ano de publicação" required>
             </div>
 
-            <input type="hidden" name="user_id" value="<?php echo $id; ?>">
+            <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>">
 
             <!-- Botões -->
             <div class="form-buttons">
                 <button type="submit" id="register-button" class="register-button">Cadastrar</button>
-                <button type="button" id="back-button" class="back-button" onclick="window.location.href='index.php?action=listar_livros'">Voltar</button>
+                <button type="button" id="back-button" class="back-button" onclick="window.location.href='index.php?action=home'">Voltar</button>
             </div>
         </form>
     </main>

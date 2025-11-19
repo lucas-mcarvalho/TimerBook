@@ -4,7 +4,7 @@
 async function iniciarSessaoLeitura(user_id, book_id) {
     
     try {
-        const response = await fetch("http://localhost/TimerBook/public/reading/start", {
+        const response = await fetch("http://localhost:8080/reading/start", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas, id_l
 
 
     try {
-        const response = await fetch("http://localhost/TimerBook/public/reading/finish", {
+        const response = await fetch("http://localhost:8080/reading/finish", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas, id_l
 
 async function finalizarLeitura(leitura_id){
     try {
-        const response = await fetch("http://localhost/TimerBook/public/reading/finish-read", {
+        const response = await fetch("http://localhost:8080/reading/finish-read", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ async function finalizarLeitura(leitura_id){
 
 
 (async function () {
-    const API_BASE = "http://localhost/TimerBook/public";
+    const API_BASE = "http://localhost:8080";
 
     function formatarTempo(segundos ) {
         if (segundos === 0 || segundos === null || segundos === undefined || isNaN(segundos)) return "0h 0m";
@@ -231,7 +231,7 @@ async function finalizarLeitura(leitura_id){
 
         try {
             console.log("Buscando estatísticas gerais para o usuário ID:", user_id);
-            const response = await fetch(`http://localhost/TimerBook/public/reading/totals/${user_id}`, {
+            const response = await fetch(`http://localhost:8080/reading/totals/${user_id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -326,7 +326,7 @@ async function finalizarLeitura(leitura_id){
 async function estatisticasGeraisUsuario(user_id){
     try {
         console.log("Buscando estatísticas gerais para o usuário ID:", user_id);
-        const response = await fetch(`http://localhost/TimerBook/public/reading/totals/${user_id}`, {
+        const response = await fetch(`http://localhost:8080/reading/totals/${user_id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

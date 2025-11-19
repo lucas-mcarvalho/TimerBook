@@ -1,6 +1,6 @@
 // js/admin.js
 (function () {
-  const API_BASE = "http://localhost/TimerBook/public";
+  const API_BASE = "http://localhost:8080";
 
   // ==========================
   // LISTAGEM DE USUÁRIOS
@@ -17,6 +17,7 @@
       const text = await res.text();
 
       let data;
+      console.log("Usuários: ", text);
       try {
         data = JSON.parse(text);
       } catch (e) {

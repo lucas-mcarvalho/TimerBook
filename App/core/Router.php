@@ -28,7 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 // Remove o prefixo da pasta
-$endpoint = str_replace('/TimerBook/public', '', $uri);
+$endpoint = rtrim($uri, '/');
+
 // Se for uma chamada para api.php, usa parâmetros para determinar a ação
 
 if (strpos($endpoint, '/api.php') !== false) {

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style/admin.css">
     <title>Timer Book</title>
 
-    <script src="/TimerBook/App/views/javascript/admin.js?v=<?= time() ?>"></script>
+    <script src="/js/admin.js?v=<?= time() ?>"></script>
 </head>
 <body>
 
@@ -20,7 +20,7 @@
     
     <div class="header-right">
         <!-- Cria rota para saida do admin-->
-        <a href="/TimerBook/public/admin/logout" class="logout-button">Sair</a>
+        <a href="index.php?action=sair" class="logout-button">Sair</a>
     </div>
 </header>
 

@@ -12,7 +12,7 @@ $id = $_GET['UserId'] ?? null;;
     <title>TimerBook-ADMIN</title>
     <link rel="stylesheet" href="style/listarLivro.css?v=<?php echo time(); ?>">
 
-    <script src="/TimerBook/App/views/javascript/livros_api.js?v=<?= time() ?>"></script>
+    <script src="/js/livros_api.js?v=<?= time() ?>"></script>
 
     
 </head>
