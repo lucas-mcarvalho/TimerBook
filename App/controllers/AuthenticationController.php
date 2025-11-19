@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../models/User.php';
-
+require_once __DIR__ . '/../core/ApiHelper.php';
 
 require __DIR__ . '/../../vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
@@ -12,18 +12,10 @@ use PHPMailer\PHPMailer\Exception;
 class AuthenticationController {
          public function login()
     {
-        //VERIFICA O TIPO QUE FOI RECEBIDO
-        $contentType = $_SERVER["CONTENT_TYPE"] ?? '';
-        //SE FOI JSON 
-        if (stripos($contentType, "application/json") !== false) {
-            $data = json_decode(file_get_contents("php://input"), true);
-            $email = $data['email'] ?? null;
-            $password = $data['password'] ?? null;
-        } else {
-            //OU SE FOI FORM DATA , DO TIPO HTML
-            $email = $_POST['email'] ?? null;
-            $password = $_POST['password'] ?? null;
-        }
+        // Gera dados de request (JSON ou form-data)
+        $data = ApiHelper::getRequestData();
+        $email = $data['email'] ?? null;
+        $password = $data['password'] ?? null;
 
         //VERIFICA SE OS CAMPOS EMAIL E SENHA FORAM PREENCHIDOS
         if (!$email || !$password) {
@@ -38,20 +30,8 @@ class AuthenticationController {
         //VERIFICA SE O USUARIO E VALIDO E VERIFICA A SENHA COM O PASSWORD_VERIFY QUE E PARA VERIFICAR SENHAS CRIPTOGRAFADAS
         if ($user && isset($user['senha']) && password_verify($password, $user['senha'])) {
             
-            session_start();
-            $_SESSION['user_logged_in'] = true; 
-            $_SESSION['user'] = $user;
-
-            // Armazena informações do usuário na sessão
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION["nome"] = $user["nome"];
-            $_SESSION["email"] = $user["email"];
-            if (!empty($user['profile_photo'])) {
-               $_SESSION['profile_photo'] = ltrim($user['profile_photo'], '/');
-          } else {
-                   $_SESSION['profile_photo'] = null;
-               }
+            // centraliza configuração de sessão
+            ApiHelper::setUserSession($user);
             //RETORNA A MENSAGEM DE SUCESSO E OS DADOS DO USUARIO ,SEM INCLUIR A SENHA
             echo json_encode([
                 "success" => true,
@@ -205,9 +185,7 @@ class AuthenticationController {
     }
 
     public static function checkLogin() {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
+        ApiHelper::startSessionIfNeeded();
         if (!isset($_SESSION['user_logged_in']) || $_SESSION['user_logged_in'] !== true) {
             header('Location: /TimerBook/public/index.php?action=login');
             exit;
@@ -215,9 +193,7 @@ class AuthenticationController {
     }
 
     public static function logout() {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
+        ApiHelper::startSessionIfNeeded();
         $_SESSION = [];
         session_destroy();
         header('Location: /TimerBook/public/index.php?action=login');

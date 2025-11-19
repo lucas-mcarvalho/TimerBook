@@ -283,4 +283,30 @@ public function getSessionBook($book_id) {
     echo json_encode($sessoes);
 }
 
+    public function finalizarLeitura() {
+        header("Content-Type: application/json");
+
+        $data = json_decode(file_get_contents("php://input"), true);
+        $leitura_id = $data['leitura_id'] ?? null;
+
+        if (!$leitura_id) {
+            http_response_code(400);
+            echo json_encode(["error" => "leitura_id é obrigatório"]);
+            return;
+        }
+
+        $result = Reading::finalizarLeitura($leitura_id);
+
+        if (isset($result['error'])) {
+            http_response_code(500);
+            echo json_encode($result);
+            return;
+        }
+
+        echo json_encode([
+            "mensagem" => "Leitura finalizada com sucesso",
+            "resultado" => $result
+        ]);
+    }
+
 }

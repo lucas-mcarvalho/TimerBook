@@ -163,4 +163,67 @@ class ReadingSessionTest extends TestCase
         $pdo = self::getPdo();
         $pdo->exec("DELETE FROM SessaoLeitura WHERE pk_leitura = " . (int)$reading['reading_id']);
     }
+
+
+public function testGetSessionBook()
+{
+    $userId = self::createTestUser(null, ['nome' => 'BookSessUser', 'username' => 'bsuser', 'email' => 'bs_' . uniqid() . '@example.com']);
+    $book = self::createTestBook(['user_id' => $userId]);
+    $reading = self::createTestReading($userId, $book['book_id']);
+
+    // cria 2 sessões para este livro
+    ReadingSession::create($reading['reading_id'], '2025-01-01 08:00:00', '2025-01-01 08:30:00', 1800, 10);
+    ReadingSession::create($reading['reading_id'], '2025-01-02 09:00:00', '2025-01-02 09:15:00', 900, 5);
+
+    // chama o método que queremos testar
+    $sessions = ReadingSession::getSessionBook($book['book_id']);
+
+    // Verifica se retornou um array
+    $this->assertIsArray($sessions);
+    $this->assertCount(2, $sessions);
+    $this->assertArrayHasKey('sessao_id', $sessions[0]);
+    $this->assertEquals($book['book_id'], $book['book_id']); // só pra garantir o contexto
+
+    // cleanup
+    $pdo = self::getPdo();
+    $pdo->exec("DELETE FROM SessaoLeitura WHERE pk_leitura = " . (int)$reading['reading_id']);
+}
+
+public function testLastReadBookBySession()
+{
+    // Cria usuário
+    $userId = self::createTestUser(null, ['nome' => 'UserLastSess', 'username' => 'lastsessuser', 'email' => 'lastsess_' . uniqid() . '@example.com']);
+
+    // Livro 1 (Sessão Antiga)
+    $book1 = self::createTestBook(['titulo' => 'Livro Antigo', 'autor' => 'Autor A', 'user_id' => $userId]);
+    $r1 = self::createTestReading($userId, $book1['book_id']);
+    ReadingSession::create($r1['reading_id'], date('Y-m-d H:i:s', strtotime('-10 days')), date('Y-m-d H:i:s', strtotime('-9 days')), 3600, 10);
+
+    // Livro 2 (Sessão Mais Recente)
+    $book2 = self::createTestBook(['titulo' => 'Livro Recente', 'autor' => 'Autor B', 'user_id' => $userId]);
+    $r2 = self::createTestReading($userId, $book2['book_id']);
+    ReadingSession::create($r2['reading_id'], date('Y-m-d H:i:s', strtotime('-1 day')), date('Y-m-d H:i:s', strtotime('-1 hour')), 1800, 5);
+
+    // Executar a função
+    $lastBook = ReadingSession::getLastReadBookBySession($userId);
+
+    // Asserções
+    $this->assertIsArray($lastBook);
+    $this->assertEquals($book2['book_id'], $lastBook['book_id']);
+    $this->assertEquals('Livro Recente', $lastBook['titulo']);
+
+    // Cenário 2: Usuário sem sessões
+    $userId2 = self::createTestUser(null, ['nome' => 'UserNoSess', 'username' => 'nosessuser', 'email' => 'nosess_' . uniqid() . '@example.com']);
+    $noLastBook = ReadingSession::getLastReadBookBySession($userId2);
+    $this->assertFalse($noLastBook);
+
+    // cleanup
+    $pdo = self::getPdo();
+    $pdo->exec("DELETE FROM SessaoLeitura WHERE pk_leitura IN (" . (int)$r1['reading_id'] . ", " . (int)$r2['reading_id'] . ")");
+    Reading::delete($r1['reading_id']);
+    Reading::delete($r2['reading_id']);
+    Book::delete($book1['book_id']);
+    Book::delete($book2['book_id']);
+}
+
 }
