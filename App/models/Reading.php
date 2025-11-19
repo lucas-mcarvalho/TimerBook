@@ -4,7 +4,7 @@ require_once __DIR__ . '/../core/database_config.php';
 class Reading
 {
     //  Cria um novo registro de Reading
-    public static function create($user_id, $book_id, $status = 'Em andamento', $tempo_gasto = 0, $paginas_lidas = 0, $data_inicio = null, $data_fim = null)
+    public static function create($user_id, $book_id, $status = 'Em andamento', $tempo_gasto = 0, $paginas_lidas = 0, $data_inicio = null, $data_fim = null,$paginas_totais=null)
     {
         try {
             $pdo = Database::connect();
@@ -12,10 +12,10 @@ class Reading
             $data_inicio = $data_inicio ?? date('Y-m-d H:i:s');
 
             $stmt = $pdo->prepare("
-                INSERT INTO Reading (pk_usuario, livro, status, tempo_gasto, paginas_lidas, data_inicio, data_fim)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO Reading (pk_usuario, livro, status, tempo_gasto, paginas_lidas, data_inicio, data_fim,paginas_totais)
+                VALUES (?, ?, ?, ?, ?, ?, ?,?)
             ");
-            $stmt->execute([$user_id, $book_id, $status, $tempo_gasto, $paginas_lidas, $data_inicio, $data_fim]);
+            $stmt->execute([$user_id, $book_id, $status, $tempo_gasto, $paginas_lidas, $data_inicio, $data_fim,$paginas_totais]);
 
             return [
                 "message" => "Reading criada com sucesso",

@@ -29,8 +29,8 @@ class ReadingController
             echo json_encode(["error" => "user_id e book_id são obrigatórios"]);
             return;
         }
-
-        $result = Reading::create($user_id, $book_id, $status, $tempo_gasto, $paginas_lidas, $data_inicio, $data_fim);
+        $paginas_totais = $data['paginas_totais'] ?? null;
+        $result = Reading::create($user_id, $book_id, $status, $tempo_gasto, $paginas_lidas, $data_inicio, $data_fim,$paginas_totais);
         echo json_encode($result);
     }
 
