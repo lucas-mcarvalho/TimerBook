@@ -34,8 +34,8 @@ class Reading
             $stmt = $pdo->query("
                 SELECT r.*, u.nome AS usuario_nome, b.titulo AS livro_titulo
                 FROM Reading r
-                JOIN User u ON r.pk_usuario = u.id
-                JOIN Books b ON r.livro = b.id
+                LEFT JOIN User u ON r.pk_usuario = u.id
+                LEFT JOIN Books b ON r.livro = b.id
             ");
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -166,7 +166,9 @@ class Reading
         }
     }
 
-  public static function iniciarLeitura($user_id, $book_id, $paginas_totais=null) {
+  
+
+public static function iniciarLeitura($user_id, $book_id, $paginas_totais = null) {
     $pdo = Database::connect();
 
     // Verifica se já existe leitura para este livro e usuário
@@ -175,8 +177,16 @@ class Reading
     $leitura = $stmt->fetch();
 
     if ($leitura) {
+if ($paginas_totais !== null) {
+    $stmt = $pdo->prepare("
+        UPDATE Reading
+        SET paginas_totais = ?
+        WHERE id = ?
+    ");
+    $stmt->execute([$paginas_totais, $leitura['id']]);
+}
 
-        // Se a leitura estiver finalizada, reabrir
+        // Se a leitura estiver finalizada, reabre
         if ($leitura['status'] === 'Finalizada') {
             $stmt = $pdo->prepare("
                 UPDATE Reading
@@ -189,21 +199,16 @@ class Reading
         return $leitura['id']; 
     }
 
-    // Cria nova leitura
+    // Criar nova leitura
     $stmt = $pdo->prepare("
         INSERT INTO Reading (pk_usuario, livro, `status`, data_inicio, paginas_totais)
         VALUES (?, ?, 'Em andamento', ?, ?)
     ");
-
-    $stmt->execute([
-        $user_id, 
-        $book_id, 
-        date('Y-m-d H:i:s'),
-        $paginas_totais
-    ]);
+    $stmt->execute([$user_id, $book_id, date('Y-m-d H:i:s'), $paginas_totais]);
 
     return $pdo->lastInsertId();
 }
+
 
    public static function finalizarLeitura($leitura_id) {
     try { 

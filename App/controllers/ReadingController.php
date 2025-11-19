@@ -139,6 +139,8 @@ class ReadingController
 
         $user_id = $data['user_id'] ?? null;
         $book_id = $data['book_id'] ?? null;
+        $paginas_totais = $data['paginas_totais'] ?? null;
+        var_dump($paginas_totais);
 
         if (!$user_id || !$book_id) {
             http_response_code(400); // Bad Request
@@ -146,7 +148,7 @@ class ReadingController
             return;
         }
 
-        $leitura_id = Reading::iniciarLeitura($user_id, $book_id);
+        $leitura_id = Reading::iniciarLeitura($user_id, $book_id,$paginas_totais );
         $sessao_id = ReadingSession::StartSession($leitura_id);
 
         echo json_encode([
