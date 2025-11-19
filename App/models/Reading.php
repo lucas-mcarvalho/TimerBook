@@ -78,7 +78,7 @@ class Reading
             if ($tempo_gasto !== null) {
                 $fields[] = "tempo_gasto = ?";
                 $values[] = $tempo_gasto;
-            }
+            }          
             if ($paginas_lidas !== null) {
                 $fields[] = "paginas_lidas = ?";
                 $values[] = $paginas_lidas;
@@ -127,6 +127,7 @@ class Reading
             // A filtragem pelo usuário deve ser feita na tabela Books (b.user_id)
             $stmt = $pdo->prepare("
                 SELECT
+                    b.id,
                     b.titulo,
                     b.autor,
                     b.ano_publicacao,
@@ -165,61 +166,80 @@ class Reading
         }
     }
 
-      public static function iniciarLeitura($user_id, $book_id) {
+     public static function iniciarLeitura($user_id, $book_id) {
         $pdo = Database::connect();
 
-        // Verifica se já existe leitura em andamento para este livro e usuário
-        $stmt = $pdo->prepare("SELECT id FROM Reading WHERE pk_usuario = ? AND livro = ?");
+        // Verifica se já existe leitura para este livro e usuário
+        $stmt = $pdo->prepare("SELECT id, status FROM Reading WHERE pk_usuario = ? AND livro = ?");
         $stmt->execute([$user_id, $book_id]);
         $leitura = $stmt->fetch();
 
         if ($leitura) {
-            return $leitura['id']; // Retorna a leitura existente
+            // Se a leitura estiver finalizada, reabrir
+            if ($leitura['status'] === 'Finalizada') {
+                $stmt = $pdo->prepare("
+                    UPDATE Reading
+                    SET `status` = 'em andamento', data_fim = NULL
+                    WHERE id = ?
+                ");
+                $stmt->execute([$leitura['id']]);
+            }
+
+            return $leitura['id']; 
         }
 
         // Cria nova leitura
-        $stmt = $pdo->prepare("
-            INSERT INTO Reading (pk_usuario, livro, status, data_inicio) 
-            VALUES (?, ?, 'em andamento', NOW())
-        ");
-        $stmt->execute([$user_id, $book_id]);
+     $stmt = $pdo->prepare("
+    INSERT INTO Reading (pk_usuario, livro, `status`, data_inicio)
+    VALUES (?, ?, 'Em andamento', ?)
+           ");
+$stmt->execute([$user_id, $book_id, date('Y-m-d H:i:s')]);
+
         return $pdo->lastInsertId();
     }
 
+    
    public static function finalizarLeitura($leitura_id) {
-        try { 
-            $pdo = Database::connect();
+    try { 
+        $pdo = Database::connect();
 
-            // 1. Soma todos os tempos das sessões e páginas
-            $stmt = $pdo->prepare("
-                SELECT SUM(tempo_sessao) AS tempo_total, SUM(paginas_lidas) AS paginas_total
-                FROM SessaoLeitura WHERE pk_leitura = ?
-            "); 
-            $stmt->execute([$leitura_id]);
-            $resumo = $stmt->fetch();
-            
-           
-            $tempo_total = $resumo['tempo_total'] ?? 0;
-            $paginas_total = $resumo['paginas_total'] ?? 0;
-
-          
-            $stmt = $pdo->prepare("
-                UPDATE Reading 
-                    tempo_gasto = ?, 
-                    paginas_lidas = ?, 
-                    data_fim = NOW() 
-                WHERE id = ?
-            ");
-            
-            $stmt->execute([$tempo_total, $paginas_total, $leitura_id]);
-
-            
-            return $stmt->rowCount(); 
+        // 1. Soma todos os tempos das sessões e páginas
+        $stmt = $pdo->prepare("
+            SELECT 
+                SUM(tempo_sessao) AS tempo_total, 
+                SUM(paginas_lidas) AS paginas_total
+            FROM SessaoLeitura 
+            WHERE pk_leitura = ?
+        "); 
+        $stmt->execute([$leitura_id]);
+        $resumo = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        } catch (PDOException $e) {
-            return ["error" => "Erro em Reading::finalizarLeitura: " . $e->getMessage()];
+        $tempo_total = $resumo['tempo_total'] ?? 0;
+        $paginas_total = $resumo['paginas_total'] ?? 0;
+
+        // 2. Atualiza leitura com data atual (compatível com MySQL e SQLite)
+        $stmt = $pdo->prepare("
+            UPDATE Reading 
+            SET tempo_gasto = ?, 
+                paginas_lidas = ?, 
+                data_fim = ?, 
+                status = 'Finalizada'
+            WHERE id = ?
+        ");
+        $stmt->execute([$tempo_total, $paginas_total, date('Y-m-d H:i:s'), $leitura_id]);
+
+        // 3. Confirma se realmente atualizou
+        if ($stmt->rowCount() === 0) {
+            return ["error" => "Nenhuma leitura atualizada para ID {$leitura_id}"];
         }
+
+        return ["message" => "Leitura finalizada com sucesso", "leitura_id" => $leitura_id];
+    
+    } catch (PDOException $e) {
+        return ["error" => "Erro em Reading::finalizarLeitura: " . $e->getMessage()];
     }
+}
+
 
   public static function estatisticasUsuario($user_id) {
         try {
@@ -296,5 +316,8 @@ public static function getSessionBook($book_id) {
         return ["error" => "Erro em ReadingSession::getSessoesPorLivro: " . $e->getMessage()];
     }
 }
+
+
+
 
 }

@@ -32,7 +32,7 @@ async function iniciarSessaoLeitura(user_id, book_id) {
 }
 
 async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas, id_livro) {
-    const ultimaPaginaLida = await buscarUltimaPagina(user_id);
+    const ultimaPaginaLida = await buscarUltimaPagina(user_id, id_livro);
     if(ultimaPaginaLida){
         console.log("Ultima Página Lida", ultimaPaginaLida);
         if(paginas_lidas > ultimaPaginaLida){
@@ -71,6 +71,29 @@ async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas, id_l
     }
 }
 
+async function finalizarLeitura(leitura_id){
+    try {
+        const response = await fetch("http://localhost/TimerBook/public/reading/finish-read", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                leitura_id: leitura_id, 
+            })
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log("Leitura finalizada com sucesso:", data);
+        } else {
+            console.error("Erro ao finalizar a leitura:", data.error);
+        }   
+    }catch (error) {
+        console.error("Erro na comunicação com a API:", error);
+    }
+}
+
 
 (async function () {
     const API_BASE = "http://localhost/TimerBook/public";
@@ -82,6 +105,19 @@ async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas, id_l
         
         return `${horas}h ${minutos}m`;
     }
+
+    function formatarTempoPorPagina(segundosPorPagina) {
+    if (!segundosPorPagina || isNaN(segundosPorPagina)) return "N/A";
+
+    const minutos = Math.floor(segundosPorPagina / 60);
+    const segundos = Math.floor(segundosPorPagina % 60);
+
+    if (minutos === 0) {
+        return `${segundos}s por página`;
+    }
+
+    return `${minutos}m ${segundos}s por página`;
+}
 
     function formatarData(dataString) {
         if (!dataString || dataString === '0000-00-00 00:00:00' || dataString === '0000-00-00') return "N/A";
@@ -113,29 +149,49 @@ async function finalizarSessaoLeitura(sessao_id, leitura_id, paginas_lidas, id_l
     }
 
     function renderBookCard(book) {     
-        const bookItem = document.createElement('div');
-        bookItem.className = 'book-item';
-        
-        const statusClass = book.status ? book.status.toLowerCase().replace(/ /g, '-') : 'indefinido';
-        console.log(book);
-        bookItem.innerHTML = `
-            <div class="book-cover-col">
-                <img src="${book.capa_livro || 'uploads/default_cover.png'}" alt="Capa do Livro: ${book.titulo}" class="book-cover">
-            </div>
-            <div class="book-details-col">
-                <h3 class="book-title">${book.titulo}</h3>
-                <p><strong>Autor:</strong> ${book.autor}</p>
-                <p><strong>Ano:</strong> ${book.ano_publicacao}</p>
-                <p><strong>Status:</strong> <span class="status-badge status-${statusClass}">${book.status || 'N/A'}</span></p>
-                <p><strong>Tempo gasto:</strong> ${formatarTempo(book.tempo_gasto)}</p>
-                <p><strong>Páginas lidas:</strong> ${book.paginas_lidas}</p>
-                <p><strong>Data início:</strong> ${formatarData(book.data_inicio)}</p>
-                <p><strong>Data fim:</strong> ${formatarData(book.data_fim)}</p>
-            </div>
-        `;
+    const bookItem = document.createElement('div');
+    bookItem.className = 'book-item';
 
-        return bookItem;
-    }
+    const statusClass = book.status ? book.status.toLowerCase().replace(/ /g, '-') : 'indefinido';
+    const statusColor = (book.status === 'Finalizada') ? 'color: green; font-weight: bold;' : '';
+
+    // Agora a API já manda tudo em segundos
+    const tempoEmSegundos = book.tempo_gasto || 0;
+
+    const tempoPorPagina = 
+        (book.paginas_lidas > 0 && tempoEmSegundos > 0)
+            ? formatarTempoPorPagina(tempoEmSegundos / book.paginas_lidas)
+            : "N/A";
+
+    bookItem.innerHTML = `
+        <div class="book-cover-col">
+            <img src="${book.capa_livro || 'uploads/default_cover.png'}" alt="Capa do Livro: ${book.titulo}" class="book-cover">
+        </div>
+        <div class="book-details-col">
+            <h3 class="book-title">${book.titulo}</h3>
+
+            <p><strong>Autor:</strong> ${book.autor}</p>
+            <p><strong>Ano:</strong> ${book.ano_publicacao}</p>
+
+            <p><strong>Status:</strong> 
+                <span class="status-badge status-${statusClass}" style="${statusColor}">
+                    ${book.status || 'N/A'}
+                </span>
+            </p>
+
+            <p><strong>Tempo gasto:</strong> ${formatarTempo(tempoEmSegundos)}</p>
+            <p><strong>Páginas lidas:</strong> ${book.paginas_lidas}</p>
+
+            <p><strong>Tempo por página:</strong> ${tempoPorPagina}</p>
+
+            <p><strong>Data início:</strong> ${formatarData(book.data_inicio)}</p>
+            <p><strong>Data fim:</strong> ${formatarData(book.data_fim)}</p>
+        </div>
+    `;
+
+    return bookItem;
+}
+
     function renderEstatisticasGerais(stats) {
         const statsDisplay = document.getElementById('general-stats-display');
         statsDisplay.innerHTML = ''; // Limpa o conteúdo

@@ -13,6 +13,7 @@ $userId = $_SESSION["user_id"];
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" href="uploads/TimerbookFavicon.png" type="image/png">
   <title>Leitor PDF com Navegação</title>
   <style>
     body {
@@ -72,19 +73,7 @@ $userId = $_SESSION["user_id"];
     //let penultimaPaginaLida = 0;
     async function init(sessao_id, leitura_id) {
       const livro = await buscarLivro(bookId);
-      /*** 
-      const ultimaPagina = await buscarUltimaSessao(livro.id); 
-      const penultimaPagina = await buscarSessao(livro.id, 0);
-      if(ultimaPagina && penultimaPagina){
-        ultimaPaginaLida = ultimaPagina.paginas_lidas + penultimaPagina.paginas_lidas;
-      }
-      else{
-        if(ultimaPagina){
-          ultimaPaginaLida = ultimaPagina.paginas_lidas
-        }
-      }
-      ***/
-      ultimaPaginaLida = await buscarUltimaPagina(user_id);
+      ultimaPaginaLida = await buscarUltimaPagina(user_id, bookId);
       carregarPdf(livro, sessao_id, leitura_id, ultimaPaginaLida);
       console.log("NO lEITOR: Sessão ID:", sessao_id, "Leitura ID:", leitura_id, "Ultima pagina lida: ", ultimaPaginaLida);
     }

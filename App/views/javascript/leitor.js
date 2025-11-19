@@ -4,18 +4,7 @@ let globalSessaoId = null;
 let globalLeituraId = null;
 let globalIdLivro = null;
 
-
-
 // Carrega o PDF e inicializa o leitor
-
-/***
- Para que o leitor seja capaz de ir na última página lida, é necessário carregar os
- dados da última sessão do usuário naquela determinada. É preciso uma função capaz
- de retornar os dados da útima sessão de uma leitua, dado o ID da leitura.
- 
- retornarUltimaSessaoLeitura(leitura_id) -> { sessao_id, pagina_atual }
- ***/
-
 async function carregarPdf(livro, sessao_id, leitura_id, ultimaPaginaLida) {
   globalIdLivro = livro.id;
   console.log("Id livro carregar pdf", globalIdLivro);
@@ -66,6 +55,7 @@ async function renderizarPagina(numPagina, sessao_id, leitura_id, id_livro) {
   container.appendChild(controles);
 
   atualizarBarraDeControles(); // atualiza os dados (ex: "Página 5 / 100")
+  atualizarProgresso();
 }
 
 // Cria os elementos da barra de controle (somente uma vez)
@@ -85,10 +75,9 @@ function criarBarraDeControles(sessao_id, leitura_id, pagina_atual, id_livro) {
   textoPagina.style.fontSize = '16px';
   textoPagina.style.fontWeight = 'bold';
 
-  
   // Botões
   const btnVoltar = criarBotao('Voltar', async () => {
-    await finalizarSessaoLeitura(sessao_id, leitura_id, pagina_atual, id_livro);
+    await finalizarSessaoLeitura(sessao_id, leitura_id, pagina_atual, globalIdLivro);
     window.history.back();
   }); 
   div.appendChild(btnVoltar);
@@ -118,10 +107,30 @@ function criarBarraDeControles(sessao_id, leitura_id, pagina_atual, id_livro) {
     }
     paginaAtual = valor;
     renderizarPagina(paginaAtual, globalSessaoId, globalLeituraId, globalIdLivro);
+    atualizarProgresso();
   });
 
   // Botão "Ver progresso"
   const btnProgresso = criarBotao('Ver progresso', () => mostrarProgresso(paginaAtual, pdfGlobal.numPages));
+
+  // ✅ Botão "Finalizar Leitura" (vermelho)
+  const btnFinalizar = document.createElement('button');
+  btnFinalizar.textContent = 'Finalizar Leitura';
+  btnFinalizar.onclick = async () => {
+    await finalizarSessaoLeitura(sessao_id, leitura_id, pagina_atual, globalIdLivro);
+    await finalizarLeitura(leitura_id);
+    alert('Leitura finalizada!');
+    window.history.back();
+  };
+  btnFinalizar.style.background = '#dc3545';
+  btnFinalizar.style.color = 'white';
+  btnFinalizar.style.border = 'none';
+  btnFinalizar.style.padding = '8px 12px';
+  btnFinalizar.style.borderRadius = '8px';
+  btnFinalizar.style.cursor = 'pointer';
+  btnFinalizar.style.transition = '0.3s';
+  btnFinalizar.onmouseover = () => (btnFinalizar.style.background = '#a71d2a');
+  btnFinalizar.onmouseout = () => (btnFinalizar.style.background = '#dc3545');
 
   div.appendChild(textoPagina);
   div.appendChild(btnAnterior);
@@ -129,6 +138,42 @@ function criarBarraDeControles(sessao_id, leitura_id, pagina_atual, id_livro) {
   div.appendChild(inputPagina);
   div.appendChild(btnIr);
   div.appendChild(btnProgresso);
+  div.appendChild(btnFinalizar); // ✅ adicionado no final
+
+  // Barra de progresso
+const progressoContainer = document.createElement('div');
+progressoContainer.style.width = '80%';
+progressoContainer.style.height = '20px';
+progressoContainer.style.background = '#ddd';
+progressoContainer.style.borderRadius = '10px';
+progressoContainer.style.position = 'relative';
+progressoContainer.style.marginTop = '10px';
+progressoContainer.style.overflow = 'hidden';
+
+const progressoBar = document.createElement('div');
+progressoBar.id = 'progressoBar';
+progressoBar.style.height = '100%';
+progressoBar.style.width = '0%';
+progressoBar.style.background = '#4caf50';
+progressoBar.style.transition = 'width 0.3s ease';
+
+// Texto da porcentagem no centro
+const progressoTexto = document.createElement('div');
+progressoTexto.id = 'progressoTexto';
+progressoTexto.style.position = 'absolute';
+progressoTexto.style.top = '50%';
+progressoTexto.style.left = '50%';
+progressoTexto.style.transform = 'translate(-50%, -50%)';
+progressoTexto.style.fontWeight = 'bold';
+progressoTexto.style.color = '#000';
+progressoTexto.style.pointerEvents = 'none'; // texto não bloqueia cliques
+
+progressoContainer.appendChild(progressoBar);
+progressoContainer.appendChild(progressoTexto);
+
+div.appendChild(progressoContainer);
+
+
 
   return div;
 }
@@ -140,6 +185,21 @@ function atualizarBarraDeControles() {
     texto.textContent = `Página ${paginaAtual} / ${pdfGlobal.numPages}`;
   }
 }
+
+function atualizarProgresso() {
+  if (!pdfGlobal) return;
+
+  const barra = document.getElementById('progressoBar');
+  const texto = document.getElementById('progressoTexto');
+  if (!barra || !texto) return;
+
+  const porcentagem = ((paginaAtual / pdfGlobal.numPages) * 100).toFixed(1);
+
+  barra.style.width = `${porcentagem}%`;
+  texto.textContent = `${porcentagem}%`;
+}
+
+
 
 // Cria botões reutilizáveis
 function criarBotao(texto, acao) {
@@ -164,6 +224,7 @@ function proximaPagina() {
     paginaAtual++;
     renderizarPagina(paginaAtual, globalSessaoId, globalLeituraId, globalIdLivro);
   }
+  atualizarProgresso();
 }
 
 function paginaAnterior() {
@@ -171,6 +232,7 @@ function paginaAnterior() {
     paginaAtual--;
     renderizarPagina(paginaAtual, globalSessaoId, globalLeituraId, globalIdLivro);
   }
+  atualizarProgresso();
 }
 
 // Progresso de leitura
