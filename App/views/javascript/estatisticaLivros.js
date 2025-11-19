@@ -1,8 +1,31 @@
 // js/estatisticaLivros.js
 
+async function buscarLivro($id_livro) {
+    try {
+        const response = await fetch(`http://localhost/TimerBook/public/books/${$id_livro}`, {
+            method: "GET",
+            credentials: "include"
+        });
+        
+        if (!response.ok) {
+            throw new Error("Erro ao buscar o livro.");
+        }
+        const livro = await response.json();
+        console.log("Livro buscado:", livro); // Debug: Verifica o caminho do arquivo
+        return livro;
+    } catch (error) {
+        console.error("Erro na função buscarLivro:", error);
+        throw error;
+    }
+}
 
 async function iniciarSessaoLeitura(user_id, book_id) {
+    const livro = await buscarLivro(book_id);
     
+    //const pdf = await pdfjsLib.getDocument(livro.caminho_arquivo).promise
+    //const paginas_totais = pdf.NumPages;
+    let paginas_totais = 100;
+
     try {
         const response = await fetch("http://localhost/TimerBook/public/reading/start", {
             method: 'POST',
@@ -12,7 +35,8 @@ async function iniciarSessaoLeitura(user_id, book_id) {
             body: JSON.stringify({
                 // Dados necessários para iniciar a sessão de leitura
                 user_id: user_id, // Exemplo de ID do livro
-                book_id: book_id // Exemplo de ID do livro
+                book_id: book_id, // Exemplo de ID do livro
+                paginas_totais: 100
             })
         });
         const data = await response.json();

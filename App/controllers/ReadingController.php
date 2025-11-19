@@ -23,13 +23,14 @@ class ReadingController
         $status = $data['status'] ?? 'Em andamento';
         $data_inicio = $data['data_inicio'] ?? null;
         $data_fim = $data['data_fim'] ?? null;
+        $paginas_totais = $data['paginas_totais'] ?? null;
 
         if (!$user_id || !$book_id) {
             http_response_code(400);
             echo json_encode(["error" => "user_id e book_id são obrigatórios"]);
             return;
         }
-        $paginas_totais = $data['paginas_totais'] ?? null;
+       
         $result = Reading::create($user_id, $book_id, $status, $tempo_gasto, $paginas_lidas, $data_inicio, $data_fim,$paginas_totais);
         echo json_encode($result);
     }
