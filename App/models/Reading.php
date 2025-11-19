@@ -166,39 +166,45 @@ class Reading
         }
     }
 
-     public static function iniciarLeitura($user_id, $book_id) {
-        $pdo = Database::connect();
+  public static function iniciarLeitura($user_id, $book_id, $paginas_totais=null) {
+    $pdo = Database::connect();
 
-        // Verifica se já existe leitura para este livro e usuário
-        $stmt = $pdo->prepare("SELECT id, status FROM Reading WHERE pk_usuario = ? AND livro = ?");
-        $stmt->execute([$user_id, $book_id]);
-        $leitura = $stmt->fetch();
+    // Verifica se já existe leitura para este livro e usuário
+    $stmt = $pdo->prepare("SELECT id, status FROM Reading WHERE pk_usuario = ? AND livro = ?");
+    $stmt->execute([$user_id, $book_id]);
+    $leitura = $stmt->fetch();
 
-        if ($leitura) {
-            // Se a leitura estiver finalizada, reabrir
-            if ($leitura['status'] === 'Finalizada') {
-                $stmt = $pdo->prepare("
-                    UPDATE Reading
-                    SET `status` = 'em andamento', data_fim = NULL
-                    WHERE id = ?
-                ");
-                $stmt->execute([$leitura['id']]);
-            }
+    if ($leitura) {
 
-            return $leitura['id']; 
+        // Se a leitura estiver finalizada, reabrir
+        if ($leitura['status'] === 'Finalizada') {
+            $stmt = $pdo->prepare("
+                UPDATE Reading
+                SET `status` = 'Em andamento', data_fim = NULL
+                WHERE id = ?
+            ");
+            $stmt->execute([$leitura['id']]);
         }
 
-        // Cria nova leitura
-     $stmt = $pdo->prepare("
-    INSERT INTO Reading (pk_usuario, livro, `status`, data_inicio)
-    VALUES (?, ?, 'Em andamento', ?)
-           ");
-$stmt->execute([$user_id, $book_id, date('Y-m-d H:i:s')]);
-
-        return $pdo->lastInsertId();
+        return $leitura['id']; 
     }
 
-    
+    // Cria nova leitura
+    $stmt = $pdo->prepare("
+        INSERT INTO Reading (pk_usuario, livro, `status`, data_inicio, paginas_totais)
+        VALUES (?, ?, 'Em andamento', ?, ?)
+    ");
+
+    $stmt->execute([
+        $user_id, 
+        $book_id, 
+        date('Y-m-d H:i:s'),
+        $paginas_totais
+    ]);
+
+    return $pdo->lastInsertId();
+}
+
    public static function finalizarLeitura($leitura_id) {
     try { 
         $pdo = Database::connect();
