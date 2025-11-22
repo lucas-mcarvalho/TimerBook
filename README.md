@@ -1,7 +1,7 @@
 # TimerBook
 
 
-![Logo](public/uploads/TimerbookLogo.svg)
+![Logo](TimerbookLogo.png)
 
 
 # ENGENHARIA DE SOFTWARE 2025/02 | UNIVERSIDADE FEDERAL DO TOCANTINS
