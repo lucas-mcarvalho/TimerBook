@@ -2,7 +2,7 @@
 
 
 
-<img src="TimerbookLogo.png">
+<img src="TimerbookLogo.png" width="50">
 
 
 **Curso: Ciência da Computação**
