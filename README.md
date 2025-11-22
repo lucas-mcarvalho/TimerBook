@@ -1,10 +1,18 @@
 # TimerBook
 
+
+<p align="center">
+  <img src="public/uploads/TimerbookLogo.svg" width="500" />
+</p>
+
+
 # ENGENHARIA DE SOFTWARE 2025/02 | UNIVERSIDADE FEDERAL DO TOCANTINS
 
 **Curso: Ciência da Computação**
 
 **Professor: Dr. Edeílson Milhomem**
+
+
 
 **GRUPO 1:**
 
@@ -21,12 +29,45 @@
 
 # DESCRIÇÃO DO PROJETO
 
-O projeto TimerBook tem como objetivo ser um software para gerenciamento de suas leituras. Inclui Fetures que inclui cadastro de livros que o usuário esteja lendo, 
-acesso a banco de dados de livros já cadastrados e sistemas de métricas e lembrentes para auxiliar o usuário na leitura de seus diversos 
-livros e comensurar seu desempenho.
+O TimerBook tem como objetivo ser um software para gerenciamento de leituras, oferecendo:
 
+Cadastro de livros em leitura.
+
+Acesso aos livros cadastrados.
+
+Métricas de desempenho.
+
+Lembretes de leitura.
+
+Acompanhamento de progresso.
+
+[Clique aqui e veja nosso repositorio](https://github.com/lucas-mcarvalho/TimerBook#)
+
+# O projeto foi feito usando as seguintes tecnologias:
+
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" width="50" />
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original-wordmark.svg" width="50" />
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" width= "50"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original-wordmark.svg" width="50" />
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original-wordmark.svg" width="50"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original-wordmark.svg" width="50"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" width="50"/>
+                                    
+          
 # PLANEJAMENTO
 
 Para a realização deste projeto já foram definidas as sprints que podem ser vistas em: https://drive.google.com/file/d/1HaVDZAgRSPGeEkHNOYYhkLJbO9HE6J2f/view?usp=drive_link
 
 Também foram realizadas as User Stories juntamente com as prototipações das telas, disponível em: https://www.figma.com/proto/IihsrG5vSCSRwtLC64WnLd/User-Stories?node-id=0-1&t=epDzeNh9tx9MlHN4-1
+
+# Como Rodar o Projeto
+
+
+
+
+
+# Video mostrando as funcionalidades do projeto
+[Assista ao vídeo no YouTube]()
+
+# Landin  page do projeto 
+https://lucas-mcarvalho.github.io/TimerBook/
