@@ -1,9 +1,7 @@
 # TimerBook
 
 
-<p align="center">
-  <img src="public/uploads/TimerbookLogo.svg" width="500" />
-</p>
+![Logo](public/uploads/TimerbookLogo.svg)
 
 
 # ENGENHARIA DE SOFTWARE 2025/02 | UNIVERSIDADE FEDERAL DO TOCANTINS
@@ -29,21 +27,12 @@
 
 # DESCRIÇÃO DO PROJETO
 
-O TimerBook tem como objetivo ser um software para gerenciamento de leituras, oferecendo:
-
-Cadastro de livros em leitura.
-
-Acesso aos livros cadastrados.
-
-Métricas de desempenho.
-
-Lembretes de leitura.
-
-Acompanhamento de progresso.
+O projeto TimerBook tem como objetivo ser um software para gerenciamento de suas leituras. Inclui Fetures que inclui cadastro de livros que o usuário esteja lendo, acesso a banco de dados de livros já cadastrados e sistemas de métricas e lembrentes para auxiliar o usuário na leitura de seus diversos livros e comensurar seu desempenho.
 
 [Clique aqui e veja nosso repositorio](https://github.com/lucas-mcarvalho/TimerBook#)
 
 # O projeto foi feito usando as seguintes tecnologias:
+<p align="left">
 
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" width="50" />
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original-wordmark.svg" width="50" />
@@ -52,7 +41,7 @@ Acompanhamento de progresso.
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original-wordmark.svg" width="50"/>
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original-wordmark.svg" width="50"/>
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" width="50"/>
-                                    
+</p>                                   
           
 # PLANEJAMENTO
 
