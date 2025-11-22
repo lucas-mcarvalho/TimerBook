@@ -2,8 +2,8 @@
 
 
 
-<img src="https://photos.google.com/photo/AF1QipOa4WsqqBJGzAn_ajZj2B0Kip17eUK2FAuEou9S" />
-
+<img src="" />
+![alt text](https://photos.app.goo.gl/MDKh9wPyh5kzDk1w9)
 **Curso: Ciência da Computação**
 
 **Professor: Dr. Edeílson Milhomem**
