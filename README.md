@@ -2,7 +2,7 @@
 
 
 
-![Logo](TimerbookLogo.png)
+<img src="./TimerbookLogo.png" width="300" />
 
 **Curso: Ciência da Computação**
 
