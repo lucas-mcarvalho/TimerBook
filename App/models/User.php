@@ -117,57 +117,133 @@ class User {
     } catch (PDOException $e) {
         return null;
     }
-}       public static function delete($id)
-    {
-        // 1. Primeiro, busca os dados do usuário para obter o caminho da foto
-        $user = self::getById($id);
-        if (!$user) {
-            return ["error" => "Usuário não encontrado"];
-        }
+}    public static function delete($id)
+{
+    // 1. Busca o usuário
+    $user = self::getById($id);
+    if (!$user) {
+        return ["error" => "Usuário não encontrado"];
+    }
 
-        // 2. Verifica se o usuário tem uma foto de perfil para deletar no S3
-        if (!empty($user['profile_photo'])) {
-            // Inicializa o cliente S3
-            $s3Client = new S3Client([
-                'version'     => 'latest',
-                'region'      => $_ENV['AWS_DEFAULT_REGION'],
-                'credentials' => [
-                    'key'    => $_ENV['AWS_ACCESS_KEY_ID'],
-                    'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
-                ]
-            ]);
+    $pdo = Database::connect();
 
-            try {
-                // Extrai a 'key' (caminho do arquivo no bucket) da URL completa
-                $path = parse_url($user['profile_photo'], PHP_URL_PATH);
+    // Inicializa o cliente S3
+    $s3Client = new S3Client([
+        'version'     => 'latest',
+        'region'      => $_ENV['AWS_DEFAULT_REGION'],
+        'credentials' => [
+            'key'    => $_ENV['AWS_ACCESS_KEY_ID'],
+            'secret' => $_ENV['AWS_SECRET_ACCESS_KEY'],
+        ]
+    ]);
+
+
+    // --------------------------------------------------------------------
+    // 2. BUSCA TODOS OS LIVROS E DELETA ARQUIVOS DO S3 (PDF + CAPA)
+    // --------------------------------------------------------------------
+    try {
+        $stmtBooks = $pdo->prepare("SELECT id, caminho_arquivo, capa_livro FROM Books WHERE user_id = ?");
+        $stmtBooks->execute([$id]);
+        $books = $stmtBooks->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($books as $book) {
+
+            // Deleta arquivo principal (PDF/EPUB)
+            if (!empty($book['caminho_arquivo'])) {
+
+                $path = parse_url($book['caminho_arquivo'], PHP_URL_PATH);
                 $key = ltrim($path, '/');
 
-                // Deleta o objeto (a foto) do bucket S3
+                try {
+                    if ($key) {
+                        $s3Client->deleteObject([
+                            'Bucket' => $_ENV['S3_BUCKET_NAME'],
+                            'Key'    => $key,
+                        ]);
+                    }
+                } catch (AwsException $e) {
+                    return [
+                        "error" => "Falha ao deletar arquivo do livro no S3",
+                        "aws_message" => $e->getMessage()
+                    ];
+                }
+            }
+
+            // Deleta capa do livro (imagem)
+            if (!empty($book['capa_livro'])) {
+
+                $path = parse_url($book['capa_livro'], PHP_URL_PATH);
+                $key = ltrim($path, '/');
+
+                try {
+                    if ($key) {
+                        $s3Client->deleteObject([
+                            'Bucket' => $_ENV['S3_BUCKET_NAME'],
+                            'Key'    => $key,
+                        ]);
+                    }
+                } catch (AwsException $e) {
+                    return [
+                        "error" => "Falha ao deletar capa do livro no S3",
+                        "aws_message" => $e->getMessage()
+                    ];
+                }
+            }
+
+        }
+
+    } catch (PDOException $e) {
+        return ["error" => "Erro ao buscar livros: " . $e->getMessage()];
+    }
+
+
+    // --------------------------------------------------------------------
+    // 3. DELETA TODOS OS LIVROS DO BANCO
+    // --------------------------------------------------------------------
+    try {
+        $deleteBooks = $pdo->prepare("DELETE FROM Books WHERE user_id = ?");
+        $deleteBooks->execute([$id]);
+    } catch (PDOException $e) {
+        return ["error" => "Erro ao deletar livros do banco: " . $e->getMessage()];
+    }
+
+
+    // --------------------------------------------------------------------
+    // 4. DELETA FOTO DE PERFIL DO USUÁRIO NO S3
+    // --------------------------------------------------------------------
+    if (!empty($user['profile_photo'])) {
+
+        $path = parse_url($user['profile_photo'], PHP_URL_PATH);
+        $key = ltrim($path, '/');
+
+        try {
+            if ($key) {
                 $s3Client->deleteObject([
                     'Bucket' => $_ENV['S3_BUCKET_NAME'],
                     'Key'    => $key,
                 ]);
-
-            } catch (AwsException $e) {
-                // Se falhar a exclusão no S3, retorna o erro e não deleta do banco
-                return [
-                    "error" => "Falha ao deletar a foto de perfil no S3",
-                    "aws_message" => $e->getMessage()
-                ];
             }
-        }
-
-        // 3. Se a exclusão no S3 deu certo (ou não havia foto), deleta o usuário do banco
-        try {
-            $pdo = Database::connect();
-            $stmt = $pdo->prepare("DELETE FROM User WHERE id = ?");
-            $stmt->execute([$id]);
-            return ["message" => "Usuário e foto de perfil excluídos com sucesso"];
-        } catch (PDOException $e) {
-            // Este erro ocorreria se, por exemplo, houvesse uma restrição de chave estrangeira
-            return ["error" => "Erro no banco ao deletar usuário: " . $e->getMessage()];
+        } catch (AwsException $e) {
+            return [
+                "error" => "Falha ao deletar foto de perfil no S3",
+                "aws_message" => $e->getMessage()
+            ];
         }
     }
+
+
+    // --------------------------------------------------------------------
+    // 5. DELETA O USUÁRIO DO BANCO
+    // --------------------------------------------------------------------
+    try {
+        $stmtUser = $pdo->prepare("DELETE FROM User WHERE id = ?");
+        $stmtUser->execute([$id]);
+        return ["message" => "Usuário, livros, capas, arquivos e foto de perfil deletados com sucesso!"];
+
+    } catch (PDOException $e) {
+        return ["error" => "Erro ao deletar usuário: " . $e->getMessage()];
+    }
+}
 
   public static function update($id, $nome = null, $username = null, $email = null, $senha = null, $isAlreadyHashed = false, $profilePhoto = null)
 {
