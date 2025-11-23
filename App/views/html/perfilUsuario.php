@@ -13,14 +13,10 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['id'])) {
 // Pega o ID da sessão
 $userId = $_SESSION["user_id"] ?? $_SESSION["id"];
 
-// --- CORREÇÃO AQUI ---
-// Em vez de confiar na sessão, buscamos os dados frescos do banco
-// Certifique-se de incluir seu arquivo de conexão ou model User se necessário
-// require_once '../App/models/User.php'; (Exemplo, ajuste o caminho)
+
 
 try {
-    // Supondo que você tenha um método para buscar por ID
-    // Se sua classe for diferente, ajuste aqui (ex: User::find($userId))
+    
     $userData = User::getById($userId); 
     
     if ($userData) {
@@ -41,20 +37,20 @@ try {
     }
 
 } catch (Exception $e) {
-    // Se der erro no banco, usa a sessão como fallback
+   
     $nome = $_SESSION['nome'] ?? '';
     $username = $_SESSION['username'] ?? '';
     $email = $_SESSION['email'] ?? '';
     $profilePhoto = $_SESSION['profile_photo'] ?? null;
 }
 
-// Lógica de fallback para imagem padrão ou local
+
 if (empty($profilePhoto)) {
     $profilePhoto = "uploads/default.png";
 } elseif (strpos($profilePhoto, 'http') === 0) {
-    // É URL do S3, mantém como está (AQUI QUE ELE VAI ENTRAR AGORA)
+ 
 } else {
-    // É caminho local antigo
+    
     if (strpos($profilePhoto, 'uploads/') !== 0) {
         $profilePhoto = "uploads/" . $profilePhoto;
     }
