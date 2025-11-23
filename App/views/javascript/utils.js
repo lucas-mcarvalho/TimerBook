@@ -78,7 +78,8 @@ async function iniciarSessaoLeitura(user_id, book_id) {
 	}
 }
 
-async function buscarUltimaPagina(id_user) {
+async function buscarUltimaPagina(id_user, id_livro) {
+    //fix
     try {
         const response = await fetch(`http://localhost:8080/reading/statistics/${id_user}`, {
             method: "GET",
@@ -90,18 +91,23 @@ async function buscarUltimaPagina(id_user) {
         }
 
         const stats = await response.json();
-        if(stats[0].paginas_lidas != null){
-            return stats[0].paginas_lidas;
+        let book;
+        for(let b of stats){
+            if(b.id == id_livro){
+                book = b;
+            }
         }
-        return stats[1].paginas_lidas;
+        console.log("status do livro ALSKNAS: ", stats)
+        if(book.paginas_lidas != null){
+            return book.paginas_lidas;
+        }
+        return 0;
         
     } catch (error) {
         console.error("Erro na função buscarUltimaPagina:", error);
         throw error;
     }
 }
-
-
 
 async function buscarEstatisticas(id_user) {
     try {
