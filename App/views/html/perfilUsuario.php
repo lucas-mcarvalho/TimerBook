@@ -10,29 +10,58 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['id'])) {
     exit();
 }
 
-// Foto de perfil
-$profilePhoto = $_SESSION['profile_photo'] ?? "uploads/default.png";
-// Se a foto é URL do S3, usa diretamente, senão adiciona o caminho local
-if ($profilePhoto && strpos($profilePhoto, 'http' ) === 0) {
-    // É URL do S3, mantém como está
+// Pega o ID da sessão
+$userId = $_SESSION["user_id"] ?? $_SESSION["id"];
+
+
+
+try {
+    
+    $userData = User::getById($userId); 
+    
+    if ($userData) {
+        // Atualiza as variáveis com o que veio do banco (S3)
+        $nome = $userData['nome'];
+        $username = $userData['username'];
+        $email = $userData['email'];
+        $profilePhoto = $userData['profile_photo']; // Aqui virá a URL nova do S3
+        
+        // Opcional: Atualizar a sessão para as outras páginas
+        $_SESSION['profile_photo'] = $profilePhoto;
+    } else {
+        // Fallback se não achar no banco (usa a sessão antiga)
+        $nome = $_SESSION['nome'] ?? '';
+        $username = $_SESSION['username'] ?? '';
+        $email = $_SESSION['email'] ?? '';
+        $profilePhoto = $_SESSION['profile_photo'] ?? null;
+    }
+
+} catch (Exception $e) {
+   
+    $nome = $_SESSION['nome'] ?? '';
+    $username = $_SESSION['username'] ?? '';
+    $email = $_SESSION['email'] ?? '';
+    $profilePhoto = $_SESSION['profile_photo'] ?? null;
+}
+
+
+if (empty($profilePhoto)) {
+    $profilePhoto = "uploads/default.png";
+} elseif (strpos($profilePhoto, 'http') === 0) {
+ 
 } else {
-    // É caminho local, adiciona o prefixo uploads/ se necessário
-    if ($profilePhoto && strpos($profilePhoto, 'uploads/') !== 0) {
+    
+    if (strpos($profilePhoto, 'uploads/') !== 0) {
         $profilePhoto = "uploads/" . $profilePhoto;
     }
 }
-
-// Dados do usuário da sessão
-$nome = $_SESSION['nome'] ?? '';
-$username = $_SESSION['username'] ?? '';
-$email = $_SESSION['email'] ?? '';
-$userId = $_SESSION["user_id"] ?? $_SESSION["id"];
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="uploads/TimerbookFavicon.png" type="image/png">
     <title>Timerbook - Meu Perfil</title>
     <link rel="stylesheet" href="style/perfilUsuario.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">

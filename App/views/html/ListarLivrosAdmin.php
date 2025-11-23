@@ -8,6 +8,7 @@ $id = $_GET['UserId'] ?? null;;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="uploads/TimerbookFavicon.png" type="image/png">
     <title>TimerBook-ADMIN</title>
     <link rel="stylesheet" href="style/listarLivro.css?v=<?php echo time(); ?>">
 

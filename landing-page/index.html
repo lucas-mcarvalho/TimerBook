@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TimerBook - Gerencie seu tempo, conquiste seus objetivos</title>
+  <style>
+
+    :root {
+      --primary-blue: #6CD4F6; 
+      --dark-blue: #2B3A8C;   
+      --dark-hover: #1F2B6C;   
+      --white: #ffffff;
+      --text-dark: #333333;
+      --text-light: #f0f0f0;
+      --bg-light: #f4f8fb;
+    }
+
+    body {
+      font-family: 'Helvetica';
+      margin: 0;
+      padding: 0;
+      background-color: var(--primary-blue);
+      color: var(--text-dark);
+      line-height: 1.6;
+      background: linear-gradient(45deg, #1643E5, #94CEEF);
+    }
+
+    /* --- Header / Navegação --- */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 5%;
+      background-color: var(--bg-light);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--dark-blue);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    /* Ajuste para a imagem da logo */
+    .logo img {
+        height: 40px;
+        width: auto;
+    }
+
+    .nav-buttons button {
+      margin-left: 10px;
+    }
+
+    /* --- Botões (Estilo TimerBook) --- */
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background-color: var(--dark-blue);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--dark-hover);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 2px solid var(--dark-blue);
+      color: var(--dark-blue);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--dark-blue);
+      color: var(--white);
+    }
+
+    /* --- Seção Hero (Principal) --- */
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 60px 5%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-text {
+      flex: 1;
+      min-width: 300px;
+      color: var(--dark-blue); /* Texto escuro para contraste no fundo azul */
+      padding-right: 20px;
+    }
+
+    .hero-text h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      line-height: 1.2;
+      color: var(--white); /* Título branco destaca no azul */
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .hero-text p {
+      font-size: 20px;
+      margin-bottom: 30px;
+      color: var(--dark-blue);
+      font-weight: 500;
+    }
+
+    .hero-image {
+      flex: 1;
+      min-width: 300px;
+      text-align: center;
+    }
+
+    .hero-image img {
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    /* --- Seção de Funcionalidades (Cards Brancos) --- */
+    .features {
+      background-color: var(--bg-light);
+      padding: 60px 5%;
+      text-align: center;
+    }
+
+    .features h2 {
+      color: var(--dark-blue);
+      font-size: 32px;
+      margin-bottom: 40px;
+    }
+
+    .cards-container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 300px;
+      text-align: left;
+      border-top: 5px solid var(--dark-blue);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+    }
+
+    .card h3 {
+      color: var(--dark-blue);
+      margin-top: 0;
+    }
+
+    /* --- Footer --- */
+    footer {
+      background-color: var(--dark-blue);
+      color: white;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    footer p {
+      opacity: 0.8;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .hero-text h1 { font-size: 36px; }
+      .hero { flex-direction: column-reverse; text-align: center; }
+      .hero-text { padding-right: 0; margin-top: 30px; }
+    }
+    .fa-github {
+      font-size: 24px;
+    }
+    .repo-link {
+    color: white;       
+    text-decoration: none; 
+  }
+  </style>
+</head>
+<body>
+
+  <header>
+    <!-- logo -->
+    <div class="logo">
+      <img src="uploads/TimerbookLogo.svg" alt="">
+      TimerBook
+    </div>
+    <!-- btn de Navegação -->
+    <div class="nav-buttons">
+      <a href="http://15.228.40.136/TimerBook/public/index.php?action=register"><button class="btn btn-outline">Entrar</button></a>
+      <a href="http://15.228.40.136/TimerBook/public/"><button class="btn btn-primary">Cadastrar</button></a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h1>SEJA BEM-VINDO AO TIMERBOOK</h1>
+      <p>Gerencie seu tempo, conquiste seus objetivos. Acompanhe suas leituras, veja estatísticas e organize sua biblioteca pessoal.</p>
+      <a href="http://15.228.40.136/TimerBook/public/"><button class="btn btn-primary" style="background-color: white; color: var(--dark-blue);">Começar Agora</button></a>
+    </div>
+  </section>
+
+  <section class="features">
+    <h2>Tudo o que você precisa para ler mais</h2>
+    <div class="cards-container">
+      
+      <div class="card">
+        <h3>Minha Biblioteca</h3>
+        <p>Cadastre seus livros favoritos. Mantenha tudo organizado em um só lugar.</p>
+      </div>
+
+      <div class="card">
+        <h3>Estatísticas</h3>
+        <p>Visualize seu progresso de leitura. Acompanhe quantas páginas você leu e gerencie seu tempo de forma eficiente.</p>
+      </div>
+
+      <div class="card">
+        <h3>Perfil Personalizado</h3>
+        <p>Crie uma conta personalizada,com a foto de perfil que desejar</p>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <h2>Pronto para organizar suas leituras?</h2>
+    <br>
+    <button class="btn btn-primary" style="border: 1px solid white;">Criar Conta Grátis</button>
+    <br><br>
+    <p>&copy;TimerBook. Todos os direitos reservados.</p>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <p>
+  <i class="fab fa-github"></i>
+  <a class="repo-link" href="https://github.com/lucas-mcarvalho/TimerBook/blob/main/index.html"> 
+    repositório do github
+  </a >
+</p>
+
+
+  </footer>
+
+</body>
+</html>
