@@ -45,7 +45,7 @@ O projeto TimerBook tem como objetivo ser um software para gerenciamento de suas
 
 Para a realização deste projeto já foram definidas as sprints e as histórias de usuário:
 
-* **Sprints (Drive):** [Ver Documento de Planejamento](https://drive.google.com/file/d/1HaVDZAgRSPGeEkHNOYYhkLJbO9HE6J2f/view?usp=drive_link)
+* **Sprints (Drive):** [Ver Documento de Planejamento](https://drive.google.com/file/d/1HaVDZAgRSPGeEkHNOYYhkLJbO9HE6J2f/view?usp=sharing)
 * **User Stories & Protótipo (Figma):** [Ver Telas no Figma](https://www.figma.com/proto/IihsrG5vSCSRwtLC64WnLd/User-Stories?node-id=0-1&t=epDzeNh9tx9MlHN4-1)
 
 ## 🖥️ Estrutura do Projeto
