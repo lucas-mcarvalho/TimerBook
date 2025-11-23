@@ -19,6 +19,10 @@ async function carregarPdf(livro, sessao_id, leitura_id, ultimaPaginaLida) {
     const pdfUrl = livro.caminho_arquivo;
 
     pdfGlobal = await carregarDocumentoPdf(pdfUrl);
+    if (paginaAtual > pdfGlobal.numPages) {
+    paginaAtual = pdfGlobal.numPages;
+}
+
     renderizarPagina(paginaAtual, sessao_id, leitura_id, globalIdLivro);
   } catch (err) {
     tratarErro(err);
@@ -33,6 +37,16 @@ async function carregarDocumentoPdf(pdfUrl) {
 
 // Renderiza uma página do PDF no canvas
 async function renderizarPagina(numPagina, sessao_id, leitura_id, id_livro) {
+
+  if (numPagina > pdfGlobal.numPages) {
+    numPagina = pdfGlobal.numPages;
+    paginaAtual = numPagina;
+  }
+  if (numPagina < 1) {
+    numPagina = 1;
+    paginaAtual = 1;
+  }
+
   const container = document.getElementById('pdfContainer');
   container.innerHTML = ''; // limpa o container
 
