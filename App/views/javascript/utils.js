@@ -59,7 +59,7 @@ async function buscarSessao(id_livro, index) {
 
 async function iniciarSessaoLeitura(user_id, book_id) {
     try {
-        const res = await fetch(`http://http://15.228.40.136/TimerBook/public/reading/start`, {
+        const res = await fetch(`http://15.228.40.136/TimerBook/public/reading/start`, {
 	        method: "POST",
 	        headers: { "Content-Type": "application/json" },
 	        body: JSON.stringify({ user_id, book_id }),
