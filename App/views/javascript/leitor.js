@@ -10,9 +10,13 @@ async function carregarPdf(livro, sessao_id, leitura_id, ultimaPaginaLida) {
   console.log("Id livro carregar pdf", globalIdLivro);
   globalLeituraId = leitura_id;
   globalSessaoId = sessao_id;
-  if(ultimaPaginaLida){
-    paginaAtual = ultimaPaginaLida;
-  }
+      // --- CORREÇÃO PRINCIPAL ---
+    if (ultimaPaginaLida !== null && ultimaPaginaLida !== undefined) {
+        paginaAtual = Number(ultimaPaginaLida);
+    } else {
+        paginaAtual = 1;
+    }
+    // ----------------------------
   console.log("Página a ser carregada:", paginaAtual);
   try {
     if (!livro.caminho_arquivo) throw new Error("Campo 'caminho_arquivo' ausente no retorno do livro!");
