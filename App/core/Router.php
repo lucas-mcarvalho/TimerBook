@@ -21,6 +21,9 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
+header("Access-Control-Allow-Origin: http://15.228.40.136");
+header("Access-Control-Allow-Credentials: true");
+
 // Responde requisições OPTIONS automaticamente (necessário para navegadores)
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
