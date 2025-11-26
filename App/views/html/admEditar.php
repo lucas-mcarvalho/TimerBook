@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="uploads/TimerbookFavicon.png" type="image/png">
-    <link rel="stylesheet" href="../public/style/admEditar.css">
-    <script src="/TimerBook/App/views/javascript/admin.js"></script>
+    <link rel="stylesheet" href="style/admEditar.css">
+    <script src="/js/admin.js"></script>
 
     <title>Timer Book</title>
 </head>

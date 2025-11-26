@@ -29,8 +29,8 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
     <link rel="icon" href="uploads/TimerbookFavicon.png" type="image/png">
     <title>Timer Book - Meus Livros</title>
     <link rel="stylesheet" href="style/listarLivro.css?v=<?php echo time(); ?>">
-    <script src="/TimerBook/App/views/javascript/estatisticaLivros.js?v=<?= time() ?>"></script>
-    <script src="/TimerBook/App/views/javascript/livros_api.js?v=<?= time() ?>"></script>
+    <script src="js/estatisticaLivros.js?v=<?= time() ?>"></script>
+    <script src="js/livros_api.js?v=<?= time() ?>"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>

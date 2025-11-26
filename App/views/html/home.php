@@ -22,7 +22,7 @@ if ($profilePhoto && strpos($profilePhoto, 'http') === 0) {
     <title>Timerbook - Início</title>
     <link rel="stylesheet" href="style/home.css">
 	<link rel="stylesheet" href="style/ultimoLivro.css?v=<?= time() ?>">
-    <script src="/TimerBook/App/views/javascript/utils.js?v=<?= time() ?>"></script>
+    <script src="/js/utils.js?v=<?= time() ?>"></script>
 </head>
 <body>
 

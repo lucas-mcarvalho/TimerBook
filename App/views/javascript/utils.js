@@ -111,7 +111,7 @@ async function buscarUltimaPagina(id_user, id_livro) {
 
 async function buscarEstatisticas(id_user) {
     try {
-        const response = await fetch(`http://localhost/TimerBook/public/reading/statistics/${id_user}`, {
+        const response = await fetch(`http://localhost:8080/reading/statistics/${id_user}`, {
             method: "GET",
             credentials: "include"
         });
