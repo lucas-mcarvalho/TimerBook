@@ -41,28 +41,16 @@ O projeto TimerBook tem como objetivo ser um software para gerenciamento de suas
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" width="50"/>
 </p>                                   
           
-## 📅 PLANEJAMENTO
-
-Para a realização deste projeto já foram definidas as sprints e as histórias de usuário:
-
-* **Slides da apresentação final :** [Ver slide](https://docs.google.com/presentation/d/1I2fChG8eKufSp2Qfpd4zYIhJ61E3I3un/edit?usp=sharing&ouid=105501819042772188213&rtpof=true&sd=true)
-* **Sprints (Drive):** [Ver Documento de Planejamento](https://drive.google.com/file/d/1HaVDZAgRSPGeEkHNOYYhkLJbO9HE6J2f/view?usp=sharing)
-* **User Stories & Protótipo (Figma):** [Ver Telas no Figma](https://www.figma.com/proto/IihsrG5vSCSRwtLC64WnLd/User-Stories?node-id=0-1&t=epDzeNh9tx9MlHN4-1)
-* **Deploy (Sistema no Ar):** [http://15.228.40.136/TimerBook/public/](http://15.228.40.136/TimerBook/public/)
-* **Vídeo das Funcionalidades:** [Assista ao vídeo](https://drive.google.com/file/d/1LA9VjMVfSUz2YLcEWIxf78C1OAeQQ7D9/view)
-
-
 ## 🔗 Links Úteis
 
-| Recurso | Link |
-|--------|------|
-| 📁 Repositório Oficial | https://github.com/lucas-mcarvalho/TimerBook |
-| 🎥 Vídeo Demonstrativo | https://youtu.be/du8Ec8_fWgY |
-| 🌐 Sistema Online (Landing Page) | https://lucas-mcarvalho.github.io/TimerBook/landing-page/ |
-| 🏷️ Última Release (v5.0.0) | https://github.com/lucas-mcarvalho/TimerBook/releases/tag/v5.0.0 |
-| 📝 Apresentação Final (PDF) | [Clique aqui para acessar](https://github.com/lucas-mcarvalho/TimerBook/blob/main/docs/apresenta%C3%A7%C3%A3o_final.pdf) |
 
----
+* **Slides da apresentação final :** [Ver slide](https://github.com/lucas-mcarvalho/TimerBook/blob/main/docs/apresenta%C3%A7%C3%A3o_final.pdf)
+* **Sprints (Drive):** [Ver Documento de Planejamento](https://github.com/lucas-mcarvalho/TimerBook/blob/main/docs/sprints.pdf)
+* **Planejamento no Trello:**[Trello](https://trello.com/b/WXQL66Tj/timerbook-sistema-de-gerenciamento-de-leitura)
+* **User Stories & Protótipo (Figma):** [Ver Telas no Figma](https://www.figma.com/proto/IihsrG5vSCSRwtLC64WnLd/User-Stories?node-id=0-1&t=epDzeNh9tx9MlHN4-1)
+* **Deploy (Sistema no Ar):** [http://15.228.40.136/TimerBook/public/](http://15.228.40.136/TimerBook/public/)
+* **Vídeo das Funcionalidades:** [Assista ao vídeo](https://youtu.be/du8Ec8_fWgY)
+* **Landing Page:**[Abrir Landing Page](https://lucas-mcarvalho.github.io/TimerBook/landing-page/ )
 
 
 ## 🖥️ Estrutura do Projeto
