@@ -47,6 +47,8 @@ Para a realização deste projeto já foram definidas as sprints e as histórias
 
 * **Sprints (Drive):** [Ver Documento de Planejamento](https://drive.google.com/file/d/1HaVDZAgRSPGeEkHNOYYhkLJbO9HE6J2f/view?usp=sharing)
 * **User Stories & Protótipo (Figma):** [Ver Telas no Figma](https://www.figma.com/proto/IihsrG5vSCSRwtLC64WnLd/User-Stories?node-id=0-1&t=epDzeNh9tx9MlHN4-1)
+* **Deploy (Sistema no Ar):** [http://15.228.40.136/TimerBook/public/](http://15.228.40.136/TimerBook/public/)
+* **Vídeo das Funcionalidades:** [Assista ao vídeo](https://drive.google.com/file/d/1LA9VjMVfSUz2YLcEWIxf78C1OAeQQ7D9/view)
 
 ## 🖥️ Estrutura do Projeto
 
@@ -263,10 +265,3 @@ Utilize o Crontab para agendar a execução do script PHP.
     ```
 3.  Salve e saia (`Ctrl+O` e depois `Ctrl+X` se estiver usando Nano).
 
-# 📹 Links e Demonstração
-
-Aqui você encontra o acesso direto ao sistema rodando e materiais de divulgação.
-
-* 🚀 **Deploy (Sistema no Ar):** [http://15.228.40.136/TimerBook/public/](http://15.228.40.136/TimerBook/public/)
-* 🌐 **Landing Page:** [https://lucas-mcarvalho.github.io/TimerBook/](https://lucas-mcarvalho.github.io/TimerBook/)
-* **Vídeo das Funcionalidades:** [Assista ao vídeo no YouTube]()
