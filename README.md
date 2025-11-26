@@ -59,7 +59,7 @@ Para a realização deste projeto já foram definidas as sprints e as histórias
 | 📁 Repositório Oficial | https://github.com/lucas-mcarvalho/TimerBook |
 | 🎥 Vídeo Demonstrativo | https://youtu.be/du8Ec8_fWgY |
 | 🌐 Sistema Online (Landing Page) | https://lucas-mcarvalho.github.io/TimerBook/landing-page/ |
-| 🏷️ Última Release (v1.4.0) | https://github.com/lucas-mcarvalho/TimerBook/releases/tag/v5.0.0 |
+| 🏷️ Última Release (v5.0.0) | https://github.com/lucas-mcarvalho/TimerBook/releases/tag/v5.0.0 |
 | 📝 Apresentação Final (PDF) | [Clique aqui para acessar](https://github.com/lucas-mcarvalho/TimerBook/blob/main/docs/apresenta%C3%A7%C3%A3o_final.pdf) |
 
 ---
