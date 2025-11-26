@@ -51,6 +51,20 @@ Para a realização deste projeto já foram definidas as sprints e as histórias
 * **Deploy (Sistema no Ar):** [http://15.228.40.136/TimerBook/public/](http://15.228.40.136/TimerBook/public/)
 * **Vídeo das Funcionalidades:** [Assista ao vídeo](https://drive.google.com/file/d/1LA9VjMVfSUz2YLcEWIxf78C1OAeQQ7D9/view)
 
+
+## 🔗 Links Úteis
+
+| Recurso | Link |
+|--------|------|
+| 📁 Repositório Oficial | https://github.com/lucas-mcarvalho/TimerBook |
+| 🎥 Vídeo Demonstrativo | .... |
+| 🌐 Sistema Online (Landing Page) | .... |
+| 🏷️ Última Release (v1.4.0) | ... |
+| 📝 Apresentação Final (PDF) | [Clique aqui para acessar](......) |
+
+---
+
+
 ## 🖥️ Estrutura do Projeto
 
 ```
